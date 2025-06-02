@@ -122,9 +122,9 @@ export default function BookingWidget() {
 
   // Check if selected dates are available
   const isDateDisabled = (date: Date) => {
-    if (!availability?.bookedDates) return false;
+    if (!availabilityData?.bookedDates) return false;
     const dateString = date.toISOString().split('T')[0];
-    return availability.bookedDates.includes(dateString);
+    return availabilityData.bookedDates.includes(dateString);
   };
 
   return (
@@ -134,12 +134,12 @@ export default function BookingWidget() {
         className="fixed right-4 top-1/2 transform -translate-y-1/2 w-80 bg-white rounded-2xl shadow-2xl p-6 z-40 hidden lg:block"
         data-booking-widget
       >
-        <h3 className="font-montserrat font-bold text-xl text-forest mb-4">Reserve Your Escape</h3>
+        <h3 className="font-montserrat font-bold text-xl text-forest mb-4">Reserva tu Escape</h3>
         
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <Label className="block text-sm font-medium text-charcoal mb-2">Check-in / Check-out</Label>
+              <Label className="block text-sm font-medium text-charcoal mb-2">Entrada / Salida</Label>
               <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                 <PopoverTrigger asChild>
                   <Button
@@ -156,7 +156,7 @@ export default function BookingWidget() {
                         format(dateRange.from, "LLL dd, y")
                       )
                     ) : (
-                      <span>Select dates</span>
+                      <span>Seleccionar fechas</span>
                     )}
                   </Button>
                 </PopoverTrigger>
@@ -165,7 +165,7 @@ export default function BookingWidget() {
                     initialFocus
                     mode="range"
                     defaultMonth={dateRange.from}
-                    selected={dateRange}
+                    selected={dateRange.from && dateRange.to ? { from: dateRange.from, to: dateRange.to } : undefined}
                     onSelect={handleDateSelect}
                     numberOfMonths={2}
                     disabled={isDateDisabled}
@@ -174,39 +174,16 @@ export default function BookingWidget() {
               </Popover>
             </div>
             
-            <FormField
-              control={form.control}
-              name="guests"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Guests</FormLabel>
-                  <Select value={field.value.toString()} onValueChange={(value) => field.onChange(parseInt(value))}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {[1, 2, 3, 4, 5, 6].map((num) => (
-                        <SelectItem key={num} value={num.toString()}>
-                          {num} Guest{num !== 1 ? 's' : ''}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+
             
             <FormField
               control={form.control}
               name="guestName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Full Name</FormLabel>
+                  <FormLabel>Nombre Completo</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your full name" {...field} />
+                    <Input placeholder="Ingresa tu nombre completo" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -220,7 +197,7 @@ export default function BookingWidget() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="Enter your email" {...field} />
+                    <Input type="email" placeholder="Ingresa tu email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -298,7 +275,7 @@ export default function BookingWidget() {
                           initialFocus
                           mode="range"
                           defaultMonth={dateRange.from}
-                          selected={dateRange}
+                          selected={dateRange.from && dateRange.to ? { from: dateRange.from, to: dateRange.to } : undefined}
                           onSelect={handleDateSelect}
                           numberOfMonths={1}
                           disabled={isDateDisabled}
