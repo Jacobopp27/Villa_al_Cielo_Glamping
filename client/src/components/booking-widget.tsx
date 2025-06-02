@@ -59,8 +59,8 @@ export default function BookingWidget() {
     },
     onSuccess: () => {
       toast({
-        title: "Booking Confirmed!",
-        description: "Your reservation has been confirmed. You'll receive a confirmation email shortly.",
+        title: "¡Reserva Confirmada!",
+        description: "Tu reserva ha sido confirmada. Recibirás un email de confirmación pronto.",
       });
       form.reset();
       setDateRange({});
@@ -68,8 +68,8 @@ export default function BookingWidget() {
     },
     onError: (error: any) => {
       toast({
-        title: "Booking Failed",
-        description: error.message || "Failed to create reservation. Please try again.",
+        title: "Error en la Reserva",
+        description: error.message || "No se pudo crear la reserva. Por favor intenta de nuevo.",
         variant: "destructive",
       });
     },
@@ -105,8 +105,8 @@ export default function BookingWidget() {
     const pricing = calculatePrice();
     if (pricing.total === 0) {
       toast({
-        title: "Invalid Dates",
-        description: "Please select valid check-in and check-out dates.",
+        title: "Fechas Inválidas",
+        description: "Por favor selecciona fechas de entrada y salida válidas.",
         variant: "destructive",
       });
       return;
@@ -207,11 +207,11 @@ export default function BookingWidget() {
             {pricing.total > 0 && (
               <div className="border-t pt-4">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-charcoal">${299} x {pricing.nights} nights</span>
+                  <span className="text-charcoal">${299} x {pricing.nights} noches</span>
                   <span>${pricing.subtotal}</span>
                 </div>
                 <div className="flex justify-between items-center mb-2">
-                  <span className="text-charcoal">Service fee</span>
+                  <span className="text-charcoal">Tarifa de servicio</span>
                   <span>${pricing.serviceFee}</span>
                 </div>
                 <div className="flex justify-between items-center font-bold text-lg border-t pt-2">
@@ -229,10 +229,10 @@ export default function BookingWidget() {
               {createReservation.isPending ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Processing...
+                  Procesando...
                 </>
               ) : (
-                "Reserve Now"
+                "Reservar Ahora"
               )}
             </Button>
           </form>
@@ -244,12 +244,12 @@ export default function BookingWidget() {
         <div className="max-w-lg mx-auto px-4">
           <Card className="shadow-xl">
             <CardContent className="p-6">
-              <h3 className="font-montserrat font-bold text-xl text-forest mb-4">Reserve Your Escape</h3>
+              <h3 className="font-montserrat font-bold text-xl text-forest mb-4">Reserva tu Escape</h3>
               
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                   <div>
-                    <Label className="block text-sm font-medium text-charcoal mb-2">Check-in / Check-out</Label>
+                    <Label className="block text-sm font-medium text-charcoal mb-2">Entrada / Salida</Label>
                     <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                       <PopoverTrigger asChild>
                         <Button
@@ -266,7 +266,7 @@ export default function BookingWidget() {
                               format(dateRange.from, "LLL dd, y")
                             )
                           ) : (
-                            <span>Select dates</span>
+                            <span>Seleccionar fechas</span>
                           )}
                         </Button>
                       </PopoverTrigger>
@@ -284,39 +284,16 @@ export default function BookingWidget() {
                     </Popover>
                   </div>
                   
-                  <FormField
-                    control={form.control}
-                    name="guests"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Guests</FormLabel>
-                        <Select value={field.value.toString()} onValueChange={(value) => field.onChange(parseInt(value))}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {[1, 2, 3, 4, 5, 6].map((num) => (
-                              <SelectItem key={num} value={num.toString()}>
-                                {num} Guest{num !== 1 ? 's' : ''}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+
                   
                   <FormField
                     control={form.control}
                     name="guestName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Full Name</FormLabel>
+                        <FormLabel>Nombre Completo</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter your full name" {...field} />
+                          <Input placeholder="Ingresa tu nombre completo" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -330,7 +307,7 @@ export default function BookingWidget() {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input type="email" placeholder="Enter your email" {...field} />
+                          <Input type="email" placeholder="Ingresa tu email" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -340,11 +317,11 @@ export default function BookingWidget() {
                   {pricing.total > 0 && (
                     <div className="border-t pt-4">
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-charcoal">${299} x {pricing.nights} nights</span>
+                        <span className="text-charcoal">${299} x {pricing.nights} noches</span>
                         <span>${pricing.subtotal}</span>
                       </div>
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-charcoal">Service fee</span>
+                        <span className="text-charcoal">Tarifa de servicio</span>
                         <span>${pricing.serviceFee}</span>
                       </div>
                       <div className="flex justify-between items-center font-bold text-lg border-t pt-2">
@@ -362,10 +339,10 @@ export default function BookingWidget() {
                     {createReservation.isPending ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Processing...
+                        Procesando...
                       </>
                     ) : (
-                      "Reserve Now"
+                      "Reservar Ahora"
                     )}
                   </Button>
                 </form>
