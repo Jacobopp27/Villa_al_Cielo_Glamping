@@ -34,12 +34,12 @@ export const insertReservationSchema = createInsertSchema(reservations).pick({
   guests: true,
   totalPrice: true,
 }).extend({
-  guestName: z.string().min(2, "Name must be at least 2 characters"),
-  guestEmail: z.string().email("Please enter a valid email address"),
-  checkIn: z.string().min(1, "Check-in date is required"),
-  checkOut: z.string().min(1, "Check-out date is required"),
-  guests: z.number().min(1, "At least 1 guest is required").max(6, "Maximum 6 guests allowed"),
-  totalPrice: z.number().min(0, "Total price must be positive"),
+  guestName: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
+  guestEmail: z.string().email("Por favor ingrese un email válido"),
+  checkIn: z.string().min(1, "La fecha de entrada es requerida"),
+  checkOut: z.string().min(1, "La fecha de salida es requerida"),
+  guests: z.number().min(1, "Mínimo 1 huésped requerido").max(2, "Máximo 2 huéspedes permitidos"),
+  totalPrice: z.number().min(0, "El precio total debe ser positivo"),
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;

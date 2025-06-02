@@ -6,21 +6,21 @@ export default function ContactSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="font-montserrat font-bold text-4xl text-forest mb-4">
-            Location & Contact
+            Ubicación y Contacto
           </h2>
           <p className="text-xl text-charcoal">
-            Find us nestled in the heart of nature
+            Encuéntranos en el corazón de la naturaleza
           </p>
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           <div>
             <div className="bg-white rounded-xl p-8 shadow-lg">
-              <h3 className="font-montserrat font-bold text-xl text-forest mb-6">Get in Touch</h3>
+              <h3 className="font-montserrat font-bold text-xl text-forest mb-6">Ponte en Contacto</h3>
               <div className="space-y-4">
                 <div className="flex items-center">
                   <MapPin className="text-forest mr-4 w-5 h-5" />
-                  <span>123 Mountain View Trail, Forest Valley, CA 95001</span>
+                  <span>123 Sendero Vista Montaña, Valle del Bosque, CA 95001</span>
                 </div>
                 <div className="flex items-center">
                   <Phone className="text-forest mr-4 w-5 h-5" />
@@ -28,16 +28,16 @@ export default function ContactSection() {
                 </div>
                 <div className="flex items-center">
                   <Mail className="text-forest mr-4 w-5 h-5" />
-                  <span>reservations@wildernessretreat.com</span>
+                  <span>reservas@villaalcielo.com</span>
                 </div>
                 <div className="flex items-center">
                   <Clock className="text-forest mr-4 w-5 h-5" />
-                  <span>Check-in: 3:00 PM | Check-out: 11:00 AM</span>
+                  <span>Entrada: 3:00 PM | Salida: 11:00 AM</span>
                 </div>
               </div>
               
               <div className="mt-8 pt-8 border-t border-gray-200">
-                <h4 className="font-montserrat font-semibold text-lg text-forest mb-4">Follow Us</h4>
+                <h4 className="font-montserrat font-semibold text-lg text-forest mb-4">Síguenos</h4>
                 <div className="flex space-x-4">
                   <a href="#" className="w-10 h-10 bg-forest rounded-full flex items-center justify-center text-white hover:bg-forest/90 transition-colors">
                     <Facebook className="w-5 h-5" />

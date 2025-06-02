@@ -1,23 +1,23 @@
 const reviews = [
   {
     rating: 5,
-    text: "Absolutely incredible experience! The tent was luxurious and the views were breathtaking. Perfect balance of nature and comfort.",
+    text: "¡Experiencia absolutamente increíble! La tienda era lujosa y las vistas eran impresionantes. Perfecto equilibrio entre naturaleza y comodidad.",
     author: "Sarah Johnson",
-    date: "September 2023",
+    date: "Septiembre 2023",
     initials: "SJ"
   },
   {
     rating: 5,
-    text: "The perfect getaway! Amazing amenities, gorgeous location, and exceptional service. We'll definitely be back!",
+    text: "¡El escape perfecto! Amenidades increíbles, ubicación hermosa y servicio excepcional. ¡Definitivamente regresaremos!",
     author: "Mike Thompson",
-    date: "August 2023",
+    date: "Agosto 2023",
     initials: "MT"
   },
   {
     rating: 5,
-    text: "Outstanding glamping experience! Clean, comfortable, and surrounded by incredible natural beauty. Highly recommend!",
+    text: "¡Experiencia de glamping excepcional! Limpio, cómodo y rodeado de belleza natural increíble. ¡Altamente recomendado!",
     author: "Emily Rodriguez",
-    date: "October 2023",
+    date: "Octubre 2023",
     initials: "ER"
   }
 ];
@@ -28,10 +28,10 @@ export default function ReviewsSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="font-montserrat font-bold text-4xl text-forest mb-4">
-            Guest Reviews
+            Reseñas de Huéspedes
           </h2>
           <p className="text-xl text-charcoal">
-            What our guests say about their experience
+            Lo que dicen nuestros huéspedes sobre su experiencia
           </p>
         </div>
         

@@ -3,33 +3,33 @@ import { Wifi, Flame, UtensilsCrossed, ShowerHead, Footprints, Car } from "lucid
 const amenities = [
   {
     icon: Wifi,
-    title: "Free Wi-Fi",
-    description: "Stay connected with high-speed internet access throughout your stay."
+    title: "Wi-Fi Gratuito",
+    description: "Mantente conectado con acceso a internet de alta velocidad durante tu estadía."
   },
   {
     icon: Flame,
-    title: "Fire Pit",
-    description: "Gather around the fire pit for evening stories and s'mores under the stars."
+    title: "Fogata",
+    description: "Reúnete alrededor de la fogata para historias nocturnas y malvaviscos bajo las estrellas."
   },
   {
     icon: UtensilsCrossed,
-    title: "Outdoor Kitchen",
-    description: "Fully equipped outdoor kitchen with grill and dining area."
+    title: "Cocina Exterior",
+    description: "Cocina exterior completamente equipada con parrilla y área de comedor."
   },
   {
     icon: ShowerHead,
-    title: "Private Bathroom",
-    description: "Clean, private bathroom with hot shower and eco-friendly toiletries."
+    title: "Baño Privado",
+    description: "Baño privado limpio con ducha caliente y productos ecológicos."
   },
   {
     icon: Footprints,
-    title: "Hiking Trails",
-    description: "Direct access to scenic hiking trails and nature walks."
+    title: "Senderos",
+    description: "Acceso directo a senderos escénicos y caminatas en la naturaleza."
   },
   {
     icon: Car,
-    title: "Free Parking",
-    description: "Convenient on-site parking for your vehicle during your stay."
+    title: "Estacionamiento Gratuito",
+    description: "Estacionamiento conveniente en el sitio para tu vehículo durante la estadía."
   }
 ];
 
@@ -39,10 +39,10 @@ export default function AmenitiesSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="font-montserrat font-bold text-4xl text-forest mb-4">
-            What We Offer
+            Lo Que Ofrecemos
           </h2>
           <p className="text-xl text-charcoal max-w-2xl mx-auto">
-            Everything you need for a comfortable and memorable outdoor experience
+            Todo lo que necesitas para una experiencia al aire libre cómoda y memorable
           </p>
         </div>
         

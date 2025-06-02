@@ -31,10 +31,10 @@ export default function GallerySection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="font-montserrat font-bold text-4xl text-forest mb-4">
-            Gallery
+            Galería
           </h2>
           <p className="text-xl text-charcoal">
-            See what awaits you at Wilderness Retreat
+            Mira lo que te espera en Villa al Cielo
           </p>
         </div>
         

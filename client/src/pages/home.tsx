@@ -31,7 +31,7 @@ export default function Home() {
               </div>
               
               <h2 className="font-montserrat font-bold text-4xl text-forest mb-6">
-                Luxury Safari Tent with Mountain Views
+                Tienda Safari de Lujo con Vistas a la Montaña
               </h2>
               
               <div className="flex items-center text-charcoal mb-8 space-x-6">
@@ -39,24 +39,24 @@ export default function Home() {
                   <svg className="w-5 h-5 mr-2 text-forest" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                   </svg>
-                  <span>Up to 6 guests</span>
+                  <span>Hasta 2 huéspedes</span>
                 </div>
                 <div className="flex items-center">
                   <svg className="w-5 h-5 mr-2 text-forest" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
                   </svg>
-                  <span>2 bedrooms</span>
+                  <span>2 habitaciones</span>
                 </div>
                 <div className="flex items-center">
                   <svg className="w-5 h-5 mr-2 text-forest" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
                   </svg>
-                  <span>Private bathroom</span>
+                  <span>Baño privado</span>
                 </div>
               </div>
               
               <p className="text-lg text-charcoal leading-relaxed mb-8">
-                Immerse yourself in nature without sacrificing comfort in our luxury safari tent. Featuring panoramic mountain views, premium bedding, and all the amenities you need for an unforgettable glamping experience. Wake up to breathtaking sunrises and fall asleep under a canopy of stars.
+                Sumérgete en la naturaleza sin sacrificar comodidad en nuestra tienda safari de lujo. Con vistas panorámicas a la montaña, ropa de cama premium y todas las amenidades que necesitas para una experiencia de glamping inolvidable. Despierta con amaneceres impresionantes y duerme bajo un manto de estrellas.
               </p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -75,13 +75,13 @@ export default function Home() {
             
             {/* Mobile Booking Form */}
             <div className="lg:hidden bg-white rounded-2xl shadow-xl p-6">
-              <h3 className="font-montserrat font-bold text-xl text-forest mb-4">Reserve Your Escape</h3>
+              <h3 className="font-montserrat font-bold text-xl text-forest mb-4">Reserva tu Escape</h3>
               <div className="text-center">
                 <div className="text-3xl font-bold text-forest mb-2">$299</div>
-                <div className="text-charcoal">per night</div>
+                <div className="text-charcoal">por noche</div>
               </div>
               <button className="w-full bg-forest hover:bg-forest/90 text-white py-4 rounded-lg font-montserrat font-semibold text-lg mt-4 transition-all">
-                Check Availability
+                Verificar Disponibilidad
               </button>
             </div>
           </div>
