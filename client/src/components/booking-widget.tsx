@@ -47,6 +47,13 @@ export default function BookingWidget() {
   // Fetch availability data
   const { data: availability } = useQuery({
     queryKey: ['/api/availability', dateRange.from?.toISOString().split('T')[0], dateRange.to?.toISOString().split('T')[0]],
+    queryFn: async () => {
+      if (!dateRange.from || !dateRange.to) return null;
+      const startDate = dateRange.from.toISOString().split('T')[0];
+      const endDate = dateRange.to.toISOString().split('T')[0];
+      const response = await apiRequest("GET", `/api/availability?startDate=${startDate}&endDate=${endDate}`);
+      return response.json();
+    },
     enabled: !!dateRange.from && !!dateRange.to,
   });
 
