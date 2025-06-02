@@ -1,27 +1,44 @@
+import img3300 from "@assets/IMG_3300.jpeg";
+import img3301 from "@assets/IMG_3301.jpeg";
+import img3302 from "@assets/IMG_3302.jpeg";
+import img3303 from "@assets/IMG_3303.jpeg";
+import img3304 from "@assets/IMG_3304.jpeg";
+import img3306 from "@assets/IMG_3306.jpeg";
+import img3307 from "@assets/IMG_3307.jpeg";
+import img3308 from "@assets/IMG_3308.jpeg";
+
 const galleryImages = [
   {
-    src: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600",
-    alt: "Luxury glamping tent exterior with forest surroundings"
+    src: img3300,
+    alt: "Villa al Cielo - Vista exterior de la experiencia glamping de lujo"
   },
   {
-    src: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600",
-    alt: "Outdoor dining area with mountain backdrop"
+    src: img3301,
+    alt: "Interior lujoso y acogedor de Villa al Cielo"
   },
   {
-    src: "https://images.unsplash.com/photo-1520637836862-4d197d17c3a4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600",
-    alt: "Campfire area with seating at sunset"
+    src: img3302,
+    alt: "Área de descanso premium con vistas naturales"
   },
   {
-    src: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600",
-    alt: "Cozy tent interior with premium bedding"
+    src: img3303,
+    alt: "Espacio exterior elegante y cómodo"
   },
   {
-    src: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600",
-    alt: "Forest hiking trail near campsite"
+    src: img3304,
+    alt: "Detalles de lujo accesible en Villa al Cielo"
   },
   {
-    src: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=800&h=600",
-    alt: "Night sky with stars over mountain landscape"
+    src: img3306,
+    alt: "Amenidades exclusivas del glamping"
+  },
+  {
+    src: img3307,
+    alt: "Entorno natural privilegiado"
+  },
+  {
+    src: img3308,
+    alt: "Experiencia completa de glamping de lujo"
   }
 ];
 
