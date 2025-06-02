@@ -14,7 +14,7 @@ export default function Navigation() {
 
   return (
     <nav className="bg-navy/95 backdrop-blur-sm fixed top-0 left-0 right-0 z-50 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[#00194d]">
         <div className="flex justify-between items-center h-16 bg-[#00194d]">
           <div className="flex items-center">
             <div className="font-montserrat font-bold text-xl text-white flex items-center">
