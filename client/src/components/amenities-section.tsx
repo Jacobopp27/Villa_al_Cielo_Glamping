@@ -39,10 +39,10 @@ export default function AmenitiesSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <h2 className="font-montserrat font-bold text-4xl text-navy mb-4">
-            Lo Que Ofrecemos
+            Conexión con la Naturaleza
           </h2>
           <p className="text-xl text-charcoal max-w-2xl mx-auto">
-            Todo lo que necesitas para una experiencia al aire libre cómoda y memorable
+            Disfruta de todas las comodidades necesarias para una experiencia de tranquilidad total en Barbosa, Antioquia
           </p>
         </div>
         

@@ -27,11 +27,11 @@ export default function HeroSection() {
       
       <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-4">
         <h1 className="font-montserrat font-bold text-5xl md:text-7xl mb-6 leading-tight">
-          Lujo Natural<br />
-          <span className="text-gold">Sorprendentemente Accesible</span>
+          Conexión, Tranquilidad<br />
+          <span className="text-gold">y Naturaleza</span>
         </h1>
         <p className="text-xl md:text-2xl mb-8 font-light max-w-2xl mx-auto">
-          Descubre Villa al Cielo: donde el lujo se encuentra con la naturaleza a un precio que te sorprenderá. Una experiencia premium auténtica y accesible.
+          Vive una experiencia única en Villa al Cielo, ubicados en Barbosa, Antioquia. Reconecta contigo mismo en un entorno de pura tranquilidad natural.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button 

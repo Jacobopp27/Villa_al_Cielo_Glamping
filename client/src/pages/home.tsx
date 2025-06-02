@@ -31,7 +31,7 @@ export default function Home() {
               </div>
               
               <h2 className="font-montserrat font-bold text-4xl text-navy mb-6">
-                Villa al Cielo: Glamping de Lujo Accesible
+                Villa al Cielo - Barbosa, Antioquia
               </h2>
               
               <div className="flex items-center text-charcoal mb-8 space-x-6">
@@ -56,27 +56,27 @@ export default function Home() {
               </div>
               
               <p className="text-lg text-charcoal leading-relaxed mb-8">
-                <strong className="text-navy">Lujo auténtico a precio increíble.</strong> Villa al Cielo te ofrece una experiencia premium sin comprometer tu presupuesto. Disfruta de comodidades de primera clase, vistas espectaculares y el confort que mereces por solo $299 la noche. Una propuesta de valor única donde el lujo se vuelve accesible para todos.
+                <strong className="text-navy">Conexión, tranquilidad y naturaleza.</strong> En Villa al Cielo, ubicados en el hermoso municipio de Barbosa, Antioquia, te invitamos a desconectarte de la rutina y conectarte contigo mismo. Experimenta la paz que solo la naturaleza puede brindar, en un ambiente de total tranquilidad y serenidad.
               </p>
               
               <div className="bg-light-gold p-6 rounded-xl mb-8">
-                <h3 className="font-montserrat font-bold text-navy text-xl mb-4">¿Por qué Villa al Cielo?</h3>
+                <h3 className="font-montserrat font-bold text-navy text-xl mb-4">Tu Refugio Natural en Antioquia</h3>
                 <ul className="space-y-2 text-charcoal">
                   <li className="flex items-center">
                     <span className="text-gold mr-2">✓</span>
-                    <span>Experiencia de lujo genuina a precio accesible</span>
+                    <span>Conexión auténtica con la naturaleza</span>
                   </li>
                   <li className="flex items-center">
                     <span className="text-gold mr-2">✓</span>
-                    <span>Instalaciones premium en entorno natural privilegiado</span>
+                    <span>Tranquilidad absoluta lejos del ruido urbano</span>
                   </li>
                   <li className="flex items-center">
                     <span className="text-gold mr-2">✓</span>
-                    <span>Servicio personalizado y atención a cada detalle</span>
+                    <span>Entorno natural privilegiado en Barbosa, Antioquia</span>
                   </li>
                   <li className="flex items-center">
                     <span className="text-gold mr-2">✓</span>
-                    <span>Relación calidad-precio excepcional</span>
+                    <span>Experiencia de reconexión personal y familiar</span>
                   </li>
                 </ul>
               </div>

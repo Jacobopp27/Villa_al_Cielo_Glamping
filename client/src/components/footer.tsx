@@ -76,8 +76,8 @@ export default function Footer() {
             <ul className="space-y-2 text-white/80">
               <li>(555) 123-4567</li>
               <li>reservas@villaalcielo.com</li>
-              <li>123 Sendero Vista Montaña</li>
-              <li>Valle del Bosque, CA 95001</li>
+              <li>Barbosa, Antioquia</li>
+              <li>Colombia</li>
             </ul>
           </div>
         </div>
