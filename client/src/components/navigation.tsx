@@ -23,7 +23,7 @@ export default function Navigation() {
                 alt="Villa al Cielo Logo" 
                 className="w-8 h-8 mr-2 rounded-full"
               />
-              Villa al Cielo
+              VILLA AL CIELO
             </div>
           </div>
           
