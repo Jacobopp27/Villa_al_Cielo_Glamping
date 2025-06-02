@@ -16,10 +16,22 @@ export default function Navigation() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <div className="font-montserrat font-bold text-xl text-forest">
-              <svg className="inline w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 2L3 7v11a2 2 0 002 2h10a2 2 0 002-2V7l-7-5z"/>
-                <path d="M9 17V9h2v8"/>
+            <div className="font-montserrat font-bold text-xl text-forest flex items-center">
+              <svg className="w-8 h-8 mr-2" viewBox="0 0 100 100" fill="none">
+                {/* Montañas en el fondo */}
+                <path d="M0 70 L20 50 L40 65 L60 45 L80 60 L100 40 L100 100 L0 100 Z" fill="#2D5A27"/>
+                {/* Montañas medias */}
+                <path d="M0 80 L15 60 L35 75 L55 55 L75 70 L100 50 L100 100 L0 100 Z" fill="#8B4513" opacity="0.8"/>
+                {/* Sol/Luna */}
+                <circle cx="80" cy="25" r="12" fill="#D4B896"/>
+                {/* Carpa glamping */}
+                <path d="M35 85 L50 70 L65 85 Z" fill="#D4B896"/>
+                <path d="M40 85 L50 75 L60 85 Z" fill="#8B4513"/>
+                {/* Árboles */}
+                <circle cx="25" cy="85" r="8" fill="#2D5A27"/>
+                <circle cx="75" cy="82" r="6" fill="#2D5A27"/>
+                <rect x="23" y="85" width="4" height="10" fill="#8B4513"/>
+                <rect x="73" y="82" width="3" height="8" fill="#8B4513"/>
               </svg>
               Villa al Cielo
             </div>
