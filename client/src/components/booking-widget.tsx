@@ -17,11 +17,11 @@ import { format, differenceInDays, addDays } from "date-fns";
 import { Calendar as CalendarIcon, Loader2 } from "lucide-react";
 
 const bookingSchema = z.object({
-  guestName: z.string().min(2, "Name must be at least 2 characters"),
-  guestEmail: z.string().email("Please enter a valid email address"),
-  checkIn: z.string().min(1, "Check-in date is required"),
-  checkOut: z.string().min(1, "Check-out date is required"),
-  guests: z.number().min(1, "At least 1 guest is required").max(6, "Maximum 6 guests allowed"),
+  guestName: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
+  guestEmail: z.string().email("Por favor ingrese un email válido"),
+  checkIn: z.string().min(1, "La fecha de entrada es requerida"),
+  checkOut: z.string().min(1, "La fecha de salida es requerida"),
+  guests: z.number().min(1, "Mínimo 1 huésped requerido").max(2, "Máximo 2 huéspedes permitidos"),
 });
 
 type BookingFormData = z.infer<typeof bookingSchema>;
@@ -39,7 +39,7 @@ export default function BookingWidget() {
       guestEmail: "",
       checkIn: "",
       checkOut: "",
-      guests: 2,
+      guests: 1,
     },
   });
 
@@ -48,6 +48,8 @@ export default function BookingWidget() {
     queryKey: ['/api/availability', dateRange.from?.toISOString().split('T')[0], dateRange.to?.toISOString().split('T')[0]],
     enabled: !!dateRange.from && !!dateRange.to,
   });
+
+  const availabilityData = availability as { available: boolean; bookedDates: string[] } | undefined;
 
   // Create reservation mutation
   const createReservation = useMutation({

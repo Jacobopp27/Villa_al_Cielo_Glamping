@@ -21,7 +21,7 @@ export default function Navigation() {
                 <path d="M10 2L3 7v11a2 2 0 002 2h10a2 2 0 002-2V7l-7-5z"/>
                 <path d="M9 17V9h2v8"/>
               </svg>
-              Wilderness Retreat
+              Villa al Cielo
             </div>
           </div>
           
@@ -31,31 +31,31 @@ export default function Navigation() {
                 onClick={() => scrollToSection('overview')}
                 className="text-charcoal hover:text-forest transition-colors cursor-pointer"
               >
-                Overview
+                Descripción
               </button>
               <button 
                 onClick={() => scrollToSection('amenities')}
                 className="text-charcoal hover:text-forest transition-colors cursor-pointer"
               >
-                Amenities
+                Amenidades
               </button>
               <button 
                 onClick={() => scrollToSection('gallery')}
                 className="text-charcoal hover:text-forest transition-colors cursor-pointer"
               >
-                Gallery
+                Galería
               </button>
               <button 
                 onClick={() => scrollToSection('reviews')}
                 className="text-charcoal hover:text-forest transition-colors cursor-pointer"
               >
-                Reviews
+                Reseñas
               </button>
               <button 
                 onClick={() => scrollToSection('contact')}
                 className="text-charcoal hover:text-forest transition-colors cursor-pointer"
               >
-                Contact
+                Contacto
               </button>
             </div>
           </div>
@@ -80,31 +80,31 @@ export default function Navigation() {
                 onClick={() => scrollToSection('overview')}
                 className="block text-charcoal hover:text-forest transition-colors w-full text-left px-3 py-2"
               >
-                Overview
+                Descripción
               </button>
               <button 
                 onClick={() => scrollToSection('amenities')}
                 className="block text-charcoal hover:text-forest transition-colors w-full text-left px-3 py-2"
               >
-                Amenities
+                Amenidades
               </button>
               <button 
                 onClick={() => scrollToSection('gallery')}
                 className="block text-charcoal hover:text-forest transition-colors w-full text-left px-3 py-2"
               >
-                Gallery
+                Galería
               </button>
               <button 
                 onClick={() => scrollToSection('reviews')}
                 className="block text-charcoal hover:text-forest transition-colors w-full text-left px-3 py-2"
               >
-                Reviews
+                Reseñas
               </button>
               <button 
                 onClick={() => scrollToSection('contact')}
                 className="block text-charcoal hover:text-forest transition-colors w-full text-left px-3 py-2"
               >
-                Contact
+                Contacto
               </button>
             </div>
           </div>

@@ -25,24 +25,24 @@ export default function HeroSection() {
       
       <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-4">
         <h1 className="font-montserrat font-bold text-5xl md:text-7xl mb-6 leading-tight">
-          Escape to Nature's<br />
-          <span className="text-beige">Luxury</span>
+          Escapa al Lujo<br />
+          <span className="text-beige">de la Naturaleza</span>
         </h1>
         <p className="text-xl md:text-2xl mb-8 font-light max-w-2xl mx-auto">
-          Experience the perfect blend of outdoor adventure and comfortable luxury in our premium glamping tents
+          Experimenta la perfecta combinación de aventura al aire libre y lujo cómodo en nuestras tiendas glamping premium
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button 
             onClick={scrollToBooking}
             className="bg-forest hover:bg-forest/90 text-white px-8 py-4 rounded-lg font-montserrat font-semibold text-lg transition-all transform hover:scale-105"
           >
-            Book Your Stay
+            Reservar Ahora
           </button>
           <button 
             onClick={scrollToGallery}
             className="border-2 border-white text-white hover:bg-white hover:text-charcoal px-8 py-4 rounded-lg font-montserrat font-semibold text-lg transition-all"
           >
-            View Gallery
+            Ver Galería
           </button>
         </div>
       </div>
