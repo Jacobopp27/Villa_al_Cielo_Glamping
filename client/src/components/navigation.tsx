@@ -18,20 +18,36 @@ export default function Navigation() {
           <div className="flex items-center">
             <div className="font-montserrat font-bold text-xl text-navy flex items-center">
               <svg className="w-8 h-8 mr-2" viewBox="0 0 100 100" fill="none">
-                {/* Montañas en el fondo */}
-                <path d="M0 70 L20 50 L40 65 L60 45 L80 60 L100 40 L100 100 L0 100 Z" fill="#002F87"/>
-                {/* Montañas medias */}
-                <path d="M0 80 L15 60 L35 75 L55 55 L75 70 L100 50 L100 100 L0 100 Z" fill="#4169E1" opacity="0.8"/>
-                {/* Sol/Luna */}
-                <circle cx="80" cy="25" r="12" fill="#FFD700"/>
-                {/* Carpa glamping */}
-                <path d="M35 85 L50 70 L65 85 Z" fill="#FFD700"/>
-                <path d="M40 85 L50 75 L60 85 Z" fill="#4169E1"/>
-                {/* Árboles */}
-                <circle cx="25" cy="85" r="8" fill="#002F87"/>
-                <circle cx="75" cy="82" r="6" fill="#002F87"/>
-                <rect x="23" y="85" width="4" height="10" fill="#4169E1"/>
-                <rect x="73" y="82" width="3" height="8" fill="#4169E1"/>
+                <defs>
+                  <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#FFD700" stopOpacity="0.8"/>
+                    <stop offset="70%" stopColor="#FFD700" stopOpacity="0.3"/>
+                    <stop offset="100%" stopColor="#FFD700" stopOpacity="0"/>
+                  </radialGradient>
+                  <linearGradient id="triangleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#FFD700"/>
+                    <stop offset="100%" stopColor="#FFA500"/>
+                  </linearGradient>
+                </defs>
+                
+                {/* Resplandor de fondo */}
+                <circle cx="50" cy="50" r="45" fill="url(#glow)"/>
+                
+                {/* Círculo exterior */}
+                <circle cx="50" cy="50" r="35" stroke="#FFD700" strokeWidth="2" fill="none" opacity="0.8"/>
+                
+                {/* Triángulo principal */}
+                <path d="M50 20 L70 60 L30 60 Z" fill="url(#triangleGradient)" stroke="#FFD700" strokeWidth="1"/>
+                
+                {/* División horizontal del triángulo */}
+                <line x1="35" y1="50" x2="65" y2="50" stroke="#FFD700" strokeWidth="1"/>
+                
+                {/* División vertical del triángulo */}
+                <line x1="50" y1="35" x2="50" y2="60" stroke="#FFD700" strokeWidth="1"/>
+                
+                {/* Líneas interiores del triángulo */}
+                <line x1="42.5" y1="35" x2="42.5" y2="50" stroke="#FFD700" strokeWidth="0.8" opacity="0.7"/>
+                <line x1="57.5" y1="35" x2="57.5" y2="50" stroke="#FFD700" strokeWidth="0.8" opacity="0.7"/>
               </svg>
               Villa al Cielo
             </div>
