@@ -17,7 +17,7 @@ export default function Navigation() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-[#00194d]">
         <div className="flex justify-between items-center h-16 bg-[#00194d]">
           <div className="flex items-center">
-            <div className="font-montserrat font-bold text-xl text-white flex items-center">
+            <div className="font-montserrat font-bold text-xl flex items-center text-[#D4AF37]">
               <img 
                 src={logoImage} 
                 alt="Villa al Cielo Logo" 
