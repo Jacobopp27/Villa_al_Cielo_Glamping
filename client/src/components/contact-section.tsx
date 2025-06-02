@@ -65,8 +65,8 @@ export default function ContactSection() {
               <div className="bg-white/90 rounded-lg p-4 backdrop-blur-sm">
                 <MapPin className="text-forest text-2xl mb-2 mx-auto" />
                 <div className="text-center">
-                  <div className="font-semibold text-forest">Wilderness Retreat</div>
-                  <div className="text-sm text-charcoal">Mountain View Trail</div>
+                  <div className="font-semibold text-forest">Villa al Cielo</div>
+                  <div className="text-sm text-charcoal">Sendero Vista Montaña</div>
                 </div>
               </div>
             </div>
