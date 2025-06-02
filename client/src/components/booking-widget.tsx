@@ -29,6 +29,7 @@ type BookingFormData = z.infer<typeof bookingSchema>;
 export default function BookingWidget() {
   const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>({});
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [isDesktopCalendarOpen, setIsDesktopCalendarOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -83,8 +84,13 @@ export default function BookingWidget() {
       }
       if (range.to) {
         form.setValue("checkOut", range.to.toISOString().split('T')[0]);
-        // Solo cerrar cuando ambas fechas están seleccionadas
-        setIsCalendarOpen(false);
+        // Cerrar el popover programáticamente cuando ambas fechas están seleccionadas
+        setTimeout(() => {
+          const popoverTrigger = document.querySelector('[data-state="open"]');
+          if (popoverTrigger) {
+            (popoverTrigger as HTMLElement).click();
+          }
+        }, 100);
       }
     }
   };
@@ -139,7 +145,7 @@ export default function BookingWidget() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div>
               <Label className="block text-sm font-medium text-charcoal mb-2">Entrada / Salida</Label>
-              <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
+              <Popover>
                 <PopoverTrigger asChild>
                   <Button
                     variant="outline"
@@ -249,7 +255,7 @@ export default function BookingWidget() {
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                   <div>
                     <Label className="block text-sm font-medium text-charcoal mb-2">Entrada / Salida</Label>
-                    <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
+                    <Popover>
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
