@@ -90,31 +90,31 @@ export default function Navigation() {
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
               <button 
                 onClick={() => scrollToSection('overview')}
-                className="block text-charcoal hover:text-forest transition-colors w-full text-left px-3 py-2"
+                className="block text-charcoal hover:text-navy transition-colors w-full text-left px-3 py-2"
               >
                 Descripción
               </button>
               <button 
                 onClick={() => scrollToSection('amenities')}
-                className="block text-charcoal hover:text-forest transition-colors w-full text-left px-3 py-2"
+                className="block text-charcoal hover:text-navy transition-colors w-full text-left px-3 py-2"
               >
                 Amenidades
               </button>
               <button 
                 onClick={() => scrollToSection('gallery')}
-                className="block text-charcoal hover:text-forest transition-colors w-full text-left px-3 py-2"
+                className="block text-charcoal hover:text-navy transition-colors w-full text-left px-3 py-2"
               >
                 Galería
               </button>
               <button 
                 onClick={() => scrollToSection('reviews')}
-                className="block text-charcoal hover:text-forest transition-colors w-full text-left px-3 py-2"
+                className="block text-charcoal hover:text-navy transition-colors w-full text-left px-3 py-2"
               >
                 Reseñas
               </button>
               <button 
                 onClick={() => scrollToSection('contact')}
-                className="block text-charcoal hover:text-forest transition-colors w-full text-left px-3 py-2"
+                className="block text-charcoal hover:text-navy transition-colors w-full text-left px-3 py-2"
               >
                 Contacto
               </button>

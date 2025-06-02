@@ -26,7 +26,7 @@ export default function HeroSection() {
       <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-4">
         <h1 className="font-montserrat font-bold text-5xl md:text-7xl mb-6 leading-tight">
           Escapa al Lujo<br />
-          <span className="text-beige">de la Naturaleza</span>
+          <span className="text-gold">de la Naturaleza</span>
         </h1>
         <p className="text-xl md:text-2xl mb-8 font-light max-w-2xl mx-auto">
           Experimenta la perfecta combinación de aventura al aire libre y lujo cómodo en nuestras tiendas glamping premium
@@ -34,7 +34,7 @@ export default function HeroSection() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button 
             onClick={scrollToBooking}
-            className="bg-forest hover:bg-forest/90 text-white px-8 py-4 rounded-lg font-montserrat font-semibold text-lg transition-all transform hover:scale-105"
+            className="bg-navy hover:bg-navy/90 text-white px-8 py-4 rounded-lg font-montserrat font-semibold text-lg transition-all transform hover:scale-105"
           >
             Reservar Ahora
           </button>

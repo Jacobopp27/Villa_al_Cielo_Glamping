@@ -345,7 +345,7 @@ export default function BookingWidget() {
                   
                   <Button 
                     type="submit" 
-                    className="w-full bg-forest hover:bg-forest/90 text-white py-4 font-montserrat font-semibold text-lg"
+                    className="w-full bg-navy hover:bg-navy/90 text-white py-4 font-montserrat font-semibold text-lg"
                     disabled={createReservation.isPending}
                   >
                     {createReservation.isPending ? (
