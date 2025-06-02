@@ -19,35 +19,41 @@ export default function Navigation() {
             <div className="font-montserrat font-bold text-xl text-navy flex items-center">
               <svg className="w-8 h-8 mr-2" viewBox="0 0 100 100" fill="none">
                 <defs>
-                  <radialGradient id="glow" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stopColor="#FFD700" stopOpacity="0.8"/>
-                    <stop offset="70%" stopColor="#FFD700" stopOpacity="0.3"/>
+                  <radialGradient id="logoGlow" cx="50%" cy="50%" r="60%">
+                    <stop offset="0%" stopColor="#FFD700" stopOpacity="0.4"/>
+                    <stop offset="80%" stopColor="#FFD700" stopOpacity="0.1"/>
                     <stop offset="100%" stopColor="#FFD700" stopOpacity="0"/>
                   </radialGradient>
-                  <linearGradient id="triangleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#FFD700"/>
-                    <stop offset="100%" stopColor="#FFA500"/>
-                  </linearGradient>
                 </defs>
                 
                 {/* Resplandor de fondo */}
-                <circle cx="50" cy="50" r="45" fill="url(#glow)"/>
+                <circle cx="50" cy="50" r="48" fill="url(#logoGlow)"/>
                 
-                {/* Círculo exterior */}
-                <circle cx="50" cy="50" r="35" stroke="#FFD700" strokeWidth="2" fill="none" opacity="0.8"/>
+                {/* Círculo exterior principal */}
+                <circle cx="50" cy="50" r="32" stroke="#FFD700" strokeWidth="1.5" fill="none"/>
                 
-                {/* Triángulo principal */}
-                <path d="M50 20 L70 60 L30 60 Z" fill="url(#triangleGradient)" stroke="#FFD700" strokeWidth="1"/>
-                
-                {/* División horizontal del triángulo */}
-                <line x1="35" y1="50" x2="65" y2="50" stroke="#FFD700" strokeWidth="1"/>
-                
-                {/* División vertical del triángulo */}
-                <line x1="50" y1="35" x2="50" y2="60" stroke="#FFD700" strokeWidth="1"/>
-                
-                {/* Líneas interiores del triángulo */}
-                <line x1="42.5" y1="35" x2="42.5" y2="50" stroke="#FFD700" strokeWidth="0.8" opacity="0.7"/>
-                <line x1="57.5" y1="35" x2="57.5" y2="50" stroke="#FFD700" strokeWidth="0.8" opacity="0.7"/>
+                {/* Triángulo principal con líneas estructurales como en la imagen */}
+                <g stroke="#FFD700" strokeWidth="1" fill="none">
+                  {/* Triángulo exterior */}
+                  <path d="M50 25 L68 62 L32 62 Z"/>
+                  
+                  {/* Línea horizontal que divide el triángulo */}
+                  <line x1="38" y1="50" x2="62" y2="50"/>
+                  
+                  {/* Línea vertical desde el vértice superior */}
+                  <line x1="50" y1="25" x2="50" y2="62"/>
+                  
+                  {/* Líneas internas que forman la estructura como en la imagen */}
+                  <line x1="44" y1="37.5" x2="44" y2="50"/>
+                  <line x1="56" y1="37.5" x2="56" y2="50"/>
+                  
+                  {/* Líneas horizontales internas */}
+                  <line x1="44" y1="37.5" x2="56" y2="37.5"/>
+                  
+                  {/* Base del triángulo dividida */}
+                  <line x1="41" y1="56" x2="50" y2="56"/>
+                  <line x1="50" y1="56" x2="59" y2="56"/>
+                </g>
               </svg>
               Villa al Cielo
             </div>

@@ -35,10 +35,10 @@ const amenities = [
 
 export default function AmenitiesSection() {
   return (
-    <section id="amenities" className="py-20 bg-white">
+    <section id="amenities" className="py-12 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="font-montserrat font-bold text-4xl text-forest mb-4">
+          <h2 className="font-montserrat font-bold text-4xl text-navy mb-4">
             Lo Que Ofrecemos
           </h2>
           <p className="text-xl text-charcoal max-w-2xl mx-auto">
@@ -50,11 +50,11 @@ export default function AmenitiesSection() {
           {amenities.map((amenity, index) => {
             const IconComponent = amenity.icon;
             return (
-              <div key={index} className="bg-cream rounded-xl p-6 hover:shadow-lg transition-shadow">
-                <div className="w-12 h-12 bg-forest rounded-lg flex items-center justify-center mb-4">
+              <div key={index} className="bg-light-gold rounded-xl p-6 hover:shadow-lg transition-shadow">
+                <div className="w-12 h-12 bg-navy rounded-lg flex items-center justify-center mb-4">
                   <IconComponent className="text-white w-6 h-6" />
                 </div>
-                <h3 className="font-montserrat font-semibold text-lg text-forest mb-2">
+                <h3 className="font-montserrat font-semibold text-lg text-navy mb-2">
                   {amenity.title}
                 </h3>
                 <p className="text-charcoal">
