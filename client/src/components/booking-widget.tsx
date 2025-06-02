@@ -83,8 +83,7 @@ export default function BookingWidget() {
       }
       if (range.to) {
         form.setValue("checkOut", range.to.toISOString().split('T')[0]);
-      }
-      if (range.from && range.to) {
+        // Solo cerrar cuando ambas fechas están seleccionadas
         setIsCalendarOpen(false);
       }
     }
@@ -165,7 +164,7 @@ export default function BookingWidget() {
                     initialFocus
                     mode="range"
                     defaultMonth={dateRange.from}
-                    selected={dateRange.from && dateRange.to ? { from: dateRange.from, to: dateRange.to } : undefined}
+                    selected={dateRange.from ? { from: dateRange.from, to: dateRange.to } : undefined}
                     onSelect={handleDateSelect}
                     numberOfMonths={2}
                     disabled={isDateDisabled}
@@ -275,7 +274,7 @@ export default function BookingWidget() {
                           initialFocus
                           mode="range"
                           defaultMonth={dateRange.from}
-                          selected={dateRange.from && dateRange.to ? { from: dateRange.from, to: dateRange.to } : undefined}
+                          selected={dateRange.from ? { from: dateRange.from, to: dateRange.to } : undefined}
                           onSelect={handleDateSelect}
                           numberOfMonths={1}
                           disabled={isDateDisabled}
