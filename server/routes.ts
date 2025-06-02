@@ -5,7 +5,7 @@ import { insertReservationSchema } from "@shared/schema";
 import { z } from "zod";
 
 // Google Calendar API setup
-const { google } = require('googleapis');
+import { google } from 'googleapis';
 
 const GOOGLE_CALENDAR_ID = process.env.GOOGLE_CALENDAR_ID || "primary";
 const GOOGLE_SERVICE_ACCOUNT_EMAIL = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
