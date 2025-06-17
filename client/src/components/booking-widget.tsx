@@ -50,24 +50,30 @@ export default function BookingWidget() {
     },
   });
 
-  // Fetch availability data
-  const { data: availability } = useQuery({
-    queryKey: ['/api/availability', dateRange.from?.toISOString().split('T')[0], dateRange.to?.toISOString().split('T')[0]],
+  // Fetch cabin availability data
+  const { data: cabinAvailability, isLoading: isAvailabilityLoading } = useQuery({
+    queryKey: ['/api/cabins/availability', dateRange.from?.toISOString().split('T')[0], dateRange.to?.toISOString().split('T')[0]],
     queryFn: async () => {
       if (!dateRange.from || !dateRange.to) return null;
       const startDate = dateRange.from.toISOString().split('T')[0];
       const endDate = dateRange.to.toISOString().split('T')[0];
-      const response = await apiRequest("GET", `/api/availability?startDate=${startDate}&endDate=${endDate}`);
+      const response = await apiRequest("GET", `/api/cabins/availability?startDate=${startDate}&endDate=${endDate}`);
       return response.json();
     },
     enabled: !!dateRange.from && !!dateRange.to,
   });
 
-  const availabilityData = availability as { available: boolean; bookedDates: string[] } | undefined;
+  const availabilityData = cabinAvailability as Array<{
+    cabin: { id: number; name: string; weekdayPrice: number; weekendPrice: number };
+    isAvailable: boolean;
+    totalPrice: number;
+    includesAsado: boolean;
+    days: number;
+  }> | undefined;
 
   // Create reservation mutation
   const createReservation = useMutation({
-    mutationFn: async (data: BookingFormData & { totalPrice: number }) => {
+    mutationFn: async (data: BookingFormData) => {
       const response = await apiRequest("POST", "/api/reservations", data);
       return response.json();
     },
@@ -78,7 +84,7 @@ export default function BookingWidget() {
       });
       form.reset();
       setDateRange({});
-      queryClient.invalidateQueries({ queryKey: ['/api/availability'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/cabins/availability'] });
     },
     onError: (error: any) => {
       toast({
@@ -108,41 +114,28 @@ export default function BookingWidget() {
     }
   };
 
-  const calculatePrice = () => {
-    if (!dateRange.from || !dateRange.to) return { nights: 0, subtotal: 0, serviceFee: 0, total: 0 };
-    
-    const nights = differenceInDays(dateRange.to, dateRange.from);
-    const subtotal = nights * 299;
-    const serviceFee = Math.round(subtotal * 0.1);
-    const total = subtotal + serviceFee;
-    
-    return { nights, subtotal, serviceFee, total };
-  };
-
   const onSubmit = (data: BookingFormData) => {
-    const pricing = calculatePrice();
-    if (pricing.total === 0) {
+    if (!data.cabinId || data.totalPrice === 0) {
       toast({
-        title: "Fechas Inválidas",
-        description: "Por favor selecciona fechas de entrada y salida válidas.",
+        title: "Información Incompleta",
+        description: "Por favor selecciona una cabaña y fechas válidas.",
         variant: "destructive",
       });
       return;
     }
 
-    createReservation.mutate({
-      ...data,
-      totalPrice: pricing.total,
-    });
+    createReservation.mutate(data);
   };
 
-  const pricing = calculatePrice();
+  const handleCabinSelect = (cabinData: any) => {
+    form.setValue("cabinId", cabinData.cabin.id);
+    form.setValue("totalPrice", cabinData.totalPrice);
+    form.setValue("includesAsado", cabinData.includesAsado);
+  };
 
-  // Check if selected dates are available
+  // Check if selected dates are available (simplified for now)
   const isDateDisabled = (date: Date) => {
-    if (!availabilityData?.bookedDates) return false;
-    const dateString = date.toISOString().split('T')[0];
-    return availabilityData.bookedDates.includes(dateString);
+    return date < new Date(); // Only disable past dates
   };
 
   return (
@@ -192,8 +185,60 @@ export default function BookingWidget() {
               </Popover>
             </div>
             
-
+            {/* Cabin Selection */}
+            {availabilityData && availabilityData.length > 0 && (
+              <div className="space-y-3">
+                <Label className="block text-sm font-medium text-charcoal mb-2">Selecciona tu Cabaña</Label>
+                {availabilityData.map((cabin) => (
+                  <div 
+                    key={cabin.cabin.id}
+                    className={`border rounded-lg p-4 cursor-pointer transition-all ${
+                      cabin.isAvailable 
+                        ? 'border-gold hover:bg-gold/5 hover:border-gold/80' 
+                        : 'border-gray-300 bg-gray-50 cursor-not-allowed opacity-60'
+                    } ${
+                      form.watch('cabinId') === cabin.cabin.id ? 'bg-gold/10 border-gold' : ''
+                    }`}
+                    onClick={() => cabin.isAvailable && handleCabinSelect(cabin)}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="font-semibold text-lg text-navy">{cabin.cabin.name}</h4>
+                        <p className="text-sm text-charcoal">
+                          {cabin.days} {cabin.days === 1 ? 'noche' : 'noches'}
+                        </p>
+                        {cabin.includesAsado && (
+                          <p className="text-xs text-gold font-medium mt-1">
+                            ✓ Incluye Kit de Asado y Desayuno
+                          </p>
+                        )}
+                        {!cabin.includesAsado && (
+                          <p className="text-xs text-charcoal mt-1">
+                            Incluye Desayuno • Kit Asado: +$50.000
+                          </p>
+                        )}
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-lg text-navy">
+                          ${cabin.totalPrice.toLocaleString()} COP
+                        </p>
+                        <p className="text-xs text-charcoal">
+                          {cabin.isAvailable ? 'Disponible' : 'No Disponible'}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
             
+            {dateRange.from && dateRange.to && isAvailabilityLoading && (
+              <div className="text-center py-4">
+                <Loader2 className="mx-auto h-6 w-6 animate-spin text-navy" />
+                <p className="text-sm text-charcoal mt-2">Verificando disponibilidad...</p>
+              </div>
+            )}
+
             <FormField
               control={form.control}
               name="guestName"
@@ -222,20 +267,15 @@ export default function BookingWidget() {
               )}
             />
             
-            {pricing.total > 0 && (
+            {form.watch('totalPrice') > 0 && (
               <div className="border-t pt-4">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-charcoal">${299} x {pricing.nights} noches</span>
-                  <span>${pricing.subtotal}</span>
+                <div className="flex justify-between items-center font-bold text-lg">
+                  <span>Total a Pagar</span>
+                  <span className="text-navy">${form.watch('totalPrice').toLocaleString()} COP</span>
                 </div>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-charcoal">Tarifa de servicio</span>
-                  <span>${pricing.serviceFee}</span>
-                </div>
-                <div className="flex justify-between items-center font-bold text-lg border-t pt-2">
-                  <span>Total</span>
-                  <span>${pricing.total}</span>
-                </div>
+                {form.watch('includesAsado') && (
+                  <p className="text-xs text-gold mt-2">✓ Incluye Kit de Asado y Desayuno</p>
+                )}
               </div>
             )}
             
@@ -302,8 +342,60 @@ export default function BookingWidget() {
                     </Popover>
                   </div>
                   
-
+                  {/* Cabin Selection - Mobile */}
+                  {availabilityData && availabilityData.length > 0 && (
+                    <div className="space-y-3">
+                      <Label className="block text-sm font-medium text-charcoal mb-2">Selecciona tu Cabaña</Label>
+                      {availabilityData.map((cabin) => (
+                        <div 
+                          key={cabin.cabin.id}
+                          className={`border rounded-lg p-4 cursor-pointer transition-all ${
+                            cabin.isAvailable 
+                              ? 'border-gold hover:bg-gold/5 hover:border-gold/80' 
+                              : 'border-gray-300 bg-gray-50 cursor-not-allowed opacity-60'
+                          } ${
+                            form.watch('cabinId') === cabin.cabin.id ? 'bg-gold/10 border-gold' : ''
+                          }`}
+                          onClick={() => cabin.isAvailable && handleCabinSelect(cabin)}
+                        >
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h4 className="font-semibold text-lg text-navy">{cabin.cabin.name}</h4>
+                              <p className="text-sm text-charcoal">
+                                {cabin.days} {cabin.days === 1 ? 'noche' : 'noches'}
+                              </p>
+                              {cabin.includesAsado && (
+                                <p className="text-xs text-gold font-medium mt-1">
+                                  ✓ Incluye Kit de Asado y Desayuno
+                                </p>
+                              )}
+                              {!cabin.includesAsado && (
+                                <p className="text-xs text-charcoal mt-1">
+                                  Incluye Desayuno • Kit Asado: +$50.000
+                                </p>
+                              )}
+                            </div>
+                            <div className="text-right">
+                              <p className="font-bold text-lg text-navy">
+                                ${cabin.totalPrice.toLocaleString()} COP
+                              </p>
+                              <p className="text-xs text-charcoal">
+                                {cabin.isAvailable ? 'Disponible' : 'No Disponible'}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                   
+                  {dateRange.from && dateRange.to && isAvailabilityLoading && (
+                    <div className="text-center py-4">
+                      <Loader2 className="mx-auto h-6 w-6 animate-spin text-navy" />
+                      <p className="text-sm text-charcoal mt-2">Verificando disponibilidad...</p>
+                    </div>
+                  )}
+
                   <FormField
                     control={form.control}
                     name="guestName"
@@ -332,20 +424,15 @@ export default function BookingWidget() {
                     )}
                   />
                   
-                  {pricing.total > 0 && (
+                  {form.watch('totalPrice') > 0 && (
                     <div className="border-t pt-4">
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-charcoal">${299} x {pricing.nights} noches</span>
-                        <span>${pricing.subtotal}</span>
+                      <div className="flex justify-between items-center font-bold text-lg">
+                        <span>Total a Pagar</span>
+                        <span className="text-navy">${form.watch('totalPrice').toLocaleString()} COP</span>
                       </div>
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-charcoal">Tarifa de servicio</span>
-                        <span>${pricing.serviceFee}</span>
-                      </div>
-                      <div className="flex justify-between items-center font-bold text-lg border-t pt-2">
-                        <span>Total</span>
-                        <span>${pricing.total}</span>
-                      </div>
+                      {form.watch('includesAsado') && (
+                        <p className="text-xs text-gold mt-2">✓ Incluye Kit de Asado y Desayuno</p>
+                      )}
                     </div>
                   )}
                   
