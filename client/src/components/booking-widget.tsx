@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { format } from "date-fns";
@@ -30,6 +31,8 @@ type BookingFormData = z.infer<typeof bookingSchema>;
 
 export default function BookingWidget() {
   const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>({});
+  const [selectedCabin, setSelectedCabin] = useState<any>(null);
+  const [wantsAsado, setWantsAsado] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -128,10 +131,31 @@ export default function BookingWidget() {
   };
 
   const handleCabinSelect = (cabinData: any) => {
+    setSelectedCabin(cabinData);
     form.setValue("cabinId", cabinData.cabin.id);
-    form.setValue("totalPrice", cabinData.totalPrice);
-    form.setValue("includesAsado", cabinData.includesAsado);
+    calculateTotalPrice(cabinData, wantsAsado);
   };
+
+  const calculateTotalPrice = (cabinData: any, includeAsado: boolean) => {
+    let finalPrice = cabinData.totalPrice;
+    let includesAsado = cabinData.includesAsado;
+    
+    // If it's weekday and user wants asado, add 50k per night
+    if (!cabinData.includesAsado && includeAsado) {
+      finalPrice += cabinData.days * 50000;
+      includesAsado = true;
+    }
+    
+    form.setValue("totalPrice", finalPrice);
+    form.setValue("includesAsado", includesAsado);
+  };
+
+  // Recalculate price when asado option changes
+  useEffect(() => {
+    if (selectedCabin) {
+      calculateTotalPrice(selectedCabin, wantsAsado);
+    }
+  }, [wantsAsado, selectedCabin]);
 
   // Check if selected dates are available (simplified for now)
   const isDateDisabled = (date: Date) => {
@@ -145,13 +169,13 @@ export default function BookingWidget() {
     return holidaysData.holidays.includes(dateString);
   };
 
-  // Get day type for pricing display
+  // Get day type for visual display (colors)
   const getDayType = (date: Date) => {
     const dayOfWeek = date.getDay(); // 0 = Sunday, 6 = Saturday
     const holiday = isHoliday(date);
     
     if (holiday) return 'festivo';
-    if (dayOfWeek === 6 || dayOfWeek === 5) return 'fin-de-semana'; // Friday-Saturday
+    if (dayOfWeek === 6 || dayOfWeek === 0) return 'fin-de-semana'; // Saturday-Sunday only
     return 'entre-semana';
   };
 
@@ -241,7 +265,7 @@ export default function BookingWidget() {
                         )}
                         {!cabin.includesAsado && (
                           <p className="text-xs text-charcoal mt-1">
-                            Incluye Desayuno • Kit Asado: +$50.000
+                            Incluye Desayuno
                           </p>
                         )}
                       </div>
@@ -294,6 +318,30 @@ export default function BookingWidget() {
               )}
             />
             
+            {/* Optional Asado Kit for weekdays */}
+            {selectedCabin && !selectedCabin.includesAsado && (
+              <div className="border border-gold/20 rounded-lg p-4 bg-gold/5">
+                <div className="flex items-center space-x-3">
+                  <Checkbox
+                    id="asado-option"
+                    checked={wantsAsado}
+                    onCheckedChange={(checked) => setWantsAsado(checked as boolean)}
+                  />
+                  <div className="flex-1">
+                    <Label 
+                      htmlFor="asado-option" 
+                      className="text-sm font-medium text-navy cursor-pointer"
+                    >
+                      Agregar Kit de Asado (+$50.000 COP)
+                    </Label>
+                    <p className="text-xs text-charcoal">
+                      2 bisteces 250g c/u, 2 chorizos, 2 arepas
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {form.watch('totalPrice') > 0 && (
               <div className="border-t pt-4">
                 <div className="flex justify-between items-center font-bold text-lg">
@@ -302,6 +350,9 @@ export default function BookingWidget() {
                 </div>
                 {form.watch('includesAsado') && (
                   <p className="text-xs text-gold mt-2">✓ Incluye Kit de Asado y Desayuno</p>
+                )}
+                {!form.watch('includesAsado') && (
+                  <p className="text-xs text-charcoal mt-2">Incluye Desayuno</p>
                 )}
               </div>
             )}
