@@ -7,13 +7,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { format, differenceInDays, addDays } from "date-fns";
+import { format } from "date-fns";
 import { Calendar as CalendarIcon, Loader2 } from "lucide-react";
 
 const bookingSchema = z.object({
@@ -31,8 +30,6 @@ type BookingFormData = z.infer<typeof bookingSchema>;
 
 export default function BookingWidget() {
   const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>({});
-  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  const [isDesktopCalendarOpen, setIsDesktopCalendarOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -103,13 +100,6 @@ export default function BookingWidget() {
       }
       if (range.to) {
         form.setValue("checkOut", range.to.toISOString().split('T')[0]);
-        // Cerrar el popover programáticamente cuando ambas fechas están seleccionadas
-        setTimeout(() => {
-          const popoverTrigger = document.querySelector('[data-state="open"]');
-          if (popoverTrigger) {
-            (popoverTrigger as HTMLElement).click();
-          }
-        }, 100);
       }
     }
   };
