@@ -43,21 +43,23 @@ function getColombianMoveableHolidays(year: number): string[] {
   // Calculate Easter Sunday
   const easter = getEasterDate(year);
   
-  // Add Easter-based holidays
+  // Easter-based holidays (fixed dates, not moved)
   holidays.push(formatDate(addDays(easter, -3))); // Maundy Thursday
   holidays.push(formatDate(addDays(easter, -2))); // Good Friday
-  holidays.push(formatDate(moveToMonday(addDays(easter, 39)))); // Ascension Day (moved to Monday)
-  holidays.push(formatDate(moveToMonday(addDays(easter, 60)))); // Corpus Christi (moved to Monday) 
-  holidays.push(formatDate(moveToMonday(addDays(easter, 68)))); // Sacred Heart (moved to Monday)
   
-  // Other moveable holidays (moved to next Monday if not on Monday)
-  const epiphany = moveToMonday(new Date(year, 0, 6)); // January 6
-  const saintJoseph = moveToMonday(new Date(year, 2, 19)); // March 19
-  const saintsPeterPaul = moveToMonday(new Date(year, 5, 29)); // June 29
-  const assumption = moveToMonday(new Date(year, 7, 15)); // August 15
-  const columbusDay = moveToMonday(new Date(year, 9, 12)); // October 12
-  const allSaints = moveToMonday(new Date(year, 10, 1)); // November 1
-  const cartagenaIndependence = moveToMonday(new Date(year, 10, 11)); // November 11
+  // Easter-based holidays moved to Monday (Ley Emiliani)
+  holidays.push(formatDate(moveToMonday(addDays(easter, 39)))); // Ascension Day
+  holidays.push(formatDate(moveToMonday(addDays(easter, 60)))); // Corpus Christi
+  holidays.push(formatDate(moveToMonday(addDays(easter, 68)))); // Sacred Heart
+  
+  // Other holidays moved to Monday (Ley Emiliani)
+  const epiphany = moveToMonday(new Date(year, 0, 6)); // January 6 - Epiphany
+  const saintJoseph = moveToMonday(new Date(year, 2, 19)); // March 19 - Saint Joseph
+  const saintsPeterPaul = moveToMonday(new Date(year, 5, 29)); // June 29 - Saints Peter and Paul
+  const assumption = moveToMonday(new Date(year, 7, 15)); // August 15 - Assumption
+  const columbusDay = moveToMonday(new Date(year, 9, 12)); // October 12 - Columbus Day
+  const allSaints = moveToMonday(new Date(year, 10, 1)); // November 1 - All Saints
+  const cartagenaIndependence = moveToMonday(new Date(year, 10, 11)); // November 11 - Cartagena Independence
   
   holidays.push(formatDate(epiphany));
   holidays.push(formatDate(saintJoseph));
@@ -67,7 +69,8 @@ function getColombianMoveableHolidays(year: number): string[] {
   holidays.push(formatDate(allSaints));
   holidays.push(formatDate(cartagenaIndependence));
   
-  return holidays;
+  // Remove duplicates and sort
+  return [...new Set(holidays)].sort();
 }
 
 function getEasterDate(year: number): Date {
