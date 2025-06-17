@@ -459,7 +459,7 @@ export default function BookingWidget() {
                               )}
                               {!cabin.includesAsado && (
                                 <p className="text-xs text-charcoal mt-1">
-                                  Incluye Desayuno • Kit Asado: +$50.000
+                                  Incluye Desayuno
                                 </p>
                               )}
                             </div>
@@ -512,6 +512,30 @@ export default function BookingWidget() {
                     )}
                   />
                   
+                  {/* Optional Asado Kit for weekdays - Mobile */}
+                  {selectedCabin && !selectedCabin.includesAsado && (
+                    <div className="border border-gold/20 rounded-lg p-4 bg-gold/5">
+                      <div className="flex items-center space-x-3">
+                        <Checkbox
+                          id="asado-option-mobile"
+                          checked={wantsAsado}
+                          onCheckedChange={(checked) => setWantsAsado(checked as boolean)}
+                        />
+                        <div className="flex-1">
+                          <Label 
+                            htmlFor="asado-option-mobile" 
+                            className="text-sm font-medium text-navy cursor-pointer"
+                          >
+                            Agregar Kit de Asado (+$50.000 COP)
+                          </Label>
+                          <p className="text-xs text-charcoal">
+                            2 bisteces 250g c/u, 2 chorizos, 2 arepas
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
                   {form.watch('totalPrice') > 0 && (
                     <div className="border-t pt-4">
                       <div className="flex justify-between items-center font-bold text-lg">
@@ -520,6 +544,9 @@ export default function BookingWidget() {
                       </div>
                       {form.watch('includesAsado') && (
                         <p className="text-xs text-gold mt-2">✓ Incluye Kit de Asado y Desayuno</p>
+                      )}
+                      {!form.watch('includesAsado') && (
+                        <p className="text-xs text-charcoal mt-2">Incluye Desayuno</p>
                       )}
                     </div>
                   )}

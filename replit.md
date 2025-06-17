@@ -34,7 +34,9 @@ A modern glamping reservation platform specializing in immersive nature experien
 - **Colombian Holiday Integration:** Added complete Colombian holiday calendar with Ley Emiliani compliance
 - **Enhanced Pricing Logic:** Friday-Saturday = weekend, Sunday-Monday = weekday (except holiday Mondays)
 - **Holiday Pricing Fix:** Night before holiday charges weekend rate (e.g., Sunday-Monday if Monday is holiday)
-- **Visual Calendar Updates:** Blue for weekends, green for holidays, removed emoji icons
+- **Visual Calendar Updates:** Blue for Saturday-Sunday only, green for holidays, removed emoji icons
+- **Optional Asado Kit:** Weekday bookings can add BBQ kit for +$50,000 COP via checkbox
+- **Fixed Cabin Selection:** Resolved click functionality for cabin selection in booking widget
 - **Real-time Availability:** Individual cabin availability checking by date range
 - **UI/UX Updates:** Removed "Ver Experiencia Real" button, updated pricing display to COP format
 - **Branding Update:** Implemented user's actual logo and "VILLA AL CIELO" text
