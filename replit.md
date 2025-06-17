@@ -15,10 +15,11 @@ A modern glamping reservation platform specializing in immersive nature experien
 - **Aurora** - Family-friendly cabin with nature access
 
 **Pricing Structure (COP):**
-- Weekdays (Monday-Friday): $200,000 per night (includes breakfast)
-- Weekends & Holidays: $390,000 per night (includes breakfast + BBQ kit)
+- Weekdays (Sunday-Thursday): $200,000 per night (includes breakfast)
+- Weekends (Friday-Saturday) & Colombian Holidays: $390,000 per night (includes breakfast + BBQ kit)
 - BBQ Kit Add-on: $50,000 (2 steaks 250g each, 2 chorizo, 2 arepas)
 - Maximum: 2 guests per cabin
+- Special Rule: Friday-Saturday counts as weekend, Sunday-Monday as weekday (except holiday Mondays)
 
 ## Technical Stack
 - **Frontend:** React.js with TypeScript, Tailwind CSS, Shadcn/ui components
@@ -30,9 +31,11 @@ A modern glamping reservation platform specializing in immersive nature experien
 
 ## Recent Changes (June 2025)
 - **Multi-Cabin System Implementation:** Replaced single-unit booking with three individual cabins
-- **Dynamic Pricing:** Added weekday/weekend pricing with automatic BBQ kit inclusion for weekends
+- **Colombian Holiday Integration:** Added complete Colombian holiday calendar with Ley Emiliani compliance
+- **Enhanced Pricing Logic:** Friday-Saturday = weekend, Sunday-Monday = weekday (except holiday Mondays)
+- **Visual Calendar Indicators:** Holiday and weekend days marked with flags and pricing icons
 - **Real-time Availability:** Individual cabin availability checking by date range
-- **UI/UX Updates:** New cabin selection interface with pricing breakdown
+- **UI/UX Updates:** Removed "Ver Experiencia Real" button, updated pricing display to COP format
 - **Branding Update:** Implemented user's actual logo and "VILLA AL CIELO" text
 - **Navigation Enhancement:** Blue navbar with white/gold text and user's geometric triangle logo
 

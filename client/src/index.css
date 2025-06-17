@@ -50,7 +50,7 @@
   }
   
   .calendar-weekend {
-    @apply bg-gold/20 text-navy font-medium relative;
+    @apply bg-yellow-100 text-navy font-medium relative;
   }
   
   .calendar-weekend::after {

@@ -197,6 +197,16 @@ export default function BookingWidget() {
                     onSelect={handleDateSelect}
                     numberOfMonths={2}
                     disabled={isDateDisabled}
+                    modifiers={{
+                      holiday: (date) => isHoliday(date),
+                      weekend: (date) => getDayType(date) === 'fin-de-semana',
+                      weekday: (date) => getDayType(date) === 'entre-semana'
+                    }}
+                    modifiersClassNames={{
+                      holiday: 'calendar-holiday',
+                      weekend: 'calendar-weekend',
+                      weekday: 'calendar-weekday'
+                    }}
                   />
                 </PopoverContent>
               </Popover>
@@ -354,6 +364,16 @@ export default function BookingWidget() {
                           onSelect={handleDateSelect}
                           numberOfMonths={1}
                           disabled={isDateDisabled}
+                          modifiers={{
+                            holiday: (date) => isHoliday(date),
+                            weekend: (date) => getDayType(date) === 'fin-de-semana',
+                            weekday: (date) => getDayType(date) === 'entre-semana'
+                          }}
+                          modifiersClassNames={{
+                            holiday: 'calendar-holiday',
+                            weekend: 'calendar-weekend',
+                            weekday: 'calendar-weekday'
+                          }}
                         />
                       </PopoverContent>
                     </Popover>
