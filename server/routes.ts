@@ -46,9 +46,9 @@ function getColombianMoveableHolidays(year: number): string[] {
   // Add Easter-based holidays
   holidays.push(formatDate(addDays(easter, -3))); // Maundy Thursday
   holidays.push(formatDate(addDays(easter, -2))); // Good Friday
-  holidays.push(formatDate(addDays(easter, 39))); // Ascension Day (moved to Monday)
-  holidays.push(formatDate(addDays(easter, 60))); // Corpus Christi (moved to Monday)
-  holidays.push(formatDate(addDays(easter, 68))); // Sacred Heart (moved to Monday)
+  holidays.push(formatDate(moveToMonday(addDays(easter, 39)))); // Ascension Day (moved to Monday)
+  holidays.push(formatDate(moveToMonday(addDays(easter, 60)))); // Corpus Christi (moved to Monday) 
+  holidays.push(formatDate(moveToMonday(addDays(easter, 68)))); // Sacred Heart (moved to Monday)
   
   // Other moveable holidays (moved to next Monday if not on Monday)
   const epiphany = moveToMonday(new Date(year, 0, 6)); // January 6
@@ -213,12 +213,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         
         // Check each day to determine if it's weekday or weekend
         // Friday-Saturday = weekend, Sunday-Monday = weekday (unless Monday is holiday)
+        // Holiday pricing applies to the night before the holiday
         for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
           const dayOfWeek = d.getDay(); // 0 = Sunday, 6 = Saturday
-          const isHoliday = isColombianHoliday(d);
+          const nextDay = new Date(d);
+          nextDay.setDate(nextDay.getDate() + 1);
+          const isNextDayHoliday = isColombianHoliday(nextDay);
           
-          // Weekend pricing: Saturday, Friday night (if staying Saturday), or any holiday
-          const isWeekendPricing = dayOfWeek === 6 || dayOfWeek === 5 || isHoliday;
+          // Weekend pricing: Friday, Saturday, or night before any holiday
+          const isWeekendPricing = dayOfWeek === 5 || dayOfWeek === 6 || isNextDayHoliday;
           
           if (isWeekendPricing) {
             totalPrice += cabin.weekendPrice;
