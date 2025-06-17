@@ -60,7 +60,7 @@ export const insertReservationSchema = createInsertSchema(reservations).pick({
   checkOut: z.string().min(1, "La fecha de salida es requerida"),
   guests: z.number().min(1, "Mínimo 1 huésped requerido").max(2, "Máximo 2 huéspedes permitidos"),
   totalPrice: z.number().min(0, "El precio total debe ser positivo"),
-  includesAsado: z.boolean().optional(),
+  includesAsado: z.boolean().default(false),
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;

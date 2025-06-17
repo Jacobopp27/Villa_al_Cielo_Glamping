@@ -17,11 +17,14 @@ import { format, differenceInDays, addDays } from "date-fns";
 import { Calendar as CalendarIcon, Loader2 } from "lucide-react";
 
 const bookingSchema = z.object({
+  cabinId: z.number().min(1, "Debe seleccionar una cabaña"),
   guestName: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
   guestEmail: z.string().email("Por favor ingrese un email válido"),
   checkIn: z.string().min(1, "La fecha de entrada es requerida"),
   checkOut: z.string().min(1, "La fecha de salida es requerida"),
   guests: z.number().min(1, "Mínimo 1 huésped requerido").max(2, "Máximo 2 huéspedes permitidos"),
+  totalPrice: z.number().min(0, "El precio total debe ser positivo"),
+  includesAsado: z.boolean().default(false),
 });
 
 type BookingFormData = z.infer<typeof bookingSchema>;
@@ -36,11 +39,14 @@ export default function BookingWidget() {
   const form = useForm<BookingFormData>({
     resolver: zodResolver(bookingSchema),
     defaultValues: {
+      cabinId: 0,
       guestName: "",
       guestEmail: "",
       checkIn: "",
       checkOut: "",
       guests: 1,
+      totalPrice: 0,
+      includesAsado: false,
     },
   });
 

@@ -23,7 +23,7 @@ function initializeGoogleCalendar() {
   try {
     const auth = new google.auth.JWT(
       GOOGLE_SERVICE_ACCOUNT_EMAIL,
-      null,
+      undefined,
       GOOGLE_PRIVATE_KEY,
       ['https://www.googleapis.com/auth/calendar']
     );
@@ -38,6 +38,79 @@ function initializeGoogleCalendar() {
 export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize Google Calendar
   calendar = initializeGoogleCalendar();
+
+  // Get all cabins
+  app.get("/api/cabins", async (req, res) => {
+    try {
+      const cabins = await storage.getAllCabins();
+      res.json(cabins);
+    } catch (error) {
+      console.error("Error fetching cabins:", error);
+      res.status(500).json({ error: "Failed to fetch cabins" });
+    }
+  });
+
+  // Get cabin availability for specific dates
+  app.get("/api/cabins/availability", async (req, res) => {
+    try {
+      const { startDate, endDate } = req.query;
+      
+      if (!startDate || !endDate) {
+        return res.status(400).json({ 
+          error: "Start date and end date are required"
+        });
+      }
+
+      const cabins = await storage.getAllCabins();
+      const availability = [];
+
+      for (const cabin of cabins) {
+        const reservations = await storage.getReservationsByCabinAndDateRange(
+          cabin.id,
+          startDate as string,
+          endDate as string
+        );
+
+        // Calculate price based on dates
+        const start = new Date(startDate as string);
+        const end = new Date(endDate as string);
+        const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+        
+        let totalPrice = 0;
+        let includesAsado = false;
+        
+        // Check each day to determine if it's weekday or weekend
+        for (let d = new Date(start); d < end; d.setDate(d.getDate() + 1)) {
+          const dayOfWeek = d.getDay(); // 0 = Sunday, 6 = Saturday
+          const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+          
+          if (isWeekend) {
+            totalPrice += cabin.weekendPrice;
+            includesAsado = true; // Weekend includes asado
+          } else {
+            totalPrice += cabin.weekdayPrice;
+          }
+        }
+
+        availability.push({
+          cabin,
+          isAvailable: reservations.length === 0,
+          totalPrice,
+          includesAsado,
+          days,
+          reservations: reservations.map(r => ({
+            checkIn: r.checkIn,
+            checkOut: r.checkOut
+          }))
+        });
+      }
+
+      res.json(availability);
+    } catch (error) {
+      console.error("Error checking cabin availability:", error);
+      res.status(500).json({ error: "Failed to check availability" });
+    }
+  });
 
   // Get availability for date range
   app.get("/api/availability", async (req, res) => {
@@ -94,7 +167,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      const allBookedDates = [...new Set([...bookedDates, ...calendarEvents])];
+      const allBookedDates = Array.from(new Set([...bookedDates, ...calendarEvents]));
       
       res.json({
         available: allBookedDates.length === 0,
@@ -115,15 +188,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = insertReservationSchema.parse(req.body);
       
-      // Check if dates are available
-      const conflictingReservations = await storage.getReservationsByDateRange(
+      // Check if cabin exists
+      const cabin = await storage.getCabin(validatedData.cabinId);
+      if (!cabin) {
+        return res.status(400).json({ 
+          error: "Cabin not found" 
+        });
+      }
+
+      // Check if dates are available for this specific cabin
+      const conflictingReservations = await storage.getReservationsByCabinAndDateRange(
+        validatedData.cabinId,
         validatedData.checkIn,
         validatedData.checkOut
       );
 
       if (conflictingReservations.length > 0) {
         return res.status(400).json({ 
-          error: "Selected dates are not available" 
+          error: "Selected dates are not available for this cabin" 
         });
       }
 
