@@ -33,18 +33,12 @@ export default function HeroSection() {
         <p className="text-xl md:text-2xl mb-8 font-light max-w-2xl mx-auto">
           Vive una experiencia única en Villa al Cielo, ubicados en Barbosa, Antioquia. Reconecta contigo mismo en un entorno de pura tranquilidad natural.
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex justify-center">
           <button 
             onClick={scrollToBooking}
             className="bg-navy hover:bg-navy/90 text-white px-8 py-4 rounded-lg font-montserrat font-semibold text-lg transition-all transform hover:scale-105"
           >
-            Reservar desde $299
-          </button>
-          <button 
-            onClick={scrollToGallery}
-            className="border-2 border-white text-white hover:bg-white hover:text-charcoal px-8 py-4 rounded-lg font-montserrat font-semibold text-lg transition-all"
-          >
-            Ver Experiencia Real
+            Reservar desde $200.000 COP
           </button>
         </div>
       </div>

@@ -47,6 +47,16 @@ export default function BookingWidget() {
     },
   });
 
+  // Fetch Colombian holidays for current year
+  const currentYear = new Date().getFullYear();
+  const { data: holidaysData } = useQuery({
+    queryKey: ['/api/holidays', currentYear],
+    queryFn: async () => {
+      const response = await apiRequest("GET", `/api/holidays/${currentYear}`);
+      return response.json();
+    },
+  });
+
   // Fetch cabin availability data
   const { data: cabinAvailability, isLoading: isAvailabilityLoading } = useQuery({
     queryKey: ['/api/cabins/availability', dateRange.from?.toISOString().split('T')[0], dateRange.to?.toISOString().split('T')[0]],
@@ -126,6 +136,23 @@ export default function BookingWidget() {
   // Check if selected dates are available (simplified for now)
   const isDateDisabled = (date: Date) => {
     return date < new Date(); // Only disable past dates
+  };
+
+  // Check if date is a Colombian holiday
+  const isHoliday = (date: Date) => {
+    if (!holidaysData?.holidays) return false;
+    const dateString = date.toISOString().split('T')[0];
+    return holidaysData.holidays.includes(dateString);
+  };
+
+  // Get day type for pricing display
+  const getDayType = (date: Date) => {
+    const dayOfWeek = date.getDay(); // 0 = Sunday, 6 = Saturday
+    const holiday = isHoliday(date);
+    
+    if (holiday) return 'festivo';
+    if (dayOfWeek === 6 || dayOfWeek === 5) return 'fin-de-semana'; // Friday-Saturday
+    return 'entre-semana';
   };
 
   return (

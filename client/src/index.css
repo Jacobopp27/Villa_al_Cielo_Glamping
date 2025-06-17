@@ -35,6 +35,37 @@
   --success: 120 61% 34%; /* #228B22 */
 }
 
+/* Calendar custom styles for Colombian holidays and weekends */
+@layer components {
+  .calendar-holiday {
+    @apply bg-red-100 text-red-800 font-semibold relative;
+  }
+  
+  .calendar-holiday::after {
+    content: "🇨🇴";
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 8px;
+  }
+  
+  .calendar-weekend {
+    @apply bg-gold/20 text-navy font-medium relative;
+  }
+  
+  .calendar-weekend::after {
+    content: "💰";
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    font-size: 8px;
+  }
+  
+  .calendar-weekday {
+    @apply bg-white text-charcoal;
+  }
+}
+
 .dark {
   --background: 240 10% 4%; /* #0A0A0F */
   --foreground: 0 0% 98%; /* #FAFAFA */
