@@ -243,12 +243,12 @@ export default function BookingWidget() {
                 {availabilityData.map((cabin) => (
                   <div 
                     key={cabin.cabin.id}
-                    className={`border rounded-lg p-4 cursor-pointer transition-all ${
+                    className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
                       cabin.isAvailable 
-                        ? 'border-gold hover:bg-gold/5 hover:border-gold/80' 
+                        ? 'border-gray-200 hover:bg-gold/5 hover:border-gold/50' 
                         : 'border-gray-300 bg-gray-50 cursor-not-allowed opacity-60'
                     } ${
-                      form.watch('cabinId') === cabin.cabin.id ? 'bg-gold/10 border-gold' : ''
+                      form.watch('cabinId') === cabin.cabin.id ? 'bg-gold/20 border-gold border-2 ring-2 ring-gold/30' : ''
                     }`}
                     onClick={() => cabin.isAvailable && handleCabinSelect(cabin)}
                   >
@@ -437,12 +437,12 @@ export default function BookingWidget() {
                       {availabilityData.map((cabin) => (
                         <div 
                           key={cabin.cabin.id}
-                          className={`border rounded-lg p-4 cursor-pointer transition-all ${
+                          className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
                             cabin.isAvailable 
-                              ? 'border-gold hover:bg-gold/5 hover:border-gold/80' 
+                              ? 'border-gray-200 hover:bg-gold/5 hover:border-gold/50' 
                               : 'border-gray-300 bg-gray-50 cursor-not-allowed opacity-60'
                           } ${
-                            form.watch('cabinId') === cabin.cabin.id ? 'bg-gold/10 border-gold' : ''
+                            form.watch('cabinId') === cabin.cabin.id ? 'bg-gold/20 border-gold border-2 ring-2 ring-gold/30' : ''
                           }`}
                           onClick={() => cabin.isAvailable && handleCabinSelect(cabin)}
                         >
