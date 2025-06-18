@@ -181,203 +181,26 @@ export default function BookingWidget() {
 
   return (
     <>
-      {/* Desktop Sticky Widget */}
-      <div 
-        className="fixed right-4 top-1/2 transform -translate-y-1/2 w-80 bg-white rounded-2xl shadow-2xl p-6 z-40 hidden lg:block"
-        data-booking-widget
-      >
-        <h3 className="font-montserrat font-bold text-xl text-forest mb-4">Reserva tu Escape</h3>
-        
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-              <Label className="block text-sm font-medium text-charcoal mb-2">Entrada / Salida</Label>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start text-left font-normal"
-                  >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {dateRange.from ? (
-                      dateRange.to ? (
-                        <>
-                          {format(dateRange.from, "LLL dd")} - {format(dateRange.to, "LLL dd, y")}
-                        </>
-                      ) : (
-                        format(dateRange.from, "LLL dd, y")
-                      )
-                    ) : (
-                      <span>Seleccionar fechas</span>
-                    )}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    initialFocus
-                    mode="range"
-                    defaultMonth={dateRange.from}
-                    selected={dateRange.from ? { from: dateRange.from, to: dateRange.to } : undefined}
-                    onSelect={handleDateSelect}
-                    numberOfMonths={2}
-                    disabled={isDateDisabled}
-                    modifiers={{
-                      holiday: (date) => isHoliday(date),
-                      weekend: (date) => getDayType(date) === 'fin-de-semana',
-                      weekday: (date) => getDayType(date) === 'entre-semana'
-                    }}
-                    modifiersClassNames={{
-                      holiday: 'calendar-holiday',
-                      weekend: 'calendar-weekend',
-                      weekday: 'calendar-weekday'
-                    }}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
-            
-            {/* Cabin Selection */}
-            {availabilityData && availabilityData.length > 0 && (
-              <div className="space-y-3">
-                <Label className="block text-sm font-medium text-charcoal mb-2">Selecciona tu Cabaña</Label>
-                {availabilityData.map((cabin) => (
-                  <div 
-                    key={cabin.cabin.id}
-                    className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
-                      cabin.isAvailable 
-                        ? 'border-gray-200 hover:bg-gold/5 hover:border-gold/50' 
-                        : 'border-gray-300 bg-gray-50 cursor-not-allowed opacity-60'
-                    } ${
-                      form.watch('cabinId') === cabin.cabin.id ? 'bg-gold/20 border-gold border-2 ring-2 ring-gold/30' : ''
-                    }`}
-                    onClick={() => cabin.isAvailable && handleCabinSelect(cabin)}
-                  >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h4 className="font-semibold text-lg text-navy">{cabin.cabin.name}</h4>
-                        <p className="text-sm text-charcoal">
-                          {cabin.days} {cabin.days === 1 ? 'noche' : 'noches'}
-                        </p>
-                        {cabin.includesAsado && (
-                          <p className="text-xs text-gold font-medium mt-1">
-                            ✓ Incluye Kit de Asado y Desayuno
-                          </p>
-                        )}
-                        {!cabin.includesAsado && (
-                          <p className="text-xs text-charcoal mt-1">
-                            Incluye Desayuno
-                          </p>
-                        )}
-                      </div>
-                      <div className="text-right">
-                        <p className="font-bold text-lg text-navy">
-                          ${cabin.totalPrice.toLocaleString()} COP
-                        </p>
-                        <p className="text-xs text-charcoal">
-                          {cabin.isAvailable ? 'Disponible' : 'No Disponible'}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            {dateRange.from && dateRange.to && isAvailabilityLoading && (
-              <div className="text-center py-4">
-                <Loader2 className="mx-auto h-6 w-6 animate-spin text-navy" />
-                <p className="text-sm text-charcoal mt-2">Verificando disponibilidad...</p>
-              </div>
-            )}
-
-            <FormField
-              control={form.control}
-              name="guestName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nombre Completo</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Ingresa tu nombre completo" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            <FormField
-              control={form.control}
-              name="guestEmail"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input type="email" placeholder="Ingresa tu email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            
-            {/* Optional Asado Kit for weekdays */}
-            {selectedCabin && !selectedCabin.includesAsado && (
-              <div className="border border-gold/20 rounded-lg p-4 bg-gold/5">
-                <div className="flex items-center space-x-3">
-                  <Checkbox
-                    id="asado-option"
-                    checked={wantsAsado}
-                    onCheckedChange={(checked) => setWantsAsado(checked as boolean)}
-                  />
-                  <div className="flex-1">
-                    <Label 
-                      htmlFor="asado-option" 
-                      className="text-sm font-medium text-navy cursor-pointer"
-                    >
-                      Agregar Kit de Asado (+$50.000 COP)
-                    </Label>
-                    <p className="text-xs text-charcoal">
-                      2 bisteces 250g c/u, 2 chorizos, 2 arepas
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {form.watch('totalPrice') > 0 && (
-              <div className="border-t pt-4">
-                <div className="flex justify-between items-center font-bold text-lg">
-                  <span>Total a Pagar</span>
-                  <span className="text-navy">${form.watch('totalPrice').toLocaleString()} COP</span>
-                </div>
-                {form.watch('includesAsado') && (
-                  <p className="text-xs text-gold mt-2">✓ Incluye Kit de Asado y Desayuno</p>
-                )}
-                {!form.watch('includesAsado') && (
-                  <p className="text-xs text-charcoal mt-2">Incluye Desayuno</p>
-                )}
-              </div>
-            )}
-            
-            <Button 
-              type="submit" 
-              className="w-full bg-forest hover:bg-forest/90 text-white py-4 font-montserrat font-semibold text-lg"
-              disabled={createReservation.isPending}
-            >
-              {createReservation.isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Procesando...
-                </>
-              ) : (
-                "Reservar Ahora"
-              )}
-            </Button>
-          </form>
-        </Form>
+      {/* Floating Reserve Button - Desktop */}
+      <div className="fixed right-6 bottom-6 z-50 hidden lg:block">
+        <button
+          onClick={() => {
+            const bookingSection = document.querySelector('[data-booking-widget]');
+            if (bookingSection) {
+              bookingSection.scrollIntoView({ behavior: 'smooth' });
+            }
+          }}
+          className="bg-forest hover:bg-forest/90 text-white px-6 py-4 rounded-full shadow-2xl font-montserrat font-semibold text-lg transition-all hover:scale-105 hover:shadow-3xl"
+        >
+          Reservar Ahora
+        </button>
       </div>
 
-      {/* Mobile Booking Section */}
-      <section className="lg:hidden py-20 bg-white" data-booking-widget>
-        <div className="max-w-lg mx-auto px-4">
+
+
+      {/* Static Booking Section */}
+      <section className="py-20 bg-white" data-booking-widget>
+        <div className="max-w-2xl mx-auto px-4">
           <Card className="shadow-xl">
             <CardContent className="p-6">
               <h3 className="font-montserrat font-bold text-xl text-forest mb-4">Reserva tu Escape</h3>
