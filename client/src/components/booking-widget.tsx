@@ -190,14 +190,11 @@ export default function BookingWidget() {
               bookingSection.scrollIntoView({ behavior: 'smooth' });
             }
           }}
-          className="bg-forest hover:bg-forest/90 text-white px-6 py-4 rounded-full shadow-2xl font-montserrat font-semibold text-lg transition-all hover:scale-105 hover:shadow-3xl"
+          className="hover:bg-forest/90 text-white px-6 py-4 rounded-full shadow-2xl font-montserrat font-semibold text-lg transition-all hover:scale-105 hover:shadow-3xl bg-[#ffbf00]"
         >
           Reservar Ahora
         </button>
       </div>
-
-
-
       {/* Static Booking Section */}
       <section className="py-20 bg-white" data-booking-widget>
         <div className="max-w-2xl mx-auto px-4">
