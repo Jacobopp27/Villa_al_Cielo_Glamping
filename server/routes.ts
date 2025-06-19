@@ -345,7 +345,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Check if dates are available for this specific cabin
+      // Check availability in Google Calendar first (real-time availability)
+      if (calendar) {
+        try {
+          const response = await calendar.events.list({
+            calendarId: GOOGLE_CALENDAR_ID,
+            timeMin: new Date(validatedData.checkIn).toISOString(),
+            timeMax: new Date(validatedData.checkOut).toISOString(),
+            singleEvents: true,
+            orderBy: 'startTime',
+          });
+
+          if (response.data.items && response.data.items.length > 0) {
+            return res.status(400).json({ 
+              error: "Selected dates are not available according to calendar" 
+            });
+          }
+        } catch (error) {
+          console.error("Error checking Google Calendar availability:", error);
+        }
+      }
+
+      // Check if dates are available for this specific cabin in database
       const conflictingReservations = await storage.getReservationsByCabinAndDateRange(
         validatedData.cabinId,
         validatedData.checkIn,
@@ -358,46 +379,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Create reservation in storage
-      const reservation = await storage.createReservation(validatedData);
+      // Generate confirmation code and freeze period (12 hours)
+      const confirmationCode = crypto.randomBytes(4).toString('hex').toUpperCase();
+      const frozenUntil = new Date();
+      frozenUntil.setHours(frozenUntil.getHours() + 12);
 
-      // Create Google Calendar event if calendar is available
-      let calendarEventId = null;
-      if (calendar) {
-        try {
-          const event = {
-            summary: `Glamping Reservation - ${validatedData.guestName}`,
-            description: `Guest: ${validatedData.guestName}\nEmail: ${validatedData.guestEmail}\nGuests: ${validatedData.guests}\nTotal: $${validatedData.totalPrice}`,
-            start: {
-              date: validatedData.checkIn,
-              timeZone: 'America/Los_Angeles',
-            },
-            end: {
-              date: validatedData.checkOut,
-              timeZone: 'America/Los_Angeles',
-            },
-            attendees: [
-              { email: validatedData.guestEmail }
-            ],
-          };
+      // Payment instructions
+      const paymentInstructions = `
+        Banco: Bancolombia
+        Tipo de Cuenta: Ahorros
+        Número de Cuenta: 12345678901
+        Titular: Villa al Cielo
+        Monto: $${validatedData.totalPrice.toLocaleString()} COP
+        
+        Envía el comprobante de pago a villaalcielo@example.com
+        Incluye tu código de confirmación: ${confirmationCode}
+      `;
 
-          const response = await calendar.events.insert({
-            calendarId: GOOGLE_CALENDAR_ID,
-            resource: event,
-          });
+      // Create reservation in storage with pending status
+      const reservation = await storage.createReservation({
+        ...validatedData,
+        confirmationCode,
+        frozenUntil,
+        paymentInstructions
+      });
 
-          calendarEventId = response.data.id;
-          
-          // Update reservation with calendar event ID
-          await storage.updateReservationCalendarId(reservation.id, calendarEventId);
-        } catch (error) {
-          console.error("Error creating calendar event:", error);
-        }
+      // Send confirmation email to guest
+      try {
+        await sendReservationConfirmationToGuest(reservation, cabin);
+      } catch (error) {
+        console.error("Error sending guest confirmation email:", error);
+      }
+
+      // Send notification email to owner
+      try {
+        await sendReservationNotificationToOwner(reservation, cabin);
+      } catch (error) {
+        console.error("Error sending owner notification email:", error);
       }
 
       res.status(201).json({
-        ...reservation,
-        googleCalendarEventId: calendarEventId
+        id: reservation.id,
+        confirmationCode: reservation.confirmationCode,
+        status: reservation.status,
+        frozenUntil: reservation.frozenUntil,
+        message: "Reserva creada exitosamente. Verifica tu email para instrucciones de pago."
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
