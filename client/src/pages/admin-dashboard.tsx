@@ -54,6 +54,7 @@ type ReviewFormData = z.infer<typeof reviewSchema>;
 export default function AdminDashboard() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [reservationFilter, setReservationFilter] = useState<"all" | "pending" | "confirmed" | "cancelled" | "expired">("all");
   const [selectedReservation, setSelectedReservation] = useState<any>(null);
   const [activeTab, setActiveTab] = useState("dashboard");
 
@@ -376,11 +377,43 @@ export default function AdminDashboard() {
           <TabsContent value="reservations" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>Gestión de Reservas</CardTitle>
+                <div className="flex justify-between items-center">
+                  <CardTitle>Gestión de Reservas</CardTitle>
+                  <Select value={reservationFilter} onValueChange={(value: any) => setReservationFilter(value)}>
+                    <SelectTrigger className="w-48">
+                      <SelectValue placeholder="Filtrar reservas" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todas las Reservas</SelectItem>
+                      <SelectItem value="pending">Pendientes</SelectItem>
+                      <SelectItem value="confirmed">Aprobadas</SelectItem>
+                      <SelectItem value="cancelled">Canceladas</SelectItem>
+                      <SelectItem value="expired">Expiradas</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {reservations?.map((reservation: any) => (
+                  {(() => {
+                    let filteredReservations = reservations || [];
+                    
+                    // Filter reservations based on selected filter
+                    if (reservationFilter !== "all") {
+                      filteredReservations = filteredReservations.filter((r: any) => r.status === reservationFilter);
+                    }
+                    
+                    // Sort reservations: pending first, then confirmed, then cancelled/expired
+                    filteredReservations.sort((a: any, b: any) => {
+                      const statusOrder = { pending: 1, confirmed: 2, cancelled: 3, expired: 3 };
+                      const aOrder = statusOrder[a.status as keyof typeof statusOrder] || 4;
+                      const bOrder = statusOrder[b.status as keyof typeof statusOrder] || 4;
+                      if (aOrder !== bOrder) return aOrder - bOrder;
+                      // Within same status, sort by creation date (newest first)
+                      return new Date(b.createdAt || b.id).getTime() - new Date(a.createdAt || a.id).getTime();
+                    });
+                    
+                    return filteredReservations.map((reservation: any) => (
                     <div key={reservation.id} className="border rounded-lg p-4 space-y-3">
                       <div className="flex justify-between items-start">
                         <div>
@@ -436,7 +469,8 @@ export default function AdminDashboard() {
                         </div>
                       </div>
                     </div>
-                  ))}
+                    ));
+                  })()}
                 </div>
               </CardContent>
             </Card>
