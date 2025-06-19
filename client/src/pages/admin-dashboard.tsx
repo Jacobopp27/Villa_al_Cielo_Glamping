@@ -207,7 +207,7 @@ export default function AdminDashboard() {
         title: "Reseña agregada",
         description: "La reseña ha sido agregada exitosamente",
       });
-      refetchReviews();
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/reviews'] });
       reviewForm.reset();
     },
   });
