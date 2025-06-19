@@ -205,6 +205,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get public gallery images
+  app.get("/api/gallery", async (req, res) => {
+    try {
+      const images = await storage.getActiveGalleryImages();
+      res.json(images);
+    } catch (error) {
+      console.error("Error fetching gallery images:", error);
+      res.status(500).json({ error: "Failed to fetch gallery images" });
+    }
+  });
+
+  // Get public reviews
+  app.get("/api/reviews", async (req, res) => {
+    try {
+      const reviews = await storage.getApprovedReviews();
+      res.json(reviews);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+      res.status(500).json({ error: "Failed to fetch reviews" });
+    }
+  });
+
   // Get Colombian holidays for a given year
   app.get("/api/holidays/:year", async (req, res) => {
     try {

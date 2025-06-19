@@ -1,28 +1,12 @@
-const reviews = [
-  {
-    rating: 5,
-    text: "¡Experiencia absolutamente increíble! La tienda era lujosa y las vistas eran impresionantes. Perfecto equilibrio entre naturaleza y comodidad.",
-    author: "Sarah Johnson",
-    date: "Septiembre 2023",
-    initials: "SJ"
-  },
-  {
-    rating: 5,
-    text: "¡El escape perfecto! Amenidades increíbles, ubicación hermosa y servicio excepcional. ¡Definitivamente regresaremos!",
-    author: "Mike Thompson",
-    date: "Agosto 2023",
-    initials: "MT"
-  },
-  {
-    rating: 5,
-    text: "¡Experiencia de glamping excepcional! Limpio, cómodo y rodeado de belleza natural increíble. ¡Altamente recomendado!",
-    author: "Emily Rodriguez",
-    date: "Octubre 2023",
-    initials: "ER"
-  }
-];
+import { useQuery } from "@tanstack/react-query";
+import { Star } from "lucide-react";
 
 export default function ReviewsSection() {
+  const { data: reviews = [] } = useQuery({
+    queryKey: ["/api/reviews"],
+    retry: false,
+  });
+
   return (
     <section id="reviews" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -36,7 +20,7 @@ export default function ReviewsSection() {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {reviews.map((review, index) => (
+          {(reviews as any[]).map((review: any, index: number) => (
             <div key={index} className="bg-cream rounded-xl p-6 hover:shadow-lg transition-shadow">
               <div className="flex items-center mb-4">
                 <div className="flex items-center text-yellow-400 mr-2">
