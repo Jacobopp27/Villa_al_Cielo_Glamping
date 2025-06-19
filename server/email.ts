@@ -6,11 +6,15 @@ if (process.env.SENDGRID_API_KEY) {
   mailService.setApiKey(process.env.SENDGRID_API_KEY);
 }
 
-const OWNER_EMAIL = "villaalcielo@example.com"; // Cambiar por el email real del propietario
+const OWNER_EMAIL = process.env.SENDGRID_VERIFIED_SENDER || "info@villaalcielo.com";
 
-// Check if required environment variable exists
+// Check if required environment variables exist
 if (!process.env.SENDGRID_API_KEY) {
   console.warn("SENDGRID_API_KEY not found, email functionality will be disabled");
+}
+
+if (!process.env.SENDGRID_VERIFIED_SENDER) {
+  console.warn("SENDGRID_VERIFIED_SENDER not found, using default sender");
 }
 
 interface EmailParams {
@@ -28,16 +32,31 @@ async function sendEmail(params: EmailParams): Promise<boolean> {
   }
   
   try {
-    await mailService.send({
+    console.log(`Attempting to send email to: ${params.to}`);
+    console.log(`From: ${params.from}`);
+    console.log(`Subject: ${params.subject}`);
+    
+    const result = await mailService.send({
       to: params.to,
       from: params.from,
       subject: params.subject,
       text: params.text || params.subject,
       html: params.html,
     });
+    
+    console.log('Email sent successfully:', result[0].statusCode, result[0].headers);
     return true;
-  } catch (error) {
-    console.error('SendGrid email error:', error);
+  } catch (error: any) {
+    console.error('SendGrid email error details:');
+    console.error('Error message:', error.message);
+    console.error('Error response:', JSON.stringify(error.response?.body, null, 2));
+    console.error('Status code:', error.code);
+    
+    // Log specific SendGrid error details for debugging
+    if (error.response?.body?.errors) {
+      console.error('SendGrid error details:', error.response.body.errors);
+    }
+    
     return false;
   }
 }
