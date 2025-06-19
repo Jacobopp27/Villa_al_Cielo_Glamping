@@ -960,13 +960,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
 function getMonthlyReservationData(reservations: any[]) {
   const monthlyData = Array.from({ length: 12 }, (_, i) => ({
     month: new Date(0, i).toLocaleString('es', { month: 'short' }),
-    reservations: 0
+    total: 0,
+    aprobadas: 0,
+    canceladas: 0
   }));
 
   reservations.forEach(reservation => {
     if (reservation.createdAt) {
       const month = new Date(reservation.createdAt).getMonth();
-      monthlyData[month].reservations++;
+      monthlyData[month].total++;
+      
+      if (reservation.status === 'confirmed') {
+        monthlyData[month].aprobadas++;
+      } else if (reservation.status === 'cancelled' || reservation.status === 'expired') {
+        monthlyData[month].canceladas++;
+      }
     }
   });
 

@@ -85,16 +85,20 @@ export default function AdminDashboard() {
     }
   }, [authData, authLoading]);
 
-  // Dashboard statistics
+  // Dashboard statistics with auto-refresh
   const { data: stats } = useQuery({
     queryKey: ['/api/admin/dashboard/stats'],
     enabled: authData?.authenticated,
+    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchOnWindowFocus: true,
   });
 
-  // Reservations data
+  // Reservations data with auto-refresh
   const { data: reservations, refetch: refetchReservations } = useQuery({
     queryKey: ['/api/admin/reservations'],
     enabled: authData?.authenticated,
+    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchOnWindowFocus: true,
   });
 
   // Gallery data
@@ -130,7 +134,9 @@ export default function AdminDashboard() {
         title: "Reserva actualizada",
         description: "El estado de la reserva ha sido actualizado exitosamente",
       });
-      refetchReservations();
+      // Invalidar caché de reservas y estadísticas para actualizar gráficos en tiempo real
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/reservations'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/dashboard/stats'] });
     },
     onError: (error: any) => {
       toast({
@@ -162,7 +168,7 @@ export default function AdminDashboard() {
         title: "Imagen agregada",
         description: "La imagen ha sido agregada a la galería",
       });
-      refetchGallery();
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/gallery'] });
       galleryForm.reset();
     },
   });
@@ -176,7 +182,7 @@ export default function AdminDashboard() {
         title: "Imagen eliminada",
         description: "La imagen ha sido eliminada de la galería",
       });
-      refetchGallery();
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/gallery'] });
     },
   });
 
@@ -362,7 +368,7 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Reservas por Mes</CardTitle>
+                  <CardTitle>Reservas por Mes (Total, Aprobadas, Canceladas)</CardTitle>
                 </CardHeader>
                 <CardContent>
                   {(stats as any)?.monthlyData ? (
@@ -372,7 +378,10 @@ export default function AdminDashboard() {
                         <XAxis dataKey="month" />
                         <YAxis />
                         <Tooltip />
-                        <Bar dataKey="reservations" fill="#1e40af" />
+                        <Legend />
+                        <Bar dataKey="total" fill="#6b7280" name="Total" />
+                        <Bar dataKey="aprobadas" fill="#10b981" name="Aprobadas" />
+                        <Bar dataKey="canceladas" fill="#ef4444" name="Canceladas" />
                       </BarChart>
                     </ResponsiveContainer>
                   ) : (
