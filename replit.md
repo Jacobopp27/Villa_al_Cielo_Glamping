@@ -49,6 +49,9 @@ A modern glamping reservation platform specializing in immersive nature experien
 - **Fixed Email System:** SendGrid integration now working correctly with admin@villaalcielo.com sender
 - **Admin Credentials Updated:** Username: adminvilla, Password: villaalcielo2025
 - **UI Cleanup:** Removed guest count display from reservation management interface
+- **Improved Booking UX (Dec 19, 2025):** Enhanced date selection with auto-next-day, visual pricing indicators, real-time feedback, and better cabin availability display
+- **Fixed Date Overlap Logic:** Corrected reservation validation to allow same-day checkout/checkin (e.g., checkout 27th allows checkin 27th for different cabin)
+- **Admin Image Upload:** Added device upload functionality in gallery admin with multer integration for local file handling
 
 ## User Preferences
 - **Language:** Spanish for all user-facing content
