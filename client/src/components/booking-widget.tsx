@@ -116,6 +116,14 @@ export default function BookingWidget() {
       setDateRange(range);
       if (range.from) {
         form.setValue("checkIn", range.from.toISOString().split('T')[0]);
+        
+        // Auto-select checkout date as next day if only from is selected
+        if (!range.to) {
+          const nextDay = new Date(range.from);
+          nextDay.setDate(nextDay.getDate() + 1);
+          setDateRange({ from: range.from, to: nextDay });
+          form.setValue("checkOut", nextDay.toISOString().split('T')[0]);
+        }
       }
       if (range.to) {
         form.setValue("checkOut", range.to.toISOString().split('T')[0]);

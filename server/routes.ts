@@ -305,15 +305,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
 
+        // Filter only confirmed and pending reservations for availability check
+        const activeReservations = reservations.filter(r => 
+          r.status === 'confirmed' || r.status === 'pending'
+        );
+
         availability.push({
           cabin,
-          isAvailable: reservations.length === 0,
+          isAvailable: activeReservations.length === 0,
           totalPrice,
           includesAsado,
           days,
-          reservations: reservations.map(r => ({
+          reservations: activeReservations.map(r => ({
             checkIn: r.checkIn,
-            checkOut: r.checkOut
+            checkOut: r.checkOut,
+            status: r.status
           }))
         });
       }
@@ -437,9 +443,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         validatedData.checkOut
       );
 
-      if (conflictingReservations.length > 0) {
+      // Filter only active reservations (confirmed or pending)
+      const activeConflicts = conflictingReservations.filter(r => 
+        r.status === 'confirmed' || r.status === 'pending'
+      );
+
+      if (activeConflicts.length > 0) {
+        const conflictDetails = activeConflicts.map(r => 
+          `${r.checkIn} a ${r.checkOut} (${r.status})`
+        ).join(', ');
+        
         return res.status(400).json({ 
-          error: "Selected dates are not available for this cabin" 
+          error: `Las fechas seleccionadas no están disponibles. Reservas existentes: ${conflictDetails}` 
         });
       }
 
