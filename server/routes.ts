@@ -440,6 +440,130 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Confirm reservation payment
+  app.post("/api/reservations/:id/confirm", async (req, res) => {
+    try {
+      const reservationId = parseInt(req.params.id);
+      const reservation = await storage.getReservation(reservationId);
+      
+      if (!reservation) {
+        return res.status(404).json({ error: "Reservation not found" });
+      }
+
+      if (reservation.status !== "pending") {
+        return res.status(400).json({ error: "Reservation is not pending confirmation" });
+      }
+
+      // Create Google Calendar event when confirmed
+      let calendarEventId = null;
+      if (calendar) {
+        try {
+          const cabin = await storage.getCabin(reservation.cabinId);
+          const event = {
+            summary: `Villa al Cielo - ${reservation.guestName} (${cabin?.name || 'Cabin'})`,
+            description: `Huésped: ${reservation.guestName}\nEmail: ${reservation.guestEmail}\nPersonas: ${reservation.guests}\nTotal: $${reservation.totalPrice.toLocaleString()} COP\nCódigo: ${reservation.confirmationCode}`,
+            start: {
+              date: reservation.checkIn,
+              timeZone: 'America/Bogota',
+            },
+            end: {
+              date: reservation.checkOut,
+              timeZone: 'America/Bogota',
+            },
+            attendees: [
+              { email: reservation.guestEmail }
+            ],
+          };
+
+          const response = await calendar.events.insert({
+            calendarId: GOOGLE_CALENDAR_ID,
+            resource: event,
+          });
+
+          calendarEventId = response.data.id;
+        } catch (error) {
+          console.error("Error creating calendar event:", error);
+        }
+      }
+
+      // Update reservation status to confirmed
+      const confirmedReservation = await storage.updateReservationStatus(
+        reservationId, 
+        "confirmed", 
+        calendarEventId || undefined
+      );
+
+      if (!confirmedReservation) {
+        return res.status(500).json({ error: "Failed to confirm reservation" });
+      }
+
+      // Send confirmation email to guest
+      try {
+        const cabin = await storage.getCabin(reservation.cabinId);
+        if (cabin) {
+          await sendReservationConfirmedToGuest(confirmedReservation, cabin);
+        }
+      } catch (error) {
+        console.error("Error sending confirmation email:", error);
+      }
+
+      res.json({
+        message: "Reservation confirmed successfully",
+        reservation: confirmedReservation
+      });
+    } catch (error) {
+      console.error("Error confirming reservation:", error);
+      res.status(500).json({ error: "Failed to confirm reservation" });
+    }
+  });
+
+  // Get reservation by confirmation code
+  app.get("/api/reservations/code/:code", async (req, res) => {
+    try {
+      const confirmationCode = req.params.code.toUpperCase();
+      const reservation = await storage.getReservationByConfirmationCode(confirmationCode);
+      
+      if (!reservation) {
+        return res.status(404).json({ error: "Reservation not found" });
+      }
+
+      res.json(reservation);
+    } catch (error) {
+      console.error("Error fetching reservation by code:", error);
+      res.status(500).json({ error: "Failed to fetch reservation" });
+    }
+  });
+
+  // Process expired reservations (should be called periodically)
+  app.post("/api/reservations/process-expired", async (req, res) => {
+    try {
+      const expiredReservations = await storage.getExpiredReservations();
+      
+      for (const reservation of expiredReservations) {
+        // Update status to expired
+        await storage.updateReservationStatus(reservation.id, "expired");
+        
+        // Send expiration email to guest
+        try {
+          const cabin = await storage.getCabin(reservation.cabinId);
+          if (cabin) {
+            await sendReservationExpiredToGuest(reservation, cabin);
+          }
+        } catch (error) {
+          console.error("Error sending expiration email:", error);
+        }
+      }
+
+      res.json({
+        message: `Processed ${expiredReservations.length} expired reservations`,
+        count: expiredReservations.length
+      });
+    } catch (error) {
+      console.error("Error processing expired reservations:", error);
+      res.status(500).json({ error: "Failed to process expired reservations" });
+    }
+  });
+
   // Get all reservations
   app.get("/api/reservations", async (req, res) => {
     try {

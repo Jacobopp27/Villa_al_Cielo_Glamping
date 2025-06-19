@@ -87,13 +87,19 @@ export default function BookingWidget() {
       const response = await apiRequest("POST", "/api/reservations", data);
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
-        title: "¡Reserva Confirmada!",
-        description: "Tu reserva ha sido confirmada. Recibirás un email de confirmación pronto.",
+        title: "¡Reserva Creada Exitosamente!",
+        description: `Código de confirmación: ${data.confirmationCode}. Revisa tu email para instrucciones de pago.`,
+        duration: 10000,
       });
+      
+      // Reset form
       form.reset();
       setDateRange({});
+      setSelectedCabin(null);
+      setWantsAsado(false);
+      
       queryClient.invalidateQueries({ queryKey: ['/api/cabins/availability'] });
     },
     onError: (error: any) => {
