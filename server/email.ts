@@ -84,17 +84,28 @@ export async function sendReservationConfirmationToGuest(
       </div>
       
       <div style="background-color: #fef3c7; padding: 20px; border-radius: 8px; margin: 20px 0;">
-        <h3 style="color: #92400e; margin-top: 0;">Instrucciones de Pago</h3>
-        <p><strong>Banco:</strong> Bancolombia</p>
-        <p><strong>Tipo de Cuenta:</strong> Ahorros</p>
-        <p><strong>Número de Cuenta:</strong> 12345678901</p>
-        <p><strong>Titular:</strong> Villa al Cielo</p>
-        <p><strong>Monto:</strong> $${totalFormatted} COP</p>
+        <h3 style="color: #92400e; margin-top: 0;">Instrucciones de Pago - Abono del 50%</h3>
+        <p><strong>Monto del Abono:</strong> $${Math.round(reservation.totalPrice * 0.5).toLocaleString('es-CO')} COP</p>
+        <p><strong>Titular:</strong> Jacobo Posada</p>
+        <p><strong>Banco:</strong> Bancolombia - Ahorros</p>
+        <p><strong>Número de Cuenta:</strong> 55182818363</p>
+        
+        <div style="margin: 20px 0;">
+          <a href="https://wa.me/573108249004?text=Hola,%20adjunto%20comprobante%20de%20pago%20para%20la%20reserva%20con%20código:%20${reservation.confirmationCode}" 
+             style="background-color: #25D366; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+            Enviar Comprobante por WhatsApp
+          </a>
+        </div>
+        
+        <p style="margin-top: 15px;"><strong>¿Tienes dudas o inquietudes?</strong></p>
+        <a href="https://wa.me/573108249004?text=Hola,%20tengo%20una%20consulta%20sobre%20mi%20reserva%20con%20código:%20${reservation.confirmationCode}" 
+           style="background-color: #1e40af; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 10px;">
+          Contactar por WhatsApp
+        </a>
         
         <p style="margin-top: 15px;"><strong>Importante:</strong></p>
         <ul>
-          <li>Tienes <strong>12 horas</strong> para realizar el pago</li>
-          <li>Envía el comprobante de pago a: <strong>${OWNER_EMAIL}</strong></li>
+          <li>Tienes <strong>24 horas</strong> para realizar el abono</li>
           <li>Incluye tu código de confirmación: <strong>${reservation.confirmationCode}</strong></li>
         </ul>
       </div>
