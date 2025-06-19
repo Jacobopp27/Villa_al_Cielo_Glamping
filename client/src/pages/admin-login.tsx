@@ -26,7 +26,7 @@ export default function AdminLogin() {
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: "admin",
+      username: "adminvilla",
       password: "villaalcielo2025",
     },
   });
@@ -100,7 +100,7 @@ export default function AdminLogin() {
           {!isInitialSetup && (
             <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm">
               <p className="font-medium text-blue-800 mb-1">Credenciales por defecto:</p>
-              <p className="text-blue-700">Usuario: <span className="font-mono">admin</span></p>
+              <p className="text-blue-700">Usuario: <span className="font-mono">adminvilla</span></p>
               <p className="text-blue-700">Contraseña: <span className="font-mono">villaalcielo2025</span></p>
             </div>
           )}
