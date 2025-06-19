@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Lock, User } from "lucide-react";
+import { Lock, User, Eye, EyeOff } from "lucide-react";
 
 const loginSchema = z.object({
   username: z.string().min(1, "Usuario requerido"),
@@ -21,12 +21,13 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export default function AdminLogin() {
   const { toast } = useToast();
   const [isInitialSetup, setIsInitialSetup] = useState(false);
+  const [showPassword, setShowPassword] = useState(true);
 
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: "",
-      password: "",
+      username: "admin",
+      password: "villaalcielo2025",
     },
   });
 
@@ -96,6 +97,13 @@ export default function AdminLogin() {
               : "Villa al Cielo - Ingreso Administrativo"
             }
           </p>
+          {!isInitialSetup && (
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm">
+              <p className="font-medium text-blue-800 mb-1">Credenciales por defecto:</p>
+              <p className="text-blue-700">Usuario: <span className="font-mono">admin</span></p>
+              <p className="text-blue-700">Contraseña: <span className="font-mono">villaalcielo2025</span></p>
+            </div>
+          )}
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -128,10 +136,17 @@ export default function AdminLogin() {
                         <Lock className="absolute left-3 top-3 h-4 w-4 text-charcoal/50" />
                         <Input 
                           {...field} 
-                          type="password" 
-                          className="pl-10" 
+                          type={showPassword ? "text" : "password"}
+                          className="pl-10 pr-10" 
                           placeholder="Contraseña" 
                         />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-3 h-4 w-4 text-charcoal/50 hover:text-charcoal"
+                        >
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        </button>
                       </div>
                     </FormControl>
                     <FormMessage />
