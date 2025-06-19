@@ -26,9 +26,13 @@ export const reservations = pgTable("reservations", {
   guests: integer("guests").notNull(),
   totalPrice: integer("total_price").notNull(),
   includesAsado: boolean("includes_asado").notNull().default(false),
-  status: text("status").notNull().default("confirmed"),
+  status: text("status", { enum: ["pending", "confirmed", "cancelled", "expired"] }).notNull().default("pending"),
   googleCalendarEventId: text("google_calendar_event_id"),
+  frozenUntil: timestamp("frozen_until"),
+  confirmationCode: text("confirmation_code").notNull(),
+  paymentInstructions: text("payment_instructions"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({

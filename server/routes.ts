@@ -3,6 +3,13 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertReservationSchema } from "@shared/schema";
 import { z } from "zod";
+import crypto from "crypto";
+import { 
+  sendReservationConfirmationToGuest, 
+  sendReservationNotificationToOwner,
+  sendReservationConfirmedToGuest,
+  sendReservationExpiredToGuest 
+} from "./email";
 
 // Google Calendar API setup
 import { google } from 'googleapis';

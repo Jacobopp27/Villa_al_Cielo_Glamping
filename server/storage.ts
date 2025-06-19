@@ -15,8 +15,15 @@ export interface IStorage {
   getAllReservations(): Promise<Reservation[]>;
   getReservationsByDateRange(startDate: string, endDate: string): Promise<Reservation[]>;
   getReservationsByCabinAndDateRange(cabinId: number, startDate: string, endDate?: string): Promise<Reservation[]>;
-  createReservation(reservation: InsertReservation): Promise<Reservation>;
+  createReservation(reservation: InsertReservation & { 
+    confirmationCode: string; 
+    frozenUntil: Date;
+    paymentInstructions?: string;
+  }): Promise<Reservation>;
   updateReservationCalendarId(id: number, calendarEventId: string): Promise<Reservation | undefined>;
+  updateReservationStatus(id: number, status: "pending" | "confirmed" | "cancelled" | "expired", calendarEventId?: string): Promise<Reservation | undefined>;
+  getExpiredReservations(): Promise<Reservation[]>;
+  getReservationByConfirmationCode(confirmationCode: string): Promise<Reservation | undefined>;
 }
 
 export class MemStorage implements IStorage {
@@ -152,4 +159,168 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+import { users, cabins, reservations, type User, type InsertUser, type Cabin, type InsertCabin, type Reservation, type InsertReservation } from "@shared/schema";
+import { db } from "./db";
+import { eq, and, gte, lte, or } from "drizzle-orm";
+
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  async getAllCabins(): Promise<Cabin[]> {
+    return await db.select().from(cabins).where(eq(cabins.isActive, true));
+  }
+
+  async getCabin(id: number): Promise<Cabin | undefined> {
+    const [cabin] = await db.select().from(cabins).where(eq(cabins.id, id));
+    return cabin || undefined;
+  }
+
+  async createCabin(insertCabin: InsertCabin): Promise<Cabin> {
+    const [cabin] = await db
+      .insert(cabins)
+      .values(insertCabin)
+      .returning();
+    return cabin;
+  }
+
+  async getReservation(id: number): Promise<Reservation | undefined> {
+    const [reservation] = await db.select().from(reservations).where(eq(reservations.id, id));
+    return reservation || undefined;
+  }
+
+  async getAllReservations(): Promise<Reservation[]> {
+    return await db.select().from(reservations);
+  }
+
+  async getReservationsByDateRange(startDate: string, endDate: string): Promise<Reservation[]> {
+    return await db.select().from(reservations).where(
+      and(
+        or(
+          and(
+            gte(reservations.checkIn, startDate),
+            lte(reservations.checkIn, endDate)
+          ),
+          and(
+            gte(reservations.checkOut, startDate),
+            lte(reservations.checkOut, endDate)
+          ),
+          and(
+            lte(reservations.checkIn, startDate),
+            gte(reservations.checkOut, endDate)
+          )
+        ),
+        or(
+          eq(reservations.status, "confirmed"),
+          eq(reservations.status, "pending")
+        )
+      )
+    );
+  }
+
+  async getReservationsByCabinAndDateRange(cabinId: number, startDate: string, endDate?: string): Promise<Reservation[]> {
+    const endDateValue = endDate || startDate;
+    return await db.select().from(reservations).where(
+      and(
+        eq(reservations.cabinId, cabinId),
+        or(
+          and(
+            gte(reservations.checkIn, startDate),
+            lte(reservations.checkIn, endDateValue)
+          ),
+          and(
+            gte(reservations.checkOut, startDate),
+            lte(reservations.checkOut, endDateValue)
+          ),
+          and(
+            lte(reservations.checkIn, startDate),
+            gte(reservations.checkOut, endDateValue)
+          )
+        ),
+        or(
+          eq(reservations.status, "confirmed"),
+          eq(reservations.status, "pending")
+        )
+      )
+    );
+  }
+
+  async createReservation(insertReservation: InsertReservation & { 
+    confirmationCode: string; 
+    frozenUntil: Date;
+    paymentInstructions?: string;
+  }): Promise<Reservation> {
+    const [reservation] = await db
+      .insert(reservations)
+      .values({
+        ...insertReservation,
+        status: "pending",
+        frozenUntil: insertReservation.frozenUntil,
+        confirmationCode: insertReservation.confirmationCode,
+        paymentInstructions: insertReservation.paymentInstructions,
+      })
+      .returning();
+    return reservation;
+  }
+
+  async updateReservationStatus(id: number, status: "pending" | "confirmed" | "cancelled" | "expired", calendarEventId?: string): Promise<Reservation | undefined> {
+    const updateData: any = { 
+      status, 
+      updatedAt: new Date()
+    };
+    
+    if (calendarEventId) {
+      updateData.googleCalendarEventId = calendarEventId;
+    }
+
+    const [reservation] = await db
+      .update(reservations)
+      .set(updateData)
+      .where(eq(reservations.id, id))
+      .returning();
+    return reservation || undefined;
+  }
+
+  async updateReservationCalendarId(id: number, calendarEventId: string): Promise<Reservation | undefined> {
+    const [reservation] = await db
+      .update(reservations)
+      .set({ 
+        googleCalendarEventId: calendarEventId,
+        updatedAt: new Date()
+      })
+      .where(eq(reservations.id, id))
+      .returning();
+    return reservation || undefined;
+  }
+
+  async getExpiredReservations(): Promise<Reservation[]> {
+    return await db.select().from(reservations).where(
+      and(
+        eq(reservations.status, "pending"),
+        lte(reservations.frozenUntil, new Date())
+      )
+    );
+  }
+
+  async getReservationByConfirmationCode(confirmationCode: string): Promise<Reservation | undefined> {
+    const [reservation] = await db.select().from(reservations).where(eq(reservations.confirmationCode, confirmationCode));
+    return reservation || undefined;
+  }
+}
+
+export const storage = new DatabaseStorage();
