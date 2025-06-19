@@ -46,6 +46,9 @@ A modern glamping reservation platform specializing in immersive nature experien
 - **Automated Email Notifications:** Property owner alerts with admin panel links, guest confirmations with payment instructions
 - **24-Hour Reservation Freezing:** Extended from 12 hours with automated expiration handling
 - **Database Migration:** Full PostgreSQL integration with admin users, gallery, and reviews tables
+- **Fixed Email System:** SendGrid integration now working correctly with admin@villaalcielo.com sender
+- **Admin Credentials Updated:** Username: adminvilla, Password: villaalcielo2025
+- **UI Cleanup:** Removed guest count display from reservation management interface
 
 ## User Preferences
 - **Language:** Spanish for all user-facing content

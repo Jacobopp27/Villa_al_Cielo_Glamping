@@ -1,9 +1,8 @@
-import { MailService } from '@sendgrid/mail';
+import sgMail from '@sendgrid/mail';
 import type { Reservation, Cabin } from '@shared/schema';
 
-const mailService = new MailService();
 if (process.env.SENDGRID_API_KEY) {
-  mailService.setApiKey(process.env.SENDGRID_API_KEY);
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 }
 
 // Use verified Villa al Cielo email address
@@ -37,7 +36,7 @@ async function sendEmail(params: EmailParams): Promise<boolean> {
     console.log(`Sending email to: ${params.to}`);
     console.log(`Subject: ${params.subject}`);
     
-    const result = await mailService.send({
+    const result = await sgMail.send({
       to: params.to,
       from: OWNER_EMAIL,
       subject: params.subject,
