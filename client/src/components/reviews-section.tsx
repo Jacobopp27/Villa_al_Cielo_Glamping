@@ -33,15 +33,22 @@ export default function ReviewsSection() {
                 <span className="text-charcoal font-semibold">{review.rating}.0</span>
               </div>
               <p className="text-charcoal mb-4 italic">
-                "{review.text}"
+                "{review.comment}"
               </p>
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-forest rounded-full flex items-center justify-center mr-3">
-                  <span className="text-white font-semibold">{review.initials}</span>
+                  <span className="text-white font-semibold">
+                    {review.guestName.split(' ').map((n: string) => n[0]).join('')}
+                  </span>
                 </div>
                 <div>
-                  <div className="font-semibold text-charcoal">{review.author}</div>
-                  <div className="text-sm text-gray-500">{review.date}</div>
+                  <div className="font-semibold text-charcoal">{review.guestName}</div>
+                  <div className="text-sm text-gray-500">
+                    {new Date(review.createdAt).toLocaleDateString('es-CO', { 
+                      month: 'long', 
+                      year: 'numeric' 
+                    })}
+                  </div>
                 </div>
               </div>
             </div>
