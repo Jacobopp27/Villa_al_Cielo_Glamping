@@ -179,6 +179,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize Google Calendar
   calendar = initializeGoogleCalendar();
 
+  // Check for expired reservations every 10 minutes
+  setInterval(async () => {
+    try {
+      const expiredReservations = await storage.getExpiredReservations();
+      for (const reservation of expiredReservations) {
+        if (reservation.status === 'pending') {
+          await storage.updateReservationStatus(reservation.id, 'expired');
+          console.log(`Reservation ${reservation.confirmationCode} expired and marked as expired`);
+        }
+      }
+    } catch (error) {
+      console.error('Error checking expired reservations:', error);
+    }
+  }, 10 * 60 * 1000); // Check every 10 minutes
+
   // Get all cabins
   app.get("/api/cabins", async (req, res) => {
     try {
