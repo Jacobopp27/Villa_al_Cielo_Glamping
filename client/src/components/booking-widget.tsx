@@ -219,32 +219,60 @@ export default function BookingWidget() {
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                   <div>
-                    <Label className="block text-sm font-medium text-charcoal mb-2">Entrada / Salida</Label>
+                    <Label className="block text-sm font-medium text-charcoal mb-2">
+                      Fechas de Estadía
+                      {dateRange.from && dateRange.to && (
+                        <span className="ml-2 text-xs text-navy">
+                          ({Math.ceil((dateRange.to.getTime() - dateRange.from.getTime()) / (1000 * 60 * 60 * 24))} noche{Math.ceil((dateRange.to.getTime() - dateRange.from.getTime()) / (1000 * 60 * 60 * 24)) !== 1 ? 's' : ''})
+                        </span>
+                      )}
+                    </Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
-                          className="w-full justify-start text-left font-normal"
+                          className={`w-full justify-start text-left font-normal ${
+                            dateRange.from && dateRange.to ? 'border-navy text-navy' : ''
+                          }`}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
                           {dateRange.from ? (
                             dateRange.to ? (
                               <>
-                                {format(dateRange.from, "LLL dd")} - {format(dateRange.to, "LLL dd, y")}
+                                {format(dateRange.from, "dd/MM")} - {format(dateRange.to, "dd/MM/yyyy")}
                               </>
                             ) : (
-                              format(dateRange.from, "LLL dd, y")
+                              <>
+                                {format(dateRange.from, "dd/MM/yyyy")} - <span className="text-muted-foreground">Selecciona salida</span>
+                              </>
                             )
                           ) : (
-                            <span>Seleccionar fechas</span>
+                            <span>Seleccionar fechas de entrada y salida</span>
                           )}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-auto p-0" align="start">
+                        <div className="p-3 border-b bg-muted/30">
+                          <p className="text-xs text-muted-foreground mb-2">Leyenda de precios:</p>
+                          <div className="flex flex-wrap gap-2 text-xs">
+                            <div className="flex items-center gap-1">
+                              <div className="w-3 h-3 bg-blue-100 border border-blue-300 rounded"></div>
+                              <span>Fin de semana ($390k)</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <div className="w-3 h-3 bg-green-100 border border-green-300 rounded"></div>
+                              <span>Festivo ($390k)</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <div className="w-3 h-3 bg-gray-100 border border-gray-300 rounded"></div>
+                              <span>Entre semana ($200k)</span>
+                            </div>
+                          </div>
+                        </div>
                         <Calendar
                           initialFocus
                           mode="range"
-                          defaultMonth={dateRange.from}
+                          defaultMonth={dateRange.from || new Date()}
                           selected={dateRange.from ? { from: dateRange.from, to: dateRange.to } : undefined}
                           onSelect={handleDateSelect}
                           numberOfMonths={1}
@@ -262,27 +290,49 @@ export default function BookingWidget() {
                         />
                       </PopoverContent>
                     </Popover>
+                    
+                    {dateRange.from && !dateRange.to && (
+                      <p className="text-xs text-navy mt-1">
+                        ✓ Fecha de entrada seleccionada. Ahora selecciona la fecha de salida.
+                      </p>
+                    )}
+                    
+                    {dateRange.from && dateRange.to && (
+                      <p className="text-xs text-green-600 mt-1">
+                        ✓ Fechas seleccionadas. Verificando disponibilidad de cabañas...
+                      </p>
+                    )}
                   </div>
                   
                   {/* Cabin Selection - Mobile */}
                   {availabilityData && availabilityData.length > 0 && (
                     <div className="space-y-3">
-                      <Label className="block text-sm font-medium text-charcoal mb-2">Selecciona tu Cabaña</Label>
+                      <Label className="block text-sm font-medium text-charcoal mb-2">
+                        Selecciona tu Cabaña
+                        <span className="ml-2 text-xs text-muted-foreground">
+                          ({availabilityData.filter(c => c.isAvailable).length} de {availabilityData.length} disponibles)
+                        </span>
+                      </Label>
                       {availabilityData.map((cabin) => (
                         <div 
                           key={cabin.cabin.id}
-                          className={`border-2 rounded-lg p-4 cursor-pointer transition-all ${
+                          className={`border-2 rounded-lg p-4 transition-all ${
                             cabin.isAvailable 
-                              ? 'border-gray-200 hover:bg-gold/5 hover:border-gold/50' 
-                              : 'border-gray-300 bg-gray-50 cursor-not-allowed opacity-60'
+                              ? 'border-gray-200 hover:bg-navy/5 hover:border-navy/30 cursor-pointer' 
+                              : 'border-red-200 bg-red-50 cursor-not-allowed opacity-60'
                           } ${
-                            form.watch('cabinId') === cabin.cabin.id ? 'bg-gold/20 border-gold border-2 ring-2 ring-gold/30' : ''
+                            form.watch('cabinId') === cabin.cabin.id ? 'bg-navy/10 border-navy border-2 ring-2 ring-navy/20' : ''
                           }`}
                           onClick={() => cabin.isAvailable && handleCabinSelect(cabin)}
                         >
                           <div className="flex justify-between items-start">
-                            <div>
-                              <h4 className="font-semibold text-lg text-navy">{cabin.cabin.name}</h4>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                                <h4 className="font-semibold text-lg text-navy">{cabin.cabin.name}</h4>
+                                {form.watch('cabinId') === cabin.cabin.id && (
+                                  <div className="w-2 h-2 bg-navy rounded-full"></div>
+                                )}
+                              </div>
                               <p className="text-sm text-charcoal">
                                 {cabin.days} {cabin.days === 1 ? 'noche' : 'noches'}
                               </p>
@@ -296,13 +346,20 @@ export default function BookingWidget() {
                                   Incluye Desayuno
                                 </p>
                               )}
+                              {!cabin.isAvailable && cabin.reservations && cabin.reservations.length > 0 && (
+                                <p className="text-xs text-red-600 mt-1">
+                                  Ocupado: {cabin.reservations.map(r => `${r.checkIn} - ${r.checkOut}`).join(', ')}
+                                </p>
+                              )}
                             </div>
-                            <div className="text-right">
+                            <div className="text-right ml-4">
                               <p className="font-bold text-lg text-navy">
                                 ${cabin.totalPrice.toLocaleString()} COP
                               </p>
-                              <p className="text-xs text-charcoal">
-                                {cabin.isAvailable ? 'Disponible' : 'No Disponible'}
+                              <p className={`text-xs font-medium ${
+                                cabin.isAvailable ? 'text-green-600' : 'text-red-600'
+                              }`}>
+                                {cabin.isAvailable ? '✓ Disponible' : '✗ No Disponible'}
                               </p>
                             </div>
                           </div>
