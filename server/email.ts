@@ -6,8 +6,8 @@ if (process.env.SENDGRID_API_KEY) {
   mailService.setApiKey(process.env.SENDGRID_API_KEY);
 }
 
-// Use the verified sender from environment
-const OWNER_EMAIL = process.env.SENDGRID_VERIFIED_SENDER || "jacobopp7@gmail.com";
+// Use verified Villa al Cielo email address
+const OWNER_EMAIL = "admin@villaalcielo.com";
 
 // Check if required environment variables exist
 if (!process.env.SENDGRID_API_KEY) {
@@ -50,6 +50,7 @@ async function sendEmail(params: EmailParams): Promise<boolean> {
   } catch (error: any) {
     console.error('SendGrid email failed, logging details instead:');
     console.error('Error:', error.message);
+    console.error('Full error:', error);
     
     // Log email content for manual processing
     logEmailDetails(params);
