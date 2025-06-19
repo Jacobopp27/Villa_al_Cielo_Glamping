@@ -6,6 +6,9 @@ import { z } from "zod";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
 import session from "express-session";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
 import { 
   sendReservationConfirmationToGuest, 
   sendReservationNotificationToOwner,
@@ -156,6 +159,37 @@ function initializeGoogleCalendar() {
     return null;
   }
 }
+
+// Configure multer for file uploads
+const storage_config = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDir = 'attached_assets';
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    // Generate unique filename with timestamp
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'gallery-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({
+  storage: storage_config,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Only allow image files
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'));
+    }
+  }
+});
 
 // Middleware for admin authentication
 const requireAdminAuth = (req: any, res: any, next: any) => {
@@ -843,7 +877,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Add gallery image
+  // Add gallery image via URL
   app.post("/api/admin/gallery", requireAdminAuth, async (req, res) => {
     try {
       const validatedData = insertGalleryImageSchema.parse(req.body);
@@ -855,6 +889,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ error: "Invalid image data", details: error.errors });
       }
       res.status(500).json({ error: "Failed to add image" });
+    }
+  });
+
+  // Upload gallery image from device
+  app.post("/api/admin/gallery/upload", requireAdminAuth, upload.single('image'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No image file provided" });
+      }
+
+      const { title, description } = req.body;
+      if (!title) {
+        return res.status(400).json({ error: "Title is required" });
+      }
+
+      // Create image URL relative to attached_assets
+      const imageUrl = `/attached_assets/${req.file.filename}`;
+      
+      const imageData = {
+        title,
+        description: description || "",
+        imageUrl,
+        isActive: true
+      };
+
+      const image = await storage.createGalleryImage(imageData);
+      res.status(201).json(image);
+    } catch (error) {
+      console.error("Error uploading gallery image:", error);
+      res.status(500).json({ error: "Failed to upload image" });
     }
   });
 

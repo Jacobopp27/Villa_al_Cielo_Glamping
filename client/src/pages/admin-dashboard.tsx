@@ -173,6 +173,27 @@ export default function AdminDashboard() {
     },
   });
 
+  const uploadGalleryImageMutation = useMutation({
+    mutationFn: async (formData: FormData) => {
+      const response = await fetch("/api/admin/gallery/upload", {
+        method: "POST",
+        body: formData,
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to upload image");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Imagen subida",
+        description: "La imagen ha sido subida y agregada a la galería",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/gallery'] });
+    },
+  });
+
   const deleteGalleryImageMutation = useMutation({
     mutationFn: async (id: number) => {
       await apiRequest("DELETE", `/api/admin/gallery/${id}`);
@@ -564,9 +585,119 @@ export default function AdminDashboard() {
           {/* Gallery Tab */}
           <TabsContent value="gallery" className="mt-6">
             <div className="space-y-6">
+              {/* Upload from Device */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Agregar Nueva Imagen</CardTitle>
+                  <CardTitle>Subir Imagen desde Dispositivo</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    Sube una imagen directamente desde tu dispositivo
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="upload-title" className="block text-sm font-medium mb-2">
+                          Título *
+                        </label>
+                        <Input
+                          id="upload-title"
+                          placeholder="Título de la imagen"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="upload-order" className="block text-sm font-medium mb-2">
+                          Orden de visualización
+                        </label>
+                        <Input
+                          id="upload-order"
+                          type="number"
+                          defaultValue={0}
+                          placeholder="0"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label htmlFor="upload-description" className="block text-sm font-medium mb-2">
+                        Descripción (opcional)
+                      </label>
+                      <Textarea
+                        id="upload-description"
+                        placeholder="Descripción de la imagen"
+                      />
+                    </div>
+                    
+                    <div>
+                      <label htmlFor="image-file" className="block text-sm font-medium mb-2">
+                        Seleccionar imagen *
+                      </label>
+                      <input
+                        id="image-file"
+                        type="file"
+                        accept="image/*"
+                        className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Máximo 5MB. Formatos: JPG, PNG, JPEG
+                      </p>
+                    </div>
+                    
+                    <Button
+                      onClick={async () => {
+                        const titleInput = document.getElementById('upload-title') as HTMLInputElement;
+                        const descriptionInput = document.getElementById('upload-description') as HTMLTextAreaElement;
+                        const orderInput = document.getElementById('upload-order') as HTMLInputElement;
+                        const fileInput = document.getElementById('image-file') as HTMLInputElement;
+                        
+                        if (!titleInput.value.trim()) {
+                          toast({
+                            title: "Error",
+                            description: "El título es requerido",
+                            variant: "destructive",
+                          });
+                          return;
+                        }
+                        
+                        if (!fileInput.files || fileInput.files.length === 0) {
+                          toast({
+                            title: "Error",
+                            description: "Selecciona una imagen",
+                            variant: "destructive",
+                          });
+                          return;
+                        }
+                        
+                        const formData = new FormData();
+                        formData.append('image', fileInput.files[0]);
+                        formData.append('title', titleInput.value.trim());
+                        formData.append('description', descriptionInput.value.trim());
+                        formData.append('displayOrder', orderInput.value || '0');
+                        
+                        uploadGalleryImageMutation.mutate(formData);
+                        
+                        // Clear form
+                        titleInput.value = '';
+                        descriptionInput.value = '';
+                        orderInput.value = '0';
+                        fileInput.value = '';
+                      }}
+                      disabled={uploadGalleryImageMutation.isPending}
+                      className="w-full"
+                    >
+                      {uploadGalleryImageMutation.isPending ? "Subiendo..." : "Subir Imagen"}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Add via URL */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Agregar Imagen via URL</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    Agrega una imagen usando una URL externa
+                  </p>
                 </CardHeader>
                 <CardContent>
                   <Form {...galleryForm}>
