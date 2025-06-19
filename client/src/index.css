@@ -5,33 +5,43 @@
 @tailwind utilities;
 
 :root {
-  --background: 38 21% 97%; /* #F8F6F0 */
-  --foreground: 0 0% 24%; /* #3C3C3C */
-  --muted: 39 23% 90%; /* #E8E3D8 */
+  --background: 48 67% 98%; /* #fdfcf7 */
+  --foreground: 0 0% 23%; /* #3a3a3a */
+  --muted: 30 31% 90%; /* #ffe8d6 */
   --muted-foreground: 0 0% 45%; /* #737373 */
   --popover: 0 0% 100%; /* #FFFFFF */
-  --popover-foreground: 0 0% 24%; /* #3C3C3C */
+  --popover-foreground: 0 0% 23%; /* #3a3a3a */
   --card: 0 0% 100%; /* #FFFFFF */
-  --card-foreground: 0 0% 24%; /* #3C3C3C */
-  --border: 39 19% 85%; /* #DDD5C7 */
-  --input: 39 19% 85%; /* #DDD5C7 */
-  --primary: 220 100% 15%; /* #002F87 */
+  --card-foreground: 0 0% 23%; /* #3a3a3a */
+  --border: 28 24% 85%; /* #ddd6ce */
+  --input: 28 24% 85%; /* #ddd6ce */
+  --primary: 77 9% 42%; /* #6b705c */
   --primary-foreground: 0 0% 100%; /* #FFFFFF */
-  --secondary: 45 100% 50%; /* #FFD700 */
-  --secondary-foreground: 220 100% 15%; /* #002F87 */
-  --accent: 220 70% 50%; /* #4169E1 */
+  --secondary: 30 31% 90%; /* #ffe8d6 */
+  --secondary-foreground: 77 9% 42%; /* #6b705c */
+  --accent: 23 32% 64%; /* #cb997e */
   --accent-foreground: 0 0% 100%; /* #FFFFFF */
   --destructive: 0 84% 60%; /* #EF4444 */
   --destructive-foreground: 0 0% 100%; /* #FFFFFF */
-  --ring: 220 100% 15%; /* #002F87 */
+  --ring: 77 9% 42%; /* #6b705c */
   --radius: 0.5rem;
 
-  /* Custom color variables */
-  --navy: 220 100% 15%; /* #002F87 */
-  --gold: 45 100% 50%; /* #FFD700 */
-  --royal-blue: 220 70% 50%; /* #4169E1 */
-  --light-gold: 48 90% 85%; /* #F5E6A8 */
-  --charcoal: 0 0% 24%; /* #3C3C3C */
+  /* Nueva paleta de naturaleza elegante para Villa al Cielo */
+  --nature-olive: 77 9% 42%; /* #6b705c - Verde oliva grisáceo */
+  --nature-beige: 30 31% 90%; /* #ffe8d6 - Beige cálido */
+  --nature-sand: 23 32% 64%; /* #cb997e - Arena rosado suave */
+  --nature-text: 0 0% 23%; /* #3a3a3a - Gris oscuro para texto */
+  --nature-button: 60 12% 63%; /* #a5a58d - Verde pastel suave */
+  --nature-button-hover: 60 12% 71%; /* #b7b7a4 - Verde pastel hover */
+  --nature-border: 28 24% 85%; /* #ddd6ce - Bordes suaves */
+  --nature-background: 48 67% 98%; /* #fdfcf7 - Fondo crema */
+  
+  /* Mantenemos algunos colores para compatibilidad */
+  --navy: 77 9% 42%; /* Reemplazado por olive */
+  --gold: 23 32% 64%; /* Reemplazado por sand */
+  --royal-blue: 77 9% 42%; /* Reemplazado por olive */
+  --light-gold: 30 31% 90%; /* Reemplazado por beige */
+  --charcoal: 0 0% 23%; /* #3a3a3a */
   --success: 120 61% 34%; /* #228B22 */
 }
 
@@ -51,33 +61,43 @@
 }
 
 .dark {
-  --background: 240 10% 4%; /* #0A0A0F */
-  --foreground: 0 0% 98%; /* #FAFAFA */
-  --muted: 240 4% 16%; /* #262626 */
-  --muted-foreground: 240 5% 65%; /* #A3A3A3 */
-  --popover: 240 10% 4%; /* #0A0A0F */
-  --popover-foreground: 0 0% 98%; /* #FAFAFA */
-  --card: 240 10% 4%; /* #0A0A0F */
-  --card-foreground: 0 0% 98%; /* #FAFAFA */
-  --border: 240 4% 16%; /* #262626 */
-  --input: 240 4% 16%; /* #262626 */
-  --primary: 108 36% 25%; /* #2D5A27 */
+  --background: 77 9% 8%; /* #1a1b16 - Olive muy oscuro */
+  --foreground: 48 67% 95%; /* #f8f7f0 - Crema claro */
+  --muted: 77 9% 15%; /* #2a2b25 - Olive oscuro */
+  --muted-foreground: 60 12% 60%; /* #9a9a85 - Verde gris */
+  --popover: 77 9% 8%; /* #1a1b16 */
+  --popover-foreground: 48 67% 95%; /* #f8f7f0 */
+  --card: 77 9% 12%; /* #222320 */
+  --card-foreground: 48 67% 95%; /* #f8f7f0 */
+  --border: 77 9% 20%; /* #353629 */
+  --input: 77 9% 20%; /* #353629 */
+  --primary: 77 9% 55%; /* #8b9075 - Olive más claro para contraste */
   --primary-foreground: 0 0% 100%; /* #FFFFFF */
-  --secondary: 240 4% 16%; /* #262626 */
-  --secondary-foreground: 0 0% 98%; /* #FAFAFA */
-  --accent: 240 4% 16%; /* #262626 */
-  --accent-foreground: 0 0% 98%; /* #FAFAFA */
+  --secondary: 77 9% 15%; /* #2a2b25 */
+  --secondary-foreground: 48 67% 95%; /* #f8f7f0 */
+  --accent: 23 32% 45%; /* #a67c5f - Arena más oscuro */
+  --accent-foreground: 0 0% 100%; /* #FFFFFF */
   --destructive: 0 63% 31%; /* #7F1D1D */
   --destructive-foreground: 0 0% 98%; /* #FAFAFA */
-  --ring: 240 5% 84%; /* #D4D4D8 */
+  --ring: 77 9% 55%; /* #8b9075 */
 
-  /* Custom color variables for dark mode */
-  --forest: 108 36% 25%; /* #2D5A27 */
-  --beige: 36 25% 70%; /* #D4B896 */
-  --earth: 25 40% 31%; /* #8B4513 */
-  --cream: 240 10% 4%; /* #0A0A0F */
-  --charcoal: 0 0% 98%; /* #FAFAFA */
-  --success: 120 61% 34%; /* #228B22 */
+  /* Paleta de naturaleza elegante para modo oscuro */
+  --nature-olive: 77 9% 55%; /* #8b9075 - Olive más claro para contraste */
+  --nature-beige: 30 31% 25%; /* #453a2f - Beige oscuro */
+  --nature-sand: 23 32% 45%; /* #a67c5f - Arena más oscuro */
+  --nature-text: 48 67% 95%; /* #f8f7f0 - Texto claro */
+  --nature-button: 77 9% 45%; /* #787c68 - Verde pastel oscuro */
+  --nature-button-hover: 77 9% 55%; /* #8b9075 - Verde pastel hover */
+  --nature-border: 77 9% 20%; /* #353629 - Bordes oscuros */
+  --nature-background: 77 9% 8%; /* #1a1b16 - Fondo muy oscuro */
+  
+  /* Compatibilidad con colores existentes en modo oscuro */
+  --navy: 77 9% 55%; /* Olive claro */
+  --gold: 23 32% 45%; /* Arena oscuro */
+  --royal-blue: 77 9% 55%; /* Olive claro */
+  --light-gold: 30 31% 25%; /* Beige oscuro */
+  --charcoal: 48 67% 95%; /* Texto claro */
+  --success: 120 61% 45%; /* Verde más claro para contraste */
 }
 
 @layer base {
@@ -103,44 +123,82 @@
     font-family: 'Open Sans', sans-serif;
   }
 
+  /* Nueva paleta de naturaleza elegante */
+  .text-nature-olive {
+    color: hsl(var(--nature-olive));
+  }
+
+  .bg-nature-olive {
+    background-color: hsl(var(--nature-olive));
+  }
+
+  .text-nature-beige {
+    color: hsl(var(--nature-beige));
+  }
+
+  .bg-nature-beige {
+    background-color: hsl(var(--nature-beige));
+  }
+
+  .text-nature-sand {
+    color: hsl(var(--nature-sand));
+  }
+
+  .bg-nature-sand {
+    background-color: hsl(var(--nature-sand));
+  }
+
+  .text-nature-text {
+    color: hsl(var(--nature-text));
+  }
+
+  .bg-nature-button {
+    background-color: hsl(var(--nature-button));
+  }
+
+  .hover\:bg-nature-button-hover:hover {
+    background-color: hsl(var(--nature-button-hover));
+  }
+
+  /* Compatibilidad con clases existentes */
   .text-navy {
-    color: hsl(var(--navy));
+    color: hsl(var(--nature-olive));
   }
 
   .bg-navy {
-    background-color: hsl(var(--navy));
+    background-color: hsl(var(--nature-olive));
   }
 
   .text-gold {
-    color: hsl(var(--gold));
+    color: hsl(var(--nature-sand));
   }
 
   .bg-gold {
-    background-color: hsl(var(--gold));
+    background-color: hsl(var(--nature-sand));
   }
 
   .text-royal-blue {
-    color: hsl(var(--royal-blue));
+    color: hsl(var(--nature-olive));
   }
 
   .bg-royal-blue {
-    background-color: hsl(var(--royal-blue));
+    background-color: hsl(var(--nature-olive));
   }
 
   .text-light-gold {
-    color: hsl(var(--light-gold));
+    color: hsl(var(--nature-beige));
   }
 
   .bg-light-gold {
-    background-color: hsl(var(--light-gold));
+    background-color: hsl(var(--nature-beige));
   }
 
   .text-charcoal {
-    color: hsl(var(--charcoal));
+    color: hsl(var(--nature-text));
   }
 
   .bg-charcoal {
-    background-color: hsl(var(--charcoal));
+    background-color: hsl(var(--nature-text));
   }
 
   .text-success {
