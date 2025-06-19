@@ -746,7 +746,11 @@ export default function AdminDashboard() {
               <CardContent>
                 <div className="space-y-4">
                   {(() => {
-                    const filteredReservations = (reservations as any[]) || [];
+                    const allReservations = (reservations as any[]) || [];
+                    // Filter only approved and pending reservations for calendar
+                    const filteredReservations = allReservations.filter((reservation: any) => 
+                      reservation.status === 'confirmed' || reservation.status === 'pending'
+                    );
                     
                     // Group reservations by date
                     const reservationsByDate = filteredReservations.reduce((acc: any, reservation: any) => {
@@ -757,6 +761,13 @@ export default function AdminDashboard() {
                       acc[checkInDate].push(reservation);
                       return acc;
                     }, {});
+
+                    // Define cabin colors
+                    const cabinColors = {
+                      'Cielo': 'bg-blue-500 text-white',
+                      'Eclipse': 'bg-purple-500 text-white', 
+                      'Aurora': 'bg-green-500 text-white'
+                    };
 
                     const today = new Date();
                     const startDate = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -810,11 +821,9 @@ export default function AdminDashboard() {
                                     <div
                                       key={reservation.id}
                                       className={`text-xs p-1 rounded text-white ${
-                                        reservation.status === 'confirmed' 
-                                          ? 'bg-green-500' 
-                                          : reservation.status === 'pending'
-                                          ? 'bg-yellow-500'
-                                          : 'bg-red-500'
+                                        reservation.status === 'pending' 
+                                          ? 'bg-yellow-500' 
+                                          : cabinColors[reservation.cabin?.name as keyof typeof cabinColors] || 'bg-gray-500'
                                       }`}
                                       title={`${reservation.guestName} - ${reservation.status}`}
                                     >
@@ -832,18 +841,31 @@ export default function AdminDashboard() {
                           })}
                         </div>
                         
-                        <div className="mt-4 flex justify-center space-x-4 text-sm">
-                          <div className="flex items-center">
-                            <div className="w-3 h-3 bg-green-500 rounded mr-2"></div>
-                            <span>Confirmadas</span>
-                          </div>
-                          <div className="flex items-center">
-                            <div className="w-3 h-3 bg-yellow-500 rounded mr-2"></div>
-                            <span>Pendientes</span>
-                          </div>
-                          <div className="flex items-center">
-                            <div className="w-3 h-3 bg-red-500 rounded mr-2"></div>
-                            <span>Canceladas/Expiradas</span>
+                        {/* Leyenda de colores */}
+                        <div className="mt-6 bg-gray-50 p-4 rounded-lg">
+                          <h4 className="font-semibold text-center mb-3">Leyenda del Calendario</h4>
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <div className="flex items-center">
+                                <div className="w-4 h-4 bg-yellow-500 rounded mr-2"></div>
+                                <span className="text-sm">Pendientes de Aprobación</span>
+                              </div>
+                            </div>
+                            <div className="space-y-2">
+                              <h5 className="font-medium text-sm">Reservas Aprobadas:</h5>
+                              <div className="flex items-center">
+                                <div className="w-4 h-4 bg-blue-500 rounded mr-2"></div>
+                                <span className="text-sm">Cabaña Cielo</span>
+                              </div>
+                              <div className="flex items-center">
+                                <div className="w-4 h-4 bg-purple-500 rounded mr-2"></div>
+                                <span className="text-sm">Cabaña Eclipse</span>
+                              </div>
+                              <div className="flex items-center">
+                                <div className="w-4 h-4 bg-green-500 rounded mr-2"></div>
+                                <span className="text-sm">Cabaña Aurora</span>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
