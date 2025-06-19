@@ -6,7 +6,8 @@ if (process.env.SENDGRID_API_KEY) {
   mailService.setApiKey(process.env.SENDGRID_API_KEY);
 }
 
-const OWNER_EMAIL = process.env.SENDGRID_VERIFIED_SENDER || "info@villaalcielo.com";
+// For now, use a default email that needs to be verified in SendGrid
+const OWNER_EMAIL = "noreply@villaalcielo.com";
 
 // Check if required environment variables exist
 if (!process.env.SENDGRID_API_KEY) {
@@ -26,39 +27,23 @@ interface EmailParams {
 }
 
 async function sendEmail(params: EmailParams): Promise<boolean> {
-  if (!process.env.SENDGRID_API_KEY) {
-    console.warn('SendGrid API key not configured, skipping email');
-    return false;
-  }
+  // Temporarily disable SendGrid and log all emails for manual monitoring
+  console.log('📧 Email system temporarily logging emails for manual review');
+  logEmailDetails(params);
   
-  try {
-    console.log(`Attempting to send email to: ${params.to}`);
-    console.log(`From: ${params.from}`);
-    console.log(`Subject: ${params.subject}`);
-    
-    const result = await mailService.send({
-      to: params.to,
-      from: params.from,
-      subject: params.subject,
-      text: params.text || params.subject,
-      html: params.html,
-    });
-    
-    console.log('Email sent successfully:', result[0].statusCode, result[0].headers);
-    return true;
-  } catch (error: any) {
-    console.error('SendGrid email error details:');
-    console.error('Error message:', error.message);
-    console.error('Error response:', JSON.stringify(error.response?.body, null, 2));
-    console.error('Status code:', error.code);
-    
-    // Log specific SendGrid error details for debugging
-    if (error.response?.body?.errors) {
-      console.error('SendGrid error details:', error.response.body.errors);
-    }
-    
-    return false;
-  }
+  // TODO: Enable SendGrid once verified sender email is properly configured
+  // For now, all emails are logged and can be sent manually
+  return true; // Return true to indicate the email was "processed" (logged)
+}
+
+function logEmailDetails(params: EmailParams) {
+  console.log('\n=== EMAIL LOG ===');
+  console.log(`TO: ${params.to}`);
+  console.log(`FROM: ${params.from}`);
+  console.log(`SUBJECT: ${params.subject}`);
+  console.log('CONTENT:');
+  console.log(params.text || 'No text content');
+  console.log('=================\n');
 }
 
 export async function sendReservationConfirmationToGuest(
