@@ -19,7 +19,7 @@ import {
   type InsertReview
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, and, or, gte, lte } from "drizzle-orm";
+import { eq, and, or, gte, lte, lt, gt } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -273,29 +273,29 @@ export class DatabaseStorage implements IStorage {
 
   async getReservationsByCabinAndDateRange(cabinId: number, startDate: string, endDate?: string): Promise<Reservation[]> {
     const endDateValue = endDate || startDate;
-    return await db.select().from(reservations).where(
+    
+    // Get all reservations for this cabin
+    const allReservations = await db.select().from(reservations).where(
       and(
         eq(reservations.cabinId, cabinId),
-        or(
-          and(
-            gte(reservations.checkIn, startDate),
-            lte(reservations.checkIn, endDateValue)
-          ),
-          and(
-            gte(reservations.checkOut, startDate),
-            lte(reservations.checkOut, endDateValue)
-          ),
-          and(
-            lte(reservations.checkIn, startDate),
-            gte(reservations.checkOut, endDateValue)
-          )
-        ),
         or(
           eq(reservations.status, "confirmed"),
           eq(reservations.status, "pending")
         )
       )
     );
+    
+    // Filter for true overlaps in JavaScript to handle date logic properly
+    return allReservations.filter(reservation => {
+      const existingCheckIn = new Date(reservation.checkIn);
+      const existingCheckOut = new Date(reservation.checkOut);
+      const newCheckIn = new Date(startDate);
+      const newCheckOut = new Date(endDateValue);
+      
+      // True overlap: existing check-in is before new check-out AND existing check-out is after new check-in
+      // Allow same-day checkout/checkin (checkout at 11am, checkin at 3pm same day)
+      return existingCheckIn < newCheckOut && existingCheckOut > newCheckIn;
+    });
   }
 
   async createReservation(insertReservation: InsertReservation & { 

@@ -79,6 +79,11 @@ export default function BookingWidget() {
     totalPrice: number;
     includesAsado: boolean;
     days: number;
+    reservations?: Array<{
+      checkIn: string;
+      checkOut: string;
+      status: string;
+    }>;
   }> | undefined;
 
   // Create reservation mutation
