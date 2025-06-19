@@ -18,6 +18,8 @@ import {
   type Review,
   type InsertReview
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, and, or, gte, lte } from "drizzle-orm";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -197,9 +199,7 @@ export class MemStorage implements IStorage {
   }
 }
 
-import { users, cabins, reservations, type User, type InsertUser, type Cabin, type InsertCabin, type Reservation, type InsertReservation } from "@shared/schema";
-import { db } from "./db";
-import { eq, and, gte, lte, or } from "drizzle-orm";
+
 
 export class DatabaseStorage implements IStorage {
   async getUser(id: number): Promise<User | undefined> {
@@ -358,6 +358,98 @@ export class DatabaseStorage implements IStorage {
   async getReservationByConfirmationCode(confirmationCode: string): Promise<Reservation | undefined> {
     const [reservation] = await db.select().from(reservations).where(eq(reservations.confirmationCode, confirmationCode));
     return reservation || undefined;
+  }
+
+  // Admin methods
+  async getAdminByUsername(username: string): Promise<AdminUser | undefined> {
+    const [admin] = await db.select().from(adminUsers).where(eq(adminUsers.username, username));
+    return admin;
+  }
+
+  async getAllAdmins(): Promise<AdminUser[]> {
+    return await db.select().from(adminUsers);
+  }
+
+  async createAdmin(insertAdmin: InsertAdminUser): Promise<AdminUser> {
+    const [admin] = await db
+      .insert(adminUsers)
+      .values(insertAdmin)
+      .returning();
+    return admin;
+  }
+
+  // Gallery methods
+  async getAllGalleryImages(): Promise<GalleryImage[]> {
+    return await db.select().from(galleryImages).orderBy(galleryImages.displayOrder);
+  }
+
+  async getActiveGalleryImages(): Promise<GalleryImage[]> {
+    return await db
+      .select()
+      .from(galleryImages)
+      .where(eq(galleryImages.isActive, true))
+      .orderBy(galleryImages.displayOrder);
+  }
+
+  async createGalleryImage(insertImage: InsertGalleryImage): Promise<GalleryImage> {
+    const [image] = await db
+      .insert(galleryImages)
+      .values(insertImage)
+      .returning();
+    return image;
+  }
+
+  async updateGalleryImage(id: number, updates: Partial<GalleryImage>): Promise<GalleryImage | undefined> {
+    const [updated] = await db
+      .update(galleryImages)
+      .set(updates)
+      .where(eq(galleryImages.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteGalleryImage(id: number): Promise<boolean> {
+    const result = await db
+      .delete(galleryImages)
+      .where(eq(galleryImages.id, id));
+    return result.rowCount > 0;
+  }
+
+  // Review methods
+  async getAllReviews(): Promise<Review[]> {
+    return await db.select().from(reviews).orderBy(reviews.displayOrder);
+  }
+
+  async getApprovedReviews(): Promise<Review[]> {
+    return await db
+      .select()
+      .from(reviews)
+      .where(eq(reviews.isApproved, true))
+      .orderBy(reviews.displayOrder);
+  }
+
+  async createReview(insertReview: InsertReview): Promise<Review> {
+    const [review] = await db
+      .insert(reviews)
+      .values(insertReview)
+      .returning();
+    return review;
+  }
+
+  async updateReview(id: number, updates: Partial<Review>): Promise<Review | undefined> {
+    const [updated] = await db
+      .update(reviews)
+      .set(updates)
+      .where(eq(reviews.id, id))
+      .returning();
+    return updated;
+  }
+
+  async deleteReview(id: number): Promise<boolean> {
+    const result = await db
+      .delete(reviews)
+      .where(eq(reviews.id, id));
+    return result.rowCount > 0;
   }
 }
 

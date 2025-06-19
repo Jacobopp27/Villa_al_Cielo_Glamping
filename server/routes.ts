@@ -13,6 +13,13 @@ import {
   sendReservationExpiredToGuest 
 } from "./email";
 
+// Extend session interface for admin authentication
+declare module 'express-session' {
+  interface SessionData {
+    adminId?: number;
+  }
+}
+
 // Google Calendar API setup
 import { google } from 'googleapis';
 
