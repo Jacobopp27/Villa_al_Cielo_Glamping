@@ -108,15 +108,17 @@ export const insertGalleryImageSchema = createInsertSchema(galleryImages).pick({
   description: true,
   imageUrl: true,
   displayOrder: true,
-  isActive: true,
+}).extend({
+  isActive: z.boolean().default(true),
 });
 
 export const insertReviewSchema = createInsertSchema(reviews).pick({
   guestName: true,  
   rating: true,
   comment: true,
-  isApproved: true,
   displayOrder: true,
+}).extend({
+  isApproved: z.boolean().default(false),
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;

@@ -1,4 +1,23 @@
-import { users, reservations, cabins, type User, type InsertUser, type Reservation, type InsertReservation, type Cabin, type InsertCabin } from "@shared/schema";
+import { 
+  users, 
+  reservations, 
+  cabins, 
+  adminUsers,
+  galleryImages,
+  reviews,
+  type User, 
+  type InsertUser, 
+  type Reservation, 
+  type InsertReservation, 
+  type Cabin, 
+  type InsertCabin,
+  type AdminUser,
+  type InsertAdminUser,
+  type GalleryImage,
+  type InsertGalleryImage,
+  type Review,
+  type InsertReview
+} from "@shared/schema";
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -24,6 +43,25 @@ export interface IStorage {
   updateReservationStatus(id: number, status: "pending" | "confirmed" | "cancelled" | "expired", calendarEventId?: string): Promise<Reservation | undefined>;
   getExpiredReservations(): Promise<Reservation[]>;
   getReservationByConfirmationCode(confirmationCode: string): Promise<Reservation | undefined>;
+
+  // Admin methods
+  getAdminByUsername(username: string): Promise<AdminUser | undefined>;
+  getAllAdmins(): Promise<AdminUser[]>;
+  createAdmin(admin: InsertAdminUser): Promise<AdminUser>;
+
+  // Gallery methods
+  getAllGalleryImages(): Promise<GalleryImage[]>;
+  getActiveGalleryImages(): Promise<GalleryImage[]>;
+  createGalleryImage(image: InsertGalleryImage): Promise<GalleryImage>;
+  updateGalleryImage(id: number, updates: Partial<GalleryImage>): Promise<GalleryImage | undefined>;
+  deleteGalleryImage(id: number): Promise<boolean>;
+
+  // Review methods
+  getAllReviews(): Promise<Review[]>;
+  getApprovedReviews(): Promise<Review[]>;
+  createReview(review: InsertReview): Promise<Review>;
+  updateReview(id: number, updates: Partial<Review>): Promise<Review | undefined>;
+  deleteReview(id: number): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {

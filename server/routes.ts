@@ -1,9 +1,11 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertReservationSchema } from "@shared/schema";
+import { insertReservationSchema, insertAdminUserSchema, insertGalleryImageSchema, insertReviewSchema } from "@shared/schema";
 import { z } from "zod";
 import crypto from "crypto";
+import bcrypt from "bcrypt";
+import session from "express-session";
 import { 
   sendReservationConfirmationToGuest, 
   sendReservationNotificationToOwner,
@@ -148,7 +150,25 @@ function initializeGoogleCalendar() {
   }
 }
 
+// Middleware for admin authentication
+const requireAdminAuth = (req: any, res: any, next: any) => {
+  if (!req.session?.adminId) {
+    return res.status(401).json({ error: "Admin authentication required" });
+  }
+  next();
+};
+
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Session configuration for admin panel
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'villa-al-cielo-admin-secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: false, // Set to true in production with HTTPS
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+  }));
   // Initialize Google Calendar
   calendar = initializeGoogleCalendar();
 
@@ -379,20 +399,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Generate confirmation code and freeze period (12 hours)
+      // Generate confirmation code and freeze period (24 hours)
       const confirmationCode = crypto.randomBytes(4).toString('hex').toUpperCase();
       const frozenUntil = new Date();
-      frozenUntil.setHours(frozenUntil.getHours() + 12);
+      frozenUntil.setHours(frozenUntil.getHours() + 24);
 
-      // Payment instructions
+      // Payment instructions (50% deposit)
+      const depositAmount = Math.round(validatedData.totalPrice * 0.5);
       const paymentInstructions = `
-        Banco: Bancolombia
-        Tipo de Cuenta: Ahorros
-        Número de Cuenta: 12345678901
-        Titular: Villa al Cielo
-        Monto: $${validatedData.totalPrice.toLocaleString()} COP
+        ABONO DEL 50% REQUERIDO: $${depositAmount.toLocaleString()} COP
         
-        Envía el comprobante de pago a villaalcielo@example.com
+        Titular: Jacobo Posada
+        Banco: Bancolombia - Ahorros
+        Número de Cuenta: 55182818363
+        
+        Envía el comprobante por WhatsApp: +57 310 824 9004
         Incluye tu código de confirmación: ${confirmationCode}
       `;
 
@@ -577,6 +598,375 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ========== ADMIN PANEL ROUTES ==========
+
+  // Admin login
+  app.post("/api/admin/login", async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      
+      if (!username || !password) {
+        return res.status(400).json({ error: "Username and password required" });
+      }
+
+      const admin = await storage.getAdminByUsername(username);
+      if (!admin) {
+        return res.status(401).json({ error: "Invalid credentials" });
+      }
+
+      const validPassword = await bcrypt.compare(password, admin.password);
+      if (!validPassword) {
+        return res.status(401).json({ error: "Invalid credentials" });
+      }
+
+      req.session.adminId = admin.id;
+      res.json({ message: "Login successful", adminId: admin.id });
+    } catch (error) {
+      console.error("Admin login error:", error);
+      res.status(500).json({ error: "Login failed" });
+    }
+  });
+
+  // Admin logout
+  app.post("/api/admin/logout", (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ error: "Logout failed" });
+      }
+      res.json({ message: "Logout successful" });
+    });
+  });
+
+  // Check admin auth status
+  app.get("/api/admin/auth", (req, res) => {
+    if (req.session?.adminId) {
+      res.json({ authenticated: true, adminId: req.session.adminId });
+    } else {
+      res.json({ authenticated: false });
+    }
+  });
+
+  // Create initial admin user (for first setup)
+  app.post("/api/admin/setup", async (req, res) => {
+    try {
+      const existingAdmins = await storage.getAllAdmins();
+      if (existingAdmins.length > 0) {
+        return res.status(400).json({ error: "Admin already exists" });
+      }
+
+      const { username, password } = req.body;
+      if (!username || !password) {
+        return res.status(400).json({ error: "Username and password required" });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const admin = await storage.createAdmin({ username, password: hashedPassword });
+      
+      res.json({ message: "Admin created successfully", adminId: admin.id });
+    } catch (error) {
+      console.error("Admin setup error:", error);
+      res.status(500).json({ error: "Setup failed" });
+    }
+  });
+
+  // ========== ADMIN DASHBOARD ROUTES ==========
+
+  // Get dashboard statistics
+  app.get("/api/admin/dashboard/stats", requireAdminAuth, async (req, res) => {
+    try {
+      const reservations = await storage.getAllReservations();
+      const currentYear = new Date().getFullYear();
+      
+      const stats = {
+        totalReservations: reservations.length,
+        pendingReservations: reservations.filter(r => r.status === 'pending').length,
+        confirmedReservations: reservations.filter(r => r.status === 'confirmed').length,
+        totalRevenue: reservations
+          .filter(r => r.status === 'confirmed')
+          .reduce((sum, r) => sum + r.totalPrice, 0),
+        thisYearReservations: reservations
+          .filter(r => new Date(r.createdAt!).getFullYear() === currentYear).length,
+        monthlyData: getMonthlyReservationData(reservations),
+        revenueData: getMonthlyRevenueData(reservations),
+        cabinOccupancy: getCabinOccupancyData(reservations)
+      };
+      
+      res.json(stats);
+    } catch (error) {
+      console.error("Error fetching dashboard stats:", error);
+      res.status(500).json({ error: "Failed to fetch dashboard statistics" });
+    }
+  });
+
+  // ========== RESERVATION MANAGEMENT ROUTES ==========
+
+  // Get all reservations for admin
+  app.get("/api/admin/reservations", requireAdminAuth, async (req, res) => {
+    try {
+      const reservations = await storage.getAllReservations();
+      const cabins = await storage.getAllCabins();
+      
+      const enrichedReservations = await Promise.all(
+        reservations.map(async (reservation) => {
+          const cabin = cabins.find(c => c.id === reservation.cabinId);
+          return {
+            ...reservation,
+            cabin: cabin || null
+          };
+        })
+      );
+      
+      res.json(enrichedReservations);
+    } catch (error) {
+      console.error("Error fetching admin reservations:", error);
+      res.status(500).json({ error: "Failed to fetch reservations" });
+    }
+  });
+
+  // Update reservation status (approve/deny)
+  app.patch("/api/admin/reservations/:id/status", requireAdminAuth, async (req, res) => {
+    try {
+      const reservationId = parseInt(req.params.id);
+      const { status, calendarEventId } = req.body;
+      
+      if (!['confirmed', 'cancelled', 'expired'].includes(status)) {
+        return res.status(400).json({ error: "Invalid status" });
+      }
+
+      const updatedReservation = await storage.updateReservationStatus(
+        reservationId, 
+        status, 
+        calendarEventId
+      );
+
+      if (!updatedReservation) {
+        return res.status(404).json({ error: "Reservation not found" });
+      }
+
+      // Send appropriate email based on status
+      const cabin = await storage.getCabin(updatedReservation.cabinId);
+      if (cabin) {
+        if (status === 'confirmed') {
+          await sendReservationConfirmedToGuest(updatedReservation, cabin);
+        } else if (status === 'expired') {
+          await sendReservationExpiredToGuest(updatedReservation, cabin);
+        }
+      }
+
+      res.json(updatedReservation);
+    } catch (error) {
+      console.error("Error updating reservation status:", error);
+      res.status(500).json({ error: "Failed to update reservation" });
+    }
+  });
+
+  // ========== GALLERY MANAGEMENT ROUTES ==========
+
+  // Get all gallery images
+  app.get("/api/gallery", async (req, res) => {
+    try {
+      const images = await storage.getActiveGalleryImages();
+      res.json(images);
+    } catch (error) {
+      console.error("Error fetching gallery:", error);
+      res.status(500).json({ error: "Failed to fetch gallery" });
+    }
+  });
+
+  // Get all gallery images for admin
+  app.get("/api/admin/gallery", requireAdminAuth, async (req, res) => {
+    try {
+      const images = await storage.getAllGalleryImages();
+      res.json(images);
+    } catch (error) {
+      console.error("Error fetching admin gallery:", error);
+      res.status(500).json({ error: "Failed to fetch gallery" });
+    }
+  });
+
+  // Add gallery image
+  app.post("/api/admin/gallery", requireAdminAuth, async (req, res) => {
+    try {
+      const validatedData = insertGalleryImageSchema.parse(req.body);
+      const image = await storage.createGalleryImage(validatedData);
+      res.status(201).json(image);
+    } catch (error) {
+      console.error("Error adding gallery image:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid image data", details: error.errors });
+      }
+      res.status(500).json({ error: "Failed to add image" });
+    }
+  });
+
+  // Update gallery image
+  app.patch("/api/admin/gallery/:id", requireAdminAuth, async (req, res) => {
+    try {
+      const imageId = parseInt(req.params.id);
+      const updates = req.body;
+      const updatedImage = await storage.updateGalleryImage(imageId, updates);
+      
+      if (!updatedImage) {
+        return res.status(404).json({ error: "Image not found" });
+      }
+      
+      res.json(updatedImage);
+    } catch (error) {
+      console.error("Error updating gallery image:", error);
+      res.status(500).json({ error: "Failed to update image" });
+    }
+  });
+
+  // Delete gallery image
+  app.delete("/api/admin/gallery/:id", requireAdminAuth, async (req, res) => {
+    try {
+      const imageId = parseInt(req.params.id);
+      const deleted = await storage.deleteGalleryImage(imageId);
+      
+      if (!deleted) {
+        return res.status(404).json({ error: "Image not found" });
+      }
+      
+      res.json({ message: "Image deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting gallery image:", error);
+      res.status(500).json({ error: "Failed to delete image" });
+    }
+  });
+
+  // ========== REVIEWS MANAGEMENT ROUTES ==========
+
+  // Get approved reviews for public
+  app.get("/api/reviews", async (req, res) => {
+    try {
+      const reviews = await storage.getApprovedReviews();
+      res.json(reviews);
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+      res.status(500).json({ error: "Failed to fetch reviews" });
+    }
+  });
+
+  // Get all reviews for admin
+  app.get("/api/admin/reviews", requireAdminAuth, async (req, res) => {
+    try {
+      const reviews = await storage.getAllReviews();
+      res.json(reviews);
+    } catch (error) {
+      console.error("Error fetching admin reviews:", error);
+      res.status(500).json({ error: "Failed to fetch reviews" });
+    }
+  });
+
+  // Add review
+  app.post("/api/admin/reviews", requireAdminAuth, async (req, res) => {
+    try {
+      const validatedData = insertReviewSchema.parse(req.body);
+      const review = await storage.createReview(validatedData);
+      res.status(201).json(review);
+    } catch (error) {
+      console.error("Error adding review:", error);
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid review data", details: error.errors });
+      }
+      res.status(500).json({ error: "Failed to add review" });
+    }
+  });
+
+  // Update review
+  app.patch("/api/admin/reviews/:id", requireAdminAuth, async (req, res) => {
+    try {
+      const reviewId = parseInt(req.params.id);
+      const updates = req.body;
+      const updatedReview = await storage.updateReview(reviewId, updates);
+      
+      if (!updatedReview) {
+        return res.status(404).json({ error: "Review not found" });
+      }
+      
+      res.json(updatedReview);
+    } catch (error) {
+      console.error("Error updating review:", error);
+      res.status(500).json({ error: "Failed to update review" });
+    }
+  });
+
+  // Delete review
+  app.delete("/api/admin/reviews/:id", requireAdminAuth, async (req, res) => {
+    try {
+      const reviewId = parseInt(req.params.id);
+      const deleted = await storage.deleteReview(reviewId);
+      
+      if (!deleted) {
+        return res.status(404).json({ error: "Review not found" });
+      }
+      
+      res.json({ message: "Review deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting review:", error);
+      res.status(500).json({ error: "Failed to delete review" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
+}
+
+// Helper functions for dashboard statistics
+function getMonthlyReservationData(reservations: any[]) {
+  const monthlyData = Array.from({ length: 12 }, (_, i) => ({
+    month: new Date(0, i).toLocaleString('es', { month: 'short' }),
+    reservations: 0
+  }));
+
+  reservations.forEach(reservation => {
+    if (reservation.createdAt) {
+      const month = new Date(reservation.createdAt).getMonth();
+      monthlyData[month].reservations++;
+    }
+  });
+
+  return monthlyData;
+}
+
+function getMonthlyRevenueData(reservations: any[]) {
+  const monthlyData = Array.from({ length: 12 }, (_, i) => ({
+    month: new Date(0, i).toLocaleString('es', { month: 'short' }),
+    revenue: 0
+  }));
+
+  reservations
+    .filter(r => r.status === 'confirmed')
+    .forEach(reservation => {
+      if (reservation.createdAt) {
+        const month = new Date(reservation.createdAt).getMonth();
+        monthlyData[month].revenue += reservation.totalPrice;
+      }
+    });
+
+  return monthlyData;
+}
+
+function getCabinOccupancyData(reservations: any[]) {
+  const cabinData = {
+    'Cielo': 0,
+    'Eclipse': 0,
+    'Aurora': 0
+  };
+
+  reservations
+    .filter(r => r.status === 'confirmed')
+    .forEach(reservation => {
+      // This would need cabin lookup, simplified for now
+      const cabinNames = ['Cielo', 'Eclipse', 'Aurora'];
+      const cabinName = cabinNames[reservation.cabinId - 1] || 'Unknown';
+      if (cabinData[cabinName] !== undefined) {
+        cabinData[cabinName]++;
+      }
+    });
+
+  return Object.entries(cabinData).map(([name, count]) => ({
+    cabin: name,
+    occupancy: count
+  }));
 }
