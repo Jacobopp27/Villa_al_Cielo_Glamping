@@ -82,17 +82,7 @@ export default function Home() {
               </div>
             </div>
             
-            {/* Mobile Booking Form */}
-            <div className="lg:hidden bg-white rounded-2xl shadow-xl p-6">
-              <h3 className="font-montserrat font-bold text-xl text-forest mb-4">Reserva tu Escape</h3>
-              <div className="text-center">
-                <div className="text-3xl font-bold text-forest mb-2">$299</div>
-                <div className="text-charcoal">por noche</div>
-              </div>
-              <button className="w-full bg-forest hover:bg-forest/90 text-white py-4 rounded-lg font-montserrat font-semibold text-lg mt-4 transition-all">
-                Verificar Disponibilidad
-              </button>
-            </div>
+            
           </div>
         </div>
       </section>

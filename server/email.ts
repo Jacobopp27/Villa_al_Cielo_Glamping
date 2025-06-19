@@ -70,7 +70,7 @@ export async function sendReservationConfirmationToGuest(
       
       <p>Hola <strong>${reservation.guestName}</strong>,</p>
       
-      <p>Hemos recibido tu solicitud de reserva. Tu reserva está <strong>congelada por 12 horas</strong> mientras realizas el pago.</p>
+      <p>¡Gracias por elegirnos! Hemos recibido tu solicitud de reserva. Tu reserva está <strong>congelada por 24 horas</strong> mientras realizas el abono del 50%.</p>
       
       <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0;">
         <h3 style="color: #2d5a27; margin-top: 0;">Detalles de tu Reserva</h3>
