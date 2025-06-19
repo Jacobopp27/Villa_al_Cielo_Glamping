@@ -15,6 +15,21 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { 
+  BarChart, 
+  Bar, 
+  LineChart, 
+  Line, 
+  PieChart, 
+  Pie, 
+  Cell, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  Legend, 
+  ResponsiveContainer 
+} from "recharts";
+import { 
   Calendar,
   BarChart3,
   Users,
@@ -343,31 +358,92 @@ export default function AdminDashboard() {
               </Card>
             </div>
 
-            {/* Charts would go here */}
+            {/* Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
                   <CardTitle>Reservas por Mes</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-center py-8 text-charcoal/60">
-                    Gráfico de reservas mensuales
-                    <br />
-                    (Implementar con recharts)
-                  </div>
+                  {(stats as any)?.monthlyData ? (
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart data={(stats as any).monthlyData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="month" />
+                        <YAxis />
+                        <Tooltip />
+                        <Bar dataKey="reservations" fill="#1e40af" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="text-center py-8 text-charcoal/60">
+                      Cargando datos del gráfico...
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Ingresos por Mes</CardTitle>
+                  <CardTitle>Ingresos por Mes (COP)</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-center py-8 text-charcoal/60">
-                    Gráfico de ingresos mensuales
-                    <br />
-                    (Implementar con recharts)
-                  </div>
+                  {(stats as any)?.revenueData ? (
+                    <ResponsiveContainer width="100%" height={300}>
+                      <LineChart data={(stats as any).revenueData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="month" />
+                        <YAxis />
+                        <Tooltip formatter={(value: number) => [`$${value.toLocaleString()} COP`, 'Ingresos']} />
+                        <Line type="monotone" dataKey="revenue" stroke="#fbbf24" strokeWidth={3} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="text-center py-8 text-charcoal/60">
+                      Cargando datos del gráfico...
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Cabin Occupancy Chart */}
+            <div className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Ocupación por Cabaña</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {(stats as any)?.cabinOccupancy ? (
+                    <ResponsiveContainer width="100%" height={300}>
+                      <PieChart>
+                        <Pie
+                          data={(stats as any).cabinOccupancy}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          label={({ cabin, occupancy }: any) => `${cabin}: ${occupancy}`}
+                          outerRadius={80}
+                          fill="#8884d8"
+                          dataKey="occupancy"
+                        >
+                          {(stats as any).cabinOccupancy.map((entry: any, index: number) => (
+                            <Cell key={`cell-${index}`} fill={
+                              entry.cabin === 'Cielo' ? '#3b82f6' :
+                              entry.cabin === 'Eclipse' ? '#8b5cf6' :
+                              entry.cabin === 'Aurora' ? '#10b981' : '#6b7280'
+                            } />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                        <Legend />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="text-center py-8 text-charcoal/60">
+                      Cargando datos del gráfico...
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>

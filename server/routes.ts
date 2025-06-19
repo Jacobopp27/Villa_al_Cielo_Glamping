@@ -992,7 +992,7 @@ function getMonthlyRevenueData(reservations: any[]) {
 }
 
 function getCabinOccupancyData(reservations: any[]) {
-  const cabinData = {
+  const cabinData: Record<string, number> = {
     'Cielo': 0,
     'Eclipse': 0,
     'Aurora': 0
@@ -1001,9 +1001,13 @@ function getCabinOccupancyData(reservations: any[]) {
   reservations
     .filter(r => r.status === 'confirmed')
     .forEach(reservation => {
-      // This would need cabin lookup, simplified for now
-      const cabinNames = ['Cielo', 'Eclipse', 'Aurora'];
-      const cabinName = cabinNames[reservation.cabinId - 1] || 'Unknown';
+      // Map cabin IDs to names - assuming ID 1=Cielo, 2=Eclipse, 3=Aurora
+      const cabinNames: Record<number, string> = {
+        1: 'Cielo',
+        2: 'Eclipse', 
+        3: 'Aurora'
+      };
+      const cabinName = cabinNames[reservation.cabinId] || 'Unknown';
       if (cabinData[cabinName] !== undefined) {
         cabinData[cabinName]++;
       }
