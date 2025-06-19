@@ -741,16 +741,114 @@ export default function AdminDashboard() {
           <TabsContent value="calendar" className="mt-6">
             <Card>
               <CardHeader>
-                <CardTitle>Calendario de Disponibilidad</CardTitle>
+                <CardTitle>Calendario de Reservas</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-12 text-charcoal/60">
-                  <Calendar className="h-16 w-16 mx-auto mb-4 text-charcoal/30" />
-                  <h3 className="text-lg font-semibold mb-2">Vista de Calendario</h3>
-                  <p>Aquí se mostraría el calendario integrado con Google Calendar</p>
-                  <p className="text-sm mt-2">
-                    Fechas ocupadas, disponibles y bloqueadas
-                  </p>
+                <div className="space-y-4">
+                  {(() => {
+                    const filteredReservations = (reservations as any[]) || [];
+                    
+                    // Group reservations by date
+                    const reservationsByDate = filteredReservations.reduce((acc: any, reservation: any) => {
+                      const checkInDate = reservation.checkIn;
+                      if (!acc[checkInDate]) {
+                        acc[checkInDate] = [];
+                      }
+                      acc[checkInDate].push(reservation);
+                      return acc;
+                    }, {});
+
+                    const today = new Date();
+                    const startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+                    const endDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+                    const dates = [];
+                    for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+                      dates.push(new Date(d));
+                    }
+
+                    // Add empty cells for the first week
+                    const firstDayOfWeek = startDate.getDay();
+                    const emptyCells = Array(firstDayOfWeek).fill(null);
+
+                    return (
+                      <div>
+                        <div className="text-lg font-semibold mb-4 text-center">
+                          {today.toLocaleDateString('es-CO', { month: 'long', year: 'numeric' })}
+                        </div>
+                        <div className="grid grid-cols-7 gap-2">
+                          {/* Header */}
+                          {['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].map(day => (
+                            <div key={day} className="text-center font-semibold text-charcoal/70 p-2">
+                              {day}
+                            </div>
+                          ))}
+                          
+                          {/* Empty cells for first week */}
+                          {emptyCells.map((_, index) => (
+                            <div key={`empty-${index}`} className="min-h-[80px]"></div>
+                          ))}
+                          
+                          {/* Calendar days */}
+                          {dates.map((date) => {
+                            const dateStr = date.toISOString().split('T')[0];
+                            const dayReservations = reservationsByDate[dateStr] || [];
+                            const isToday = date.toDateString() === today.toDateString();
+                            
+                            return (
+                              <div
+                                key={dateStr}
+                                className={`min-h-[80px] p-2 border rounded-lg ${
+                                  isToday ? 'bg-blue-50 border-blue-200' : 'bg-white border-gray-200'
+                                }`}
+                              >
+                                <div className="text-sm font-medium text-charcoal/80 mb-1">
+                                  {date.getDate()}
+                                </div>
+                                <div className="space-y-1">
+                                  {dayReservations.slice(0, 2).map((reservation: any) => (
+                                    <div
+                                      key={reservation.id}
+                                      className={`text-xs p-1 rounded text-white ${
+                                        reservation.status === 'confirmed' 
+                                          ? 'bg-green-500' 
+                                          : reservation.status === 'pending'
+                                          ? 'bg-yellow-500'
+                                          : 'bg-red-500'
+                                      }`}
+                                      title={`${reservation.guestName} - ${reservation.status}`}
+                                    >
+                                      {reservation.guestName.split(' ')[0]}
+                                    </div>
+                                  ))}
+                                  {dayReservations.length > 2 && (
+                                    <div className="text-xs text-charcoal/60">
+                                      +{dayReservations.length - 2} más
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        
+                        <div className="mt-4 flex justify-center space-x-4 text-sm">
+                          <div className="flex items-center">
+                            <div className="w-3 h-3 bg-green-500 rounded mr-2"></div>
+                            <span>Confirmadas</span>
+                          </div>
+                          <div className="flex items-center">
+                            <div className="w-3 h-3 bg-yellow-500 rounded mr-2"></div>
+                            <span>Pendientes</span>
+                          </div>
+                          <div className="flex items-center">
+                            <div className="w-3 h-3 bg-red-500 rounded mr-2"></div>
+                            <span>Canceladas/Expiradas</span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
               </CardContent>
             </Card>
