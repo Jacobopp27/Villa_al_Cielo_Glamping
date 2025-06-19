@@ -396,7 +396,7 @@ export default function AdminDashboard() {
               <CardContent>
                 <div className="space-y-4">
                   {(() => {
-                    let filteredReservations = reservations || [];
+                    let filteredReservations = (reservations as any[]) || [];
                     
                     // Filter reservations based on selected filter
                     if (reservationFilter !== "all") {
