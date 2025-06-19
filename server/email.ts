@@ -6,8 +6,8 @@ if (process.env.SENDGRID_API_KEY) {
   mailService.setApiKey(process.env.SENDGRID_API_KEY);
 }
 
-// For now, use a default email that needs to be verified in SendGrid
-const OWNER_EMAIL = "noreply@villaalcielo.com";
+// Use the verified sender from environment
+const OWNER_EMAIL = process.env.SENDGRID_VERIFIED_SENDER || "jacobopp7@gmail.com";
 
 // Check if required environment variables exist
 if (!process.env.SENDGRID_API_KEY) {
@@ -27,13 +27,34 @@ interface EmailParams {
 }
 
 async function sendEmail(params: EmailParams): Promise<boolean> {
-  // Temporarily disable SendGrid and log all emails for manual monitoring
-  console.log('📧 Email system temporarily logging emails for manual review');
-  logEmailDetails(params);
+  if (!process.env.SENDGRID_API_KEY) {
+    console.warn('SendGrid API key not configured, logging email details instead');
+    logEmailDetails(params);
+    return false;
+  }
   
-  // TODO: Enable SendGrid once verified sender email is properly configured
-  // For now, all emails are logged and can be sent manually
-  return true; // Return true to indicate the email was "processed" (logged)
+  try {
+    console.log(`Sending email to: ${params.to}`);
+    console.log(`Subject: ${params.subject}`);
+    
+    const result = await mailService.send({
+      to: params.to,
+      from: OWNER_EMAIL,
+      subject: params.subject,
+      text: params.text || params.subject,
+      html: params.html,
+    });
+    
+    console.log('Email sent successfully');
+    return true;
+  } catch (error: any) {
+    console.error('SendGrid email failed, logging details instead:');
+    console.error('Error:', error.message);
+    
+    // Log email content for manual processing
+    logEmailDetails(params);
+    return false;
+  }
 }
 
 function logEmailDetails(params: EmailParams) {

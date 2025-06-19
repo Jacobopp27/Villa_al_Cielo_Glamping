@@ -387,7 +387,7 @@ export default function AdminDashboard() {
                           <h3 className="font-semibold text-lg">{reservation.guestName}</h3>
                           <p className="text-charcoal/70">{reservation.guestEmail}</p>
                           <p className="text-sm text-charcoal/60">
-                            {reservation.checkIn} - {reservation.checkOut} | {reservation.guests} huéspedes
+                            {reservation.checkIn} - {reservation.checkOut}
                           </p>
                           <p className="text-sm font-medium text-green-600">
                             ${reservation.totalPrice.toLocaleString()} COP
