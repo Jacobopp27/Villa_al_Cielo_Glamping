@@ -1,4 +1,4 @@
-import heroImage from "@assets/IMG_3300.jpeg";
+
 
 export default function HeroSection() {
   const scrollToBooking = () => {
@@ -16,16 +16,24 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative h-screen flex items-center justify-center">
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat" 
-        style={{
-          backgroundImage: `url(${heroImage})`
-        }}
-      />
-      <div className="absolute inset-0 bg-black/40" />
+    <section className="relative h-screen flex items-center justify-center bg-gradient-to-br from-nature-beige via-nature-background to-nature-sand">
+      {/* Patrón de textura sutil para darle profundidad */}
+      <div className="absolute inset-0 opacity-10">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="nature-pattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+              <circle cx="30" cy="30" r="1.5" fill="#6b705c" opacity="0.3"/>
+              <circle cx="15" cy="15" r="1" fill="#cb997e" opacity="0.2"/>
+              <circle cx="45" cy="45" r="1" fill="#cb997e" opacity="0.2"/>
+              <circle cx="45" cy="15" r="0.8" fill="#a5a58d" opacity="0.15"/>
+              <circle cx="15" cy="45" r="0.8" fill="#a5a58d" opacity="0.15"/>
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#nature-pattern)"/>
+        </svg>
+      </div>
       
-      <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-4">
+      <div className="relative z-10 text-center text-nature-text max-w-4xl mx-auto px-4">
         <h1 className="font-montserrat font-bold text-5xl md:text-7xl mb-6 leading-tight">
           Conexión, Tranquilidad<br />
           <span className="text-gold">y Naturaleza</span>
