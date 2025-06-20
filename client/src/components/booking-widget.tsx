@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, Loader2 } from "lucide-react";
+import ReservationSuccessModal from "./reservation-success-modal";
 
 const bookingSchema = z.object({
   cabinId: z.number().min(1, "Debe seleccionar una cabaña"),
@@ -33,6 +34,8 @@ export default function BookingWidget() {
   const [dateRange, setDateRange] = useState<{ from?: Date; to?: Date }>({});
   const [selectedCabin, setSelectedCabin] = useState<any>(null);
   const [wantsAsado, setWantsAsado] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [reservationData, setReservationData] = useState<{ email: string; confirmationCode: string } | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -93,11 +96,12 @@ export default function BookingWidget() {
       return response.json();
     },
     onSuccess: (data) => {
-      toast({
-        title: "¡Reserva Creada Exitosamente!",
-        description: `Código de confirmación: ${data.confirmationCode}. Revisa tu email para instrucciones de pago.`,
-        duration: 10000,
+      // Set reservation data for success modal
+      setReservationData({
+        email: form.getValues('guestEmail'),
+        confirmationCode: data.confirmationCode
       });
+      setShowSuccessModal(true);
       
       // Reset form
       form.reset();
@@ -467,6 +471,19 @@ export default function BookingWidget() {
           </Card>
         </div>
       </section>
+
+      {/* Success Modal */}
+      {reservationData && (
+        <ReservationSuccessModal
+          isOpen={showSuccessModal}
+          onClose={() => {
+            setShowSuccessModal(false);
+            setReservationData(null);
+          }}
+          guestEmail={reservationData.email}
+          confirmationCode={reservationData.confirmationCode}
+        />
+      )}
     </>
   );
 }
