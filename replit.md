@@ -59,6 +59,7 @@ A modern glamping reservation platform specializing in immersive nature experien
 - **Compact Reservation Modal (Dec 20, 2025):** Redesigned success modal to be more compact and mobile-friendly. Fixed HTML nesting warnings by removing problematic DialogDescription structure. Reduced modal size from md to sm with condensed layout and smaller text/icons.
 - **Enhanced Reservation Management (Dec 20, 2025):** Added cancel and delete functionality to admin panel. Administrators can now cancel confirmed/pending reservations (sets status to cancelled) or completely delete reservations from the system. Both actions include confirmation dialogs and update statistics in real-time.
 - **Microsoft Email Optimization (Dec 20, 2025):** Implemented specialized email templates and headers for Microsoft domains (Outlook, Hotmail, Live). Features formal tone, enhanced authentication headers, disabled tracking, and Microsoft-specific configuration to improve deliverability to these commonly filtered email providers.
+- **Complete Gallery Restoration (Dec 20, 2025):** Restored full image gallery with all 12 authentic property photos (IMG_3297-3309, excluding IMG_3305). Fixed data structure issues and ensured all images display correctly in both public gallery and admin panel.
 
 ## User Preferences
 - **Language:** Spanish for all user-facing content
