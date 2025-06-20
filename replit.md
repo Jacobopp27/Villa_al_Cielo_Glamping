@@ -56,6 +56,7 @@ A modern glamping reservation platform specializing in immersive nature experien
 - **Enhanced Admin Responsive Design (Dec 19, 2025):** Fixed mobile layout for approve/deny buttons with proper spacing and icon-only display on small screens
 - **Logo Integration & PWA Setup (Dec 19, 2025):** Added Villa al Cielo geometric logo as favicon, Apple touch icon, and PWA metadata for app-like experience. Social media integration with real Instagram and Facebook links.
 - **Optimized Email System (Dec 20, 2025):** Implemented robust SendGrid-based email system with enhanced deliverability features. Gmail API temporarily disabled due to permission issues. SendGrid configured with proper headers, tracking disabled, and verified sender authentication for maximum inbox delivery rates.
+- **Compact Reservation Modal (Dec 20, 2025):** Redesigned success modal to be more compact and mobile-friendly. Fixed HTML nesting warnings by removing problematic DialogDescription structure. Reduced modal size from md to sm with condensed layout and smaller text/icons.
 
 ## User Preferences
 - **Language:** Spanish for all user-facing content
