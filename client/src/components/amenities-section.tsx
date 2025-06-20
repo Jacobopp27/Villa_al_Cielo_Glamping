@@ -1,4 +1,4 @@
-import { Wifi, Flame, UtensilsCrossed, ShowerHead, Footprints, Car } from "lucide-react";
+import { Wifi, Waves, UtensilsCrossed, ShowerHead, Activity, Car } from "lucide-react";
 
 const amenities = [
   {
@@ -7,9 +7,9 @@ const amenities = [
     description: "Mantente conectado con acceso a internet de alta velocidad durante tu estadía."
   },
   {
-    icon: Flame,
-    title: "Fogata",
-    description: "Reúnete alrededor de la fogata para historias nocturnas y malvaviscos bajo las estrellas."
+    icon: Waves,
+    title: "Jacuzzi",
+    description: "Relájate en el jacuzzi privado mientras disfrutas de las vistas panorámicas y la naturaleza."
   },
   {
     icon: UtensilsCrossed,
@@ -22,9 +22,9 @@ const amenities = [
     description: "Baño privado limpio con ducha caliente y productos ecológicos."
   },
   {
-    icon: Footprints,
-    title: "Senderos",
-    description: "Acceso directo a senderos escénicos y caminatas en la naturaleza."
+    icon: Activity,
+    title: "Malla Catamarán",
+    description: "Disfruta de momentos de relajación en nuestra malla catamarán con vistas espectaculares."
   },
   {
     icon: Car,

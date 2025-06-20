@@ -74,8 +74,8 @@ export default function Footer() {
           <div>
             <h3 className="font-montserrat font-semibold text-lg mb-4">Contacto</h3>
             <ul className="space-y-2 text-white/80">
-              <li>(555) 123-4567</li>
-              <li>reservas@villaalcielo.com</li>
+              <li>+57 310 502 3711</li>
+              <li>admin@villaalcielo.com</li>
               <li>Barbosa, Antioquia</li>
               <li>Colombia</li>
             </ul>

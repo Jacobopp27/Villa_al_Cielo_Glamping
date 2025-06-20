@@ -24,11 +24,11 @@ export default function ContactSection() {
               </div>
               <div className="flex items-center">
                 <Phone className="text-[hsl(var(--nature-olive))] mr-4 w-5 h-5" />
-                <span className="text-[hsl(var(--nature-text))]">+57 310 824 9004</span>
+                <span className="text-[hsl(var(--nature-text))]">+57 310 502 3711</span>
               </div>
               <div className="flex items-center">
                 <Mail className="text-[hsl(var(--nature-olive))] mr-4 w-5 h-5" />
-                <span className="text-[hsl(var(--nature-text))]">reservas@villaalcielo.com</span>
+                <span className="text-[hsl(var(--nature-text))]">admin@villaalcielo.com</span>
               </div>
               <div className="flex items-center">
                 <Clock className="text-[hsl(var(--nature-olive))] mr-4 w-5 h-5" />
