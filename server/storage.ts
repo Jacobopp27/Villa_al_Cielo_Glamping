@@ -174,14 +174,19 @@ export class MemStorage implements IStorage {
     });
   }
 
-  async createReservation(insertReservation: InsertReservation): Promise<Reservation> {
+  async createReservation(insertReservation: InsertReservation & { 
+    confirmationCode: string; 
+    frozenUntil: Date;
+    paymentInstructions?: string;
+  }): Promise<Reservation> {
     const id = this.currentReservationId++;
     const reservation: Reservation = {
       ...insertReservation,
       id,
-      status: "confirmed",
+      status: "pending",
       googleCalendarEventId: null,
       createdAt: new Date(),
+      updatedAt: new Date(),
       includesAsado: insertReservation.includesAsado ?? false,
     };
     this.reservations.set(id, reservation);
@@ -196,6 +201,153 @@ export class MemStorage implements IStorage {
       return updated;
     }
     return undefined;
+  }
+
+  async updateReservationStatus(id: number, status: "pending" | "confirmed" | "cancelled" | "expired", calendarEventId?: string): Promise<Reservation | undefined> {
+    const reservation = this.reservations.get(id);
+    if (reservation) {
+      const updated = { 
+        ...reservation, 
+        status,
+        ...(calendarEventId && { googleCalendarEventId: calendarEventId })
+      };
+      this.reservations.set(id, updated);
+      return updated;
+    }
+    return undefined;
+  }
+
+  async getExpiredReservations(): Promise<Reservation[]> {
+    const now = new Date();
+    return Array.from(this.reservations.values()).filter(reservation => 
+      reservation.status === "pending" && 
+      reservation.frozenUntil && 
+      new Date(reservation.frozenUntil) < now
+    );
+  }
+
+  async getReservationByConfirmationCode(confirmationCode: string): Promise<Reservation | undefined> {
+    return Array.from(this.reservations.values()).find(reservation => 
+      reservation.confirmationCode === confirmationCode
+    );
+  }
+
+  // Admin methods
+  async getAdminByUsername(username: string): Promise<AdminUser | undefined> {
+    // Return a default admin for testing
+    if (username === "adminvilla") {
+      return {
+        id: 1,
+        username: "adminvilla",
+        password: "$2b$10$hashedpassword", // This would be hashed in real implementation
+        createdAt: new Date()
+      };
+    }
+    return undefined;
+  }
+
+  async getAllAdmins(): Promise<AdminUser[]> {
+    return [{
+      id: 1,
+      username: "adminvilla",
+      password: "$2b$10$hashedpassword",
+      createdAt: new Date()
+    }];
+  }
+
+  async createAdmin(admin: InsertAdminUser): Promise<AdminUser> {
+    return {
+      id: 1,
+      ...admin,
+      createdAt: new Date()
+    };
+  }
+
+  // Gallery methods
+  async getAllGalleryImages(): Promise<GalleryImage[]> {
+    return [
+      {
+        id: 1,
+        title: "Vista exterior Villa al Cielo",
+        imageUrl: "/attached_assets/IMG_3297.jpeg",
+        alt: "Vista panorámica de Villa al Cielo",
+        isActive: true,
+        order: 1,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
+  }
+
+  async getActiveGalleryImages(): Promise<GalleryImage[]> {
+    return this.getAllGalleryImages().then(images => 
+      images.filter(img => img.isActive)
+    );
+  }
+
+  async createGalleryImage(image: InsertGalleryImage): Promise<GalleryImage> {
+    return {
+      id: Date.now(),
+      ...image,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+  }
+
+  async updateGalleryImage(id: number, updates: Partial<GalleryImage>): Promise<GalleryImage | undefined> {
+    const images = await this.getAllGalleryImages();
+    const image = images.find(img => img.id === id);
+    if (image) {
+      return { ...image, ...updates, updatedAt: new Date() };
+    }
+    return undefined;
+  }
+
+  async deleteGalleryImage(id: number): Promise<boolean> {
+    return true; // Simulate successful deletion
+  }
+
+  // Review methods
+  async getAllReviews(): Promise<Review[]> {
+    return [
+      {
+        id: 1,
+        guestName: "Sarah Johnson",
+        rating: 5,
+        comment: "Una experiencia increíble en Villa al Cielo. Las cabañas son hermosas y el entorno natural es perfecto para desconectarse. ¡Definitivamente volveré!",
+        isApproved: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }
+    ];
+  }
+
+  async getApprovedReviews(): Promise<Review[]> {
+    return this.getAllReviews().then(reviews => 
+      reviews.filter(review => review.isApproved)
+    );
+  }
+
+  async createReview(review: InsertReview): Promise<Review> {
+    return {
+      id: Date.now(),
+      ...review,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+  }
+
+  async updateReview(id: number, updates: Partial<Review>): Promise<Review | undefined> {
+    const reviews = await this.getAllReviews();
+    const review = reviews.find(r => r.id === id);
+    if (review) {
+      return { ...review, ...updates, updatedAt: new Date() };
+    }
+    return undefined;
+  }
+
+  async deleteReview(id: number): Promise<boolean> {
+    return true; // Simulate successful deletion
   }
 }
 
@@ -453,4 +605,4 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-export const storage = new DatabaseStorage();
+export const storage = new MemStorage();
