@@ -338,6 +338,42 @@ export class MemStorage implements IStorage {
         displayOrder: 8,
         isActive: true,
         createdAt: new Date()
+      },
+      {
+        id: 9,
+        title: "Espacios de relajación",
+        description: "Áreas diseñadas para el descanso y la contemplación",
+        imageUrl: "/attached_assets/IMG_3306.jpeg",
+        displayOrder: 9,
+        isActive: true,
+        createdAt: new Date()
+      },
+      {
+        id: 10,
+        title: "Entorno natural",
+        description: "La belleza del paisaje que rodea Villa al Cielo",
+        imageUrl: "/attached_assets/IMG_3307.jpeg",
+        displayOrder: 10,
+        isActive: true,
+        createdAt: new Date()
+      },
+      {
+        id: 11,
+        title: "Detalles arquitectónicos",
+        description: "Elementos únicos que hacen especial cada cabaña",
+        imageUrl: "/attached_assets/IMG_3308.jpeg",
+        displayOrder: 11,
+        isActive: true,
+        createdAt: new Date()
+      },
+      {
+        id: 12,
+        title: "Experiencia completa",
+        description: "La magia de Villa al Cielo en todo su esplendor",
+        imageUrl: "/attached_assets/IMG_3309.jpeg",
+        displayOrder: 12,
+        isActive: true,
+        createdAt: new Date()
       }
     ];
   }
