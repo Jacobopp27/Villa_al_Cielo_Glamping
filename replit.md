@@ -58,6 +58,7 @@ A modern glamping reservation platform specializing in immersive nature experien
 - **Optimized Email System (Dec 20, 2025):** Implemented robust SendGrid-based email system with enhanced deliverability features. Gmail API temporarily disabled due to permission issues. SendGrid configured with proper headers, tracking disabled, and verified sender authentication for maximum inbox delivery rates.
 - **Compact Reservation Modal (Dec 20, 2025):** Redesigned success modal to be more compact and mobile-friendly. Fixed HTML nesting warnings by removing problematic DialogDescription structure. Reduced modal size from md to sm with condensed layout and smaller text/icons.
 - **Enhanced Reservation Management (Dec 20, 2025):** Added cancel and delete functionality to admin panel. Administrators can now cancel confirmed/pending reservations (sets status to cancelled) or completely delete reservations from the system. Both actions include confirmation dialogs and update statistics in real-time.
+- **Microsoft Email Optimization (Dec 20, 2025):** Implemented specialized email templates and headers for Microsoft domains (Outlook, Hotmail, Live). Features formal tone, enhanced authentication headers, disabled tracking, and Microsoft-specific configuration to improve deliverability to these commonly filtered email providers.
 
 ## User Preferences
 - **Language:** Spanish for all user-facing content
