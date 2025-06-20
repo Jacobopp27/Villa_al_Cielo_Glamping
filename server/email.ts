@@ -95,10 +95,24 @@ async function sendWithSendGrid(params: EmailParams): Promise<boolean> {
 
   const result = await sgMail.send({
     to: params.to,
-    from: OWNER_EMAIL,
+    from: {
+      email: OWNER_EMAIL,
+      name: 'Villa al Cielo'
+    },
     subject: params.subject,
     text: params.text || params.subject,
     html: params.html,
+    replyTo: OWNER_EMAIL,
+    headers: {
+      'X-Mailer': 'Villa al Cielo Reservation System',
+      'X-Priority': '3',
+      'Importance': 'Normal'
+    },
+    trackingSettings: {
+      clickTracking: { enable: false },
+      openTracking: { enable: false },
+      subscriptionTracking: { enable: false }
+    }
   });
 
   console.log(`Email sent with SendGrid to ${params.to}`);
@@ -107,35 +121,17 @@ async function sendWithSendGrid(params: EmailParams): Promise<boolean> {
 
 async function sendEmail(params: EmailParams): Promise<boolean> {
   const domain = getDomain(params.to);
-  const hotmailDomains = ['hotmail.com', 'outlook.com', 'live.com', 'msn.com'];
-
+  
   try {
-    console.log(`Sending email to: ${params.to}`);
+    console.log(`Sending email to: ${params.to} (domain: ${domain})`);
     console.log(`Subject: ${params.subject}`);
 
-    if (hotmailDomains.includes(domain)) {
-      // Intentar enviar con Gmail API para dominios de Microsoft
-      try {
-        await sendWithGmail(params);
-        return true;
-      } catch (error) {
-        console.warn('Gmail API failed, fallback to SendGrid');
-        await sendWithSendGrid(params);
-        return true;
-      }
-    } else {
-      // Enviar con SendGrid para otros dominios
-      try {
-        await sendWithSendGrid(params);
-        return true;
-      } catch (error) {
-        console.warn('SendGrid failed, trying Gmail API as fallback');
-        await sendWithGmail(params);
-        return true;
-      }
-    }
+    // Use SendGrid as primary service (Gmail API temporarily disabled due to permission issues)
+    await sendWithSendGrid(params);
+    return true;
+    
   } catch (error: any) {
-    console.error('Both email services failed, logging details instead:');
+    console.error('Email service failed, logging details for manual processing:');
     console.error('Error:', error.message);
     console.error('Full error:', error);
     
