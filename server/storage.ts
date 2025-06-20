@@ -270,12 +270,74 @@ export class MemStorage implements IStorage {
       {
         id: 1,
         title: "Vista exterior Villa al Cielo",
+        description: "Vista panorámica de las cabañas de glamping",
         imageUrl: "/attached_assets/IMG_3297.jpeg",
-        alt: "Vista panorámica de Villa al Cielo",
+        displayOrder: 1,
         isActive: true,
-        order: 1,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        createdAt: new Date()
+      },
+      {
+        id: 2,
+        title: "Cabaña Cielo - Interior",
+        description: "Interior acogedor con vista a las montañas",
+        imageUrl: "/attached_assets/IMG_3298.jpeg",
+        displayOrder: 2,
+        isActive: true,
+        createdAt: new Date()
+      },
+      {
+        id: 3,
+        title: "Cabaña Eclipse - Terraza",
+        description: "Terraza privada perfecta para relajarse",
+        imageUrl: "/attached_assets/IMG_3299.jpeg",
+        displayOrder: 3,
+        isActive: true,
+        createdAt: new Date()
+      },
+      {
+        id: 4,
+        title: "Cabaña Aurora - Vista nocturna",
+        description: "Ambiente mágico bajo las estrellas",
+        imageUrl: "/attached_assets/IMG_3300.jpeg",
+        displayOrder: 4,
+        isActive: true,
+        createdAt: new Date()
+      },
+      {
+        id: 5,
+        title: "Zona de asado y fogata",
+        description: "Área común para disfrutar del kit de asado",
+        imageUrl: "/attached_assets/IMG_3301.jpeg",
+        displayOrder: 5,
+        isActive: true,
+        createdAt: new Date()
+      },
+      {
+        id: 6,
+        title: "Senderos naturales",
+        description: "Caminos para explorar la naturaleza circundante",
+        imageUrl: "/attached_assets/IMG_3302.jpeg",
+        displayOrder: 6,
+        isActive: true,
+        createdAt: new Date()
+      },
+      {
+        id: 7,
+        title: "Vista panorámica del valle",
+        description: "Paisaje espectacular desde Villa al Cielo",
+        imageUrl: "/attached_assets/IMG_3303.jpeg",
+        displayOrder: 7,
+        isActive: true,
+        createdAt: new Date()
+      },
+      {
+        id: 8,
+        title: "Amanecer en las montañas",
+        description: "Despertar con vistas increíbles cada mañana",
+        imageUrl: "/attached_assets/IMG_3304.jpeg",
+        displayOrder: 8,
+        isActive: true,
+        createdAt: new Date()
       }
     ];
   }
@@ -290,8 +352,7 @@ export class MemStorage implements IStorage {
     return {
       id: Date.now(),
       ...image,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      createdAt: new Date()
     };
   }
 
@@ -299,7 +360,7 @@ export class MemStorage implements IStorage {
     const images = await this.getAllGalleryImages();
     const image = images.find(img => img.id === id);
     if (image) {
-      return { ...image, ...updates, updatedAt: new Date() };
+      return { ...image, ...updates };
     }
     return undefined;
   }
