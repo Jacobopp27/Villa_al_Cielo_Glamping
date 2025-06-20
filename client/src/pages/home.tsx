@@ -5,6 +5,7 @@ import AmenitiesSection from "@/components/amenities-section";
 import GallerySection from "@/components/gallery-section";
 import ReviewsSection from "@/components/reviews-section";
 import ContactSection from "@/components/contact-section";
+import PoliciesSection from "@/components/policies-section";
 import Footer from "@/components/footer";
 
 export default function Home() {
@@ -91,6 +92,7 @@ export default function Home() {
       <GallerySection />
       <ReviewsSection />
       <ContactSection />
+      <PoliciesSection />
       <Footer />
     </div>
   );
