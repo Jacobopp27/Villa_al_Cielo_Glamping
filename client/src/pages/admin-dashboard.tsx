@@ -45,7 +45,8 @@ import {
   Edit,
   Trash2,
   Eye,
-  Download
+  Download,
+  X
 } from "lucide-react";
 
 // Form schemas
@@ -521,10 +522,11 @@ export default function AdminDashboard() {
                     
                     return filteredReservations.map((reservation: any) => (
                     <div key={reservation.id} className="border rounded-lg p-4 space-y-3">
-                      <div className="flex justify-between items-start">
-                        <div>
+                      {/* Header con información básica */}
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
+                        <div className="flex-1 min-w-0">
                           <h3 className="font-semibold text-lg">{reservation.guestName}</h3>
-                          <p className="text-charcoal/70">{reservation.guestEmail}</p>
+                          <p className="text-charcoal/70 break-all">{reservation.guestEmail}</p>
                           <p className="text-sm text-charcoal/60">
                             {reservation.checkIn} - {reservation.checkOut}
                           </p>
@@ -537,42 +539,51 @@ export default function AdminDashboard() {
                             </p>
                           )}
                         </div>
-                        <div className="flex flex-col items-end gap-2">
+                        
+                        {/* Status badge - visible en ambas versiones */}
+                        <div className="flex sm:flex-col sm:items-end">
                           {getStatusBadge(reservation.status)}
+                        </div>
+                      </div>
+
+                      {/* Botones de acción - responsive */}
+                      <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t">
+                        {reservation.status === 'pending' && (
                           <div className="flex gap-2">
-                            {reservation.status === 'pending' && (
-                              <>
-                                <Button
-                                  size="sm"
-                                  onClick={() => updateReservationMutation.mutate({ 
-                                    id: reservation.id, 
-                                    status: 'confirmed' 
-                                  })}
-                                  className="bg-green-600 hover:bg-green-700"
-                                >
-                                  Aprobar
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="destructive"
-                                  onClick={() => updateReservationMutation.mutate({ 
-                                    id: reservation.id, 
-                                    status: 'cancelled' 
-                                  })}
-                                >
-                                  Rechazar
-                                </Button>
-                              </>
-                            )}
                             <Button
                               size="sm"
-                              variant="outline"
-                              onClick={() => setSelectedReservation(reservation)}
+                              onClick={() => updateReservationMutation.mutate({ 
+                                id: reservation.id, 
+                                status: 'confirmed' 
+                              })}
+                              className="bg-green-600 hover:bg-green-700 flex-1 sm:flex-none"
                             >
-                              <Eye className="h-4 w-4" />
+                              <CheckCircle className="h-4 w-4 sm:mr-2" />
+                              <span className="hidden sm:inline">Aprobar</span>
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="destructive"
+                              onClick={() => updateReservationMutation.mutate({ 
+                                id: reservation.id, 
+                                status: 'cancelled' 
+                              })}
+                              className="flex-1 sm:flex-none"
+                            >
+                              <XCircle className="h-4 w-4 sm:mr-2" />
+                              <span className="hidden sm:inline">Rechazar</span>
                             </Button>
                           </div>
-                        </div>
+                        )}
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setSelectedReservation(reservation)}
+                          className="sm:ml-auto"
+                        >
+                          <Eye className="h-4 w-4 sm:mr-2" />
+                          <span className="hidden sm:inline">Ver Detalles</span>
+                        </Button>
                       </div>
                     </div>
                     ));
