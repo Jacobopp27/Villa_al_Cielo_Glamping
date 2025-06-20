@@ -239,7 +239,7 @@ export class MemStorage implements IStorage {
       return {
         id: 1,
         username: "adminvilla",
-        password: "$2b$10$WifkIgRU.wv2VyTCjZbBceRH9IBdFiAQwjkZ2qAZwc67SW6NXRtN2", // villaalcielo2025
+        password: "$2b$10$fiJCpo/907MEpfIigpNgle8n7Q5bC2ospvXezM286xGFcmFRtqnfm", // villaalcielo2025
         createdAt: new Date()
       };
     }
