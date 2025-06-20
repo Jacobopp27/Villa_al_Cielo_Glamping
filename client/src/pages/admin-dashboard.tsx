@@ -1082,6 +1082,75 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
 
+              {/* Test Confirmation Email */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5" />
+                    Prueba de Correo de Confirmación
+                  </CardTitle>
+                  <p className="text-sm text-charcoal/70">
+                    Prueba específicamente el correo que se envía cuando se confirma una reserva.
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Email de Destino</label>
+                      <Input 
+                        type="email" 
+                        id="confirmationTestEmail"
+                        placeholder="jacobopp.27@outlook.com"
+                        className="mb-4"
+                      />
+                    </div>
+                    <Button
+                      onClick={async () => {
+                        const emailInput = document.getElementById('confirmationTestEmail') as HTMLInputElement;
+                        const email = emailInput?.value;
+                        
+                        if (!email) {
+                          toast({
+                            title: "Error",
+                            description: "Por favor ingresa un email",
+                            variant: "destructive",
+                          });
+                          return;
+                        }
+
+                        try {
+                          const response = await apiRequest("POST", "/api/admin/test-confirmation", { email });
+                          const result = await response.json();
+                          
+                          if (result.success) {
+                            toast({
+                              title: "Correo de confirmación enviado",
+                              description: `Enviado exitosamente a ${email}`,
+                            });
+                          } else {
+                            toast({
+                              title: "Error al enviar",
+                              description: result.message || "No se pudo enviar el correo",
+                              variant: "destructive",
+                            });
+                          }
+                        } catch (error: any) {
+                          toast({
+                            title: "Error",
+                            description: error.message || "Error al probar correo de confirmación",
+                            variant: "destructive",
+                          });
+                        }
+                      }}
+                      className="w-full"
+                    >
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      Enviar Correo de Confirmación de Prueba
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
               <Card>
                 <CardHeader>
                   <CardTitle>Información del Sistema</CardTitle>
@@ -1092,12 +1161,12 @@ export default function AdminDashboard() {
                       <div className="p-4 bg-blue-50 rounded-lg">
                         <h3 className="font-semibold text-blue-900 mb-2">SendGrid</h3>
                         <p className="text-sm text-blue-700">
-                          Usado por defecto para todos los dominios excepto Microsoft (Hotmail/Outlook)
+                          Usado como servicio principal para máxima entregabilidad
                         </p>
                       </div>
-                      <div className="p-4 bg-green-50 rounded-lg">
-                        <h3 className="font-semibold text-green-900 mb-2">Gmail API</h3>
-                        <p className="text-sm text-green-700">
+                      <div className="p-4 bg-yellow-50 rounded-lg">
+                        <h3 className="font-semibold text-yellow-900 mb-2">Gmail API</h3>
+                        <p className="text-sm text-yellow-700">
                           Usado para hotmail.com, outlook.com, live.com, msn.com para mejor entregabilidad
                         </p>
                       </div>
