@@ -1,8 +1,27 @@
 import sgMail from '@sendgrid/mail';
+import { google } from 'googleapis';
 import type { Reservation, Cabin } from '@shared/schema';
 
 if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+}
+
+// Configurar Gmail API con OAuth2
+let oauth2Client: any = null;
+let gmail: any = null;
+
+if (process.env.GMAIL_CLIENT_ID && process.env.GMAIL_CLIENT_SECRET && process.env.GMAIL_REFRESH_TOKEN) {
+  oauth2Client = new google.auth.OAuth2(
+    process.env.GMAIL_CLIENT_ID,
+    process.env.GMAIL_CLIENT_SECRET,
+    process.env.GMAIL_REDIRECT_URI || 'urn:ietf:wg:oauth:2.0:oob'
+  );
+
+  oauth2Client.setCredentials({
+    refresh_token: process.env.GMAIL_REFRESH_TOKEN,
+  });
+
+  gmail = google.gmail({ version: 'v1', auth: oauth2Client });
 }
 
 // Use verified Villa al Cielo email address
@@ -25,29 +44,98 @@ interface EmailParams {
   html?: string;
 }
 
-async function sendEmail(params: EmailParams): Promise<boolean> {
-  if (!process.env.SENDGRID_API_KEY) {
-    console.warn('SendGrid API key not configured, logging email details instead');
-    logEmailDetails(params);
-    return false;
+// Función para obtener el dominio del correo
+function getDomain(email: string): string {
+  return email.split('@')[1].toLowerCase();
+}
+
+// Función para enviar con Gmail API
+async function sendWithGmail(params: EmailParams): Promise<boolean> {
+  if (!gmail) {
+    throw new Error('Gmail API not configured');
   }
-  
+
+  try {
+    const utf8Subject = `=?utf-8?B?${Buffer.from(params.subject).toString('base64')}?=`;
+    const messageParts = [
+      `From: Villa al Cielo <${process.env.GMAIL_EMAIL || OWNER_EMAIL}>`,
+      `To: ${params.to}`,
+      `Subject: ${utf8Subject}`,
+      'Content-Type: text/html; charset=utf-8',
+      '',
+      params.html || params.text || '',
+    ];
+    const message = messageParts.join('\n');
+    const encodedMessage = Buffer.from(message)
+      .toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=+$/, '');
+
+    await gmail.users.messages.send({
+      userId: 'me',
+      requestBody: {
+        raw: encodedMessage,
+      },
+    });
+
+    console.log(`Email sent with Gmail API to ${params.to}`);
+    return true;
+  } catch (error) {
+    console.error('Gmail API failed:', error);
+    throw error;
+  }
+}
+
+// Función para enviar con SendGrid
+async function sendWithSendGrid(params: EmailParams): Promise<boolean> {
+  if (!process.env.SENDGRID_API_KEY) {
+    throw new Error('SendGrid API key not configured');
+  }
+
+  const result = await sgMail.send({
+    to: params.to,
+    from: OWNER_EMAIL,
+    subject: params.subject,
+    text: params.text || params.subject,
+    html: params.html,
+  });
+
+  console.log(`Email sent with SendGrid to ${params.to}`);
+  return true;
+}
+
+async function sendEmail(params: EmailParams): Promise<boolean> {
+  const domain = getDomain(params.to);
+  const hotmailDomains = ['hotmail.com', 'outlook.com', 'live.com', 'msn.com'];
+
   try {
     console.log(`Sending email to: ${params.to}`);
     console.log(`Subject: ${params.subject}`);
-    
-    const result = await sgMail.send({
-      to: params.to,
-      from: OWNER_EMAIL,
-      subject: params.subject,
-      text: params.text || params.subject,
-      html: params.html,
-    });
-    
-    console.log('Email sent successfully');
-    return true;
+
+    if (hotmailDomains.includes(domain)) {
+      // Intentar enviar con Gmail API para dominios de Microsoft
+      try {
+        await sendWithGmail(params);
+        return true;
+      } catch (error) {
+        console.warn('Gmail API failed, fallback to SendGrid');
+        await sendWithSendGrid(params);
+        return true;
+      }
+    } else {
+      // Enviar con SendGrid para otros dominios
+      try {
+        await sendWithSendGrid(params);
+        return true;
+      } catch (error) {
+        console.warn('SendGrid failed, trying Gmail API as fallback');
+        await sendWithGmail(params);
+        return true;
+      }
+    }
   } catch (error: any) {
-    console.error('SendGrid email failed, logging details instead:');
+    console.error('Both email services failed, logging details instead:');
     console.error('Error:', error.message);
     console.error('Full error:', error);
     
