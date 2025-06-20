@@ -209,7 +209,7 @@ export default function BookingWidget() {
               bookingSection.scrollIntoView({ behavior: 'smooth' });
             }
           }}
-          className="hover:bg-forest/90 text-white px-6 py-4 rounded-full shadow-2xl font-montserrat font-semibold text-lg transition-all hover:scale-105 hover:shadow-3xl bg-[#ffbf00]"
+          className="bg-[hsl(var(--nature-button))] hover:bg-[hsl(var(--nature-button-hover))] text-white px-6 py-4 rounded-full shadow-2xl font-montserrat font-semibold text-lg transition-all hover:scale-105 hover:shadow-3xl"
         >
           Reservar Ahora
         </button>
@@ -449,7 +449,7 @@ export default function BookingWidget() {
                   
                   <Button 
                     type="submit" 
-                    className="w-full bg-navy hover:bg-navy/90 text-white py-4 font-montserrat font-semibold text-lg"
+                    className="w-full bg-[hsl(var(--nature-button))] hover:bg-[hsl(var(--nature-button-hover))] text-white py-4 font-montserrat font-semibold text-lg"
                     disabled={createReservation.isPending}
                   >
                     {createReservation.isPending ? (
