@@ -46,7 +46,8 @@ import {
   Trash2,
   Eye,
   Download,
-  X
+  X,
+  Mail
 } from "lucide-react";
 
 // Form schemas
@@ -64,8 +65,15 @@ const reviewSchema = z.object({
   displayOrder: z.number().min(0).default(0),
 });
 
+const emailTestSchema = z.object({
+  email: z.string().email("Email válido requerido"),
+  subject: z.string().min(1, "Asunto requerido"),
+  message: z.string().min(1, "Mensaje requerido"),
+});
+
 type GalleryImageFormData = z.infer<typeof galleryImageSchema>;
 type ReviewFormData = z.infer<typeof reviewSchema>;
+type EmailTestFormData = z.infer<typeof emailTestSchema>;
 
 export default function AdminDashboard() {
   const { toast } = useToast();
@@ -258,6 +266,37 @@ export default function AdminDashboard() {
         description: "La reseña ha sido eliminada",
       });
       refetchReviews();
+    },
+  });
+
+  // Email test mutation
+  const emailTestForm = useForm<EmailTestFormData>({
+    resolver: zodResolver(emailTestSchema),
+    defaultValues: {
+      email: "",
+      subject: "Prueba de Sistema de Correos - Villa al Cielo",
+      message: "Este es un correo de prueba del sistema de doble ruta (SendGrid/Gmail API) para verificar la entregabilidad.",
+    },
+  });
+
+  const testEmailMutation = useMutation({
+    mutationFn: async (data: EmailTestFormData) => {
+      const response = await apiRequest("POST", "/api/admin/test-email", data);
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Correo enviado",
+        description: "El correo de prueba ha sido enviado exitosamente",
+      });
+      emailTestForm.reset();
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error al enviar correo",
+        description: error.message || "No se pudo enviar el correo de prueba",
+        variant: "destructive",
+      });
     },
   });
 
