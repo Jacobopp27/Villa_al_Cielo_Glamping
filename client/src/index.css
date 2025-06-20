@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 :root {
-  --background: 30 31% 92%; /* #ead7c4 - Beige cálido más visible */
+  --background: 200 30% 95%; /* #e8f2f7 - Azul claro suave */
   --foreground: 0 0% 23%; /* #3a3a3a */
   --muted: 30 31% 90%; /* #ffe8d6 */
   --muted-foreground: 0 0% 45%; /* #737373 */
@@ -31,10 +31,10 @@
   --nature-beige: 30 31% 90%; /* #ffe8d6 - Beige cálido */
   --nature-sand: 23 32% 64%; /* #cb997e - Arena rosado suave */
   --nature-text: 0 0% 23%; /* #3a3a3a - Gris oscuro para texto */
-  --nature-button: 60 12% 63%; /* #a5a58d - Verde pastel suave */
-  --nature-button-hover: 60 12% 71%; /* #b7b7a4 - Verde pastel hover */
+  --nature-button: 45 100% 50%; /* #FFD700 - Amarillo dorado */
+  --nature-button-hover: 45 100% 45%; /* #E6C200 - Amarillo dorado más oscuro */
   --nature-border: 28 24% 85%; /* #ddd6ce - Bordes suaves */
-  --nature-background: 30 31% 92%; /* #ead7c4 - Fondo beige cálido */
+  --nature-background: 200 30% 95%; /* #e8f2f7 - Fondo azul claro suave */
   
   /* Mantenemos algunos colores para compatibilidad */
   --navy: 77 9% 42%; /* Reemplazado por olive */
