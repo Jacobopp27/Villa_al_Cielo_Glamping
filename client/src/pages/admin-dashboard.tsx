@@ -47,7 +47,8 @@ import {
   Eye,
   Download,
   X,
-  Mail
+  Mail,
+  Ban
 } from "lucide-react";
 
 // Form schemas
@@ -664,6 +665,38 @@ export default function AdminDashboard() {
                             </Button>
                           </div>
                         )}
+                        
+                        {/* Botones adicionales para cancelar/eliminar */}
+                        {(reservation.status === 'confirmed' || reservation.status === 'pending') && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              if (confirm('¿Estás seguro de que quieres cancelar esta reserva?')) {
+                                cancelReservationMutation.mutate(reservation.id);
+                              }
+                            }}
+                            className="border-orange-300 text-orange-600 hover:bg-orange-50"
+                          >
+                            <Ban className="h-4 w-4 sm:mr-2" />
+                            <span className="hidden sm:inline">Cancelar</span>
+                          </Button>
+                        )}
+                        
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            if (confirm('¿Estás seguro de que quieres eliminar esta reserva? Esta acción no se puede deshacer.')) {
+                              deleteReservationMutation.mutate(reservation.id);
+                            }
+                          }}
+                          className="border-red-300 text-red-600 hover:bg-red-50"
+                        >
+                          <Trash2 className="h-4 w-4 sm:mr-2" />
+                          <span className="hidden sm:inline">Eliminar</span>
+                        </Button>
+                        
                         <Button
                           size="sm"
                           variant="outline"
