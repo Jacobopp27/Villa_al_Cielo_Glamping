@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 :root {
-  --background: 48 67% 98%; /* #fdfcf7 */
+  --background: 30 31% 92%; /* #ead7c4 - Beige cálido más visible */
   --foreground: 0 0% 23%; /* #3a3a3a */
   --muted: 30 31% 90%; /* #ffe8d6 */
   --muted-foreground: 0 0% 45%; /* #737373 */
@@ -34,7 +34,7 @@
   --nature-button: 60 12% 63%; /* #a5a58d - Verde pastel suave */
   --nature-button-hover: 60 12% 71%; /* #b7b7a4 - Verde pastel hover */
   --nature-border: 28 24% 85%; /* #ddd6ce - Bordes suaves */
-  --nature-background: 48 67% 98%; /* #fdfcf7 - Fondo crema */
+  --nature-background: 30 31% 92%; /* #ead7c4 - Fondo beige cálido */
   
   /* Mantenemos algunos colores para compatibilidad */
   --navy: 77 9% 42%; /* Reemplazado por olive */

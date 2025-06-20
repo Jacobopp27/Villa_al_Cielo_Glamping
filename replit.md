@@ -52,6 +52,7 @@ A modern glamping reservation platform specializing in immersive nature experien
 - **Improved Booking UX (Dec 19, 2025):** Enhanced date selection with auto-next-day, visual pricing indicators, real-time feedback, and better cabin availability display
 - **Fixed Date Overlap Logic:** Corrected reservation validation to allow same-day checkout/checkin (e.g., checkout 27th allows checkin 27th for different cabin)
 - **Admin Image Upload:** Added device upload functionality in gallery admin with multer integration for local file handling
+- **New Nature-Inspired Design (Dec 19, 2025):** Applied elegant natural color palette - olive green (#6b705c), warm beige (#ffe8d6), soft sand (#cb997e), and warm beige background (#ead7c4). Updated hero section with gradient background and navbar styling.
 
 ## User Preferences
 - **Language:** Spanish for all user-facing content
