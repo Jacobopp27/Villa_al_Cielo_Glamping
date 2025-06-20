@@ -764,6 +764,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // ========== ADMIN DASHBOARD ROUTES ==========
 
+  // Public test email endpoint for development
+  app.post("/api/test-email-public", async (req, res) => {
+    try {
+      const { email, subject, message } = req.body;
+      
+      if (!email || !subject || !message) {
+        return res.status(400).json({ error: "Email, subject, and message are required" });
+      }
+
+      // Import sendEmail function
+      const { sendReservationConfirmationToGuest } = await import('./email.js');
+      
+      // Test with a mock reservation to use existing email function
+      const testReservation = {
+        id: 999,
+        guestName: "Prueba Sistema",
+        guestEmail: email,
+        checkIn: new Date().toISOString().split('T')[0],
+        checkOut: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+        totalPrice: 200000,
+        confirmationCode: "TEST123",
+        includesAsado: false,
+        cabinId: 1,
+        guests: 2,
+        status: "pending" as const,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        frozenUntil: new Date(Date.now() + 86400000),
+        calendarEventId: null,
+        googleCalendarEventId: null,
+        paymentInstructions: null
+      };
+
+      const testCabin = {
+        id: 1,
+        name: "Cielo",
+        weekdayPrice: 200000,
+        weekendPrice: 390000,
+        isActive: true
+      };
+
+      const success = await sendReservationConfirmationToGuest(testReservation, testCabin);
+
+      if (success) {
+        res.json({ message: "Email sent successfully", emailService: "dual-route system" });
+      } else {
+        res.status(500).json({ error: "Failed to send email" });
+      }
+    } catch (error) {
+      console.error("Test email error:", error);
+      res.status(500).json({ error: "Failed to send test email" });
+    }
+  });
+
   // Test email endpoint (admin only)
   app.post("/api/admin/test-email", requireAdminAuth, async (req, res) => {
     try {
