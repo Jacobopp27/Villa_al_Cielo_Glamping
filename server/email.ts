@@ -4,13 +4,11 @@ import type { Reservation, Cabin } from '@shared/schema';
 
 const sgMail = new MailService();
 
-// Verificar que la API key esté configurada
-if (process.env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-}
+// Configurar SendGrid con la nueva API key
+sgMail.setApiKey('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');
 
-// Email del propietario - usar un email válido por defecto
-const OWNER_EMAIL = 'admin@villaalcielo.com';
+// Email del propietario - debes verificar este email en SendGrid
+const OWNER_EMAIL = 'jacobopp.27@outlook.com';
 
 // Configuración de Gmail API (temporalmente deshabilitada)
 let gmail: any = null;
