@@ -53,6 +53,8 @@ A modern glamping reservation platform specializing in immersive nature experien
 - **Fixed Date Overlap Logic:** Corrected reservation validation to allow same-day checkout/checkin (e.g., checkout 27th allows checkin 27th for different cabin)
 - **Admin Image Upload:** Added device upload functionality in gallery admin with multer integration for local file handling
 - **New Nature-Inspired Design (Dec 19, 2025):** Applied elegant natural color palette - olive green (#6b705c), warm beige (#ffe8d6), soft sand (#cb997e), and light blue background (#e8f2f7). Updated hero section with gradient background, navbar styling, and olive green buttons (#6b705c) for cohesive natural harmony.
+- **Enhanced Admin Responsive Design (Dec 19, 2025):** Fixed mobile layout for approve/deny buttons with proper spacing and icon-only display on small screens
+- **Logo Integration & PWA Setup (Dec 19, 2025):** Added Villa al Cielo geometric logo as favicon, Apple touch icon, and PWA metadata for app-like experience. Social media integration with real Instagram and Facebook links.
 
 ## User Preferences
 - **Language:** Spanish for all user-facing content
