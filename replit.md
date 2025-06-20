@@ -55,6 +55,7 @@ A modern glamping reservation platform specializing in immersive nature experien
 - **New Nature-Inspired Design (Dec 19, 2025):** Applied elegant natural color palette - olive green (#6b705c), warm beige (#ffe8d6), soft sand (#cb997e), and light blue background (#e8f2f7). Updated hero section with gradient background, navbar styling, and olive green buttons (#6b705c) for cohesive natural harmony.
 - **Enhanced Admin Responsive Design (Dec 19, 2025):** Fixed mobile layout for approve/deny buttons with proper spacing and icon-only display on small screens
 - **Logo Integration & PWA Setup (Dec 19, 2025):** Added Villa al Cielo geometric logo as favicon, Apple touch icon, and PWA metadata for app-like experience. Social media integration with real Instagram and Facebook links.
+- **Dual-Route Email System (Dec 20, 2025):** Implemented Gmail API + SendGrid hybrid email system with automatic domain detection. Hotmail/Outlook emails route through Gmail API for improved deliverability, other domains use SendGrid. Includes automatic fallback and admin testing interface.
 
 ## User Preferences
 - **Language:** Spanish for all user-facing content
