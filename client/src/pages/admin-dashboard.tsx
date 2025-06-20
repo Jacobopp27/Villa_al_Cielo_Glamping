@@ -156,6 +156,52 @@ export default function AdminDashboard() {
     },
   });
 
+  // Cancel reservation
+  const cancelReservationMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await apiRequest("PATCH", `/api/admin/reservations/${id}/cancel`);
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Reserva cancelada",
+        description: "La reserva ha sido cancelada exitosamente",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/reservations'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/dashboard/stats'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Delete reservation
+  const deleteReservationMutation = useMutation({
+    mutationFn: async (id: number) => {
+      const response = await apiRequest("DELETE", `/api/admin/reservations/${id}`);
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Reserva eliminada",
+        description: "La reserva ha sido eliminada completamente",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/reservations'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/admin/dashboard/stats'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   // Gallery mutations
   const galleryForm = useForm<GalleryImageFormData>({
     resolver: zodResolver(galleryImageSchema),

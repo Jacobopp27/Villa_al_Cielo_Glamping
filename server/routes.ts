@@ -977,6 +977,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Cancel reservation (sets status to cancelled)
+  app.patch("/api/admin/reservations/:id/cancel", requireAdminAuth, async (req, res) => {
+    try {
+      const reservationId = parseInt(req.params.id);
+      
+      const updatedReservation = await storage.updateReservationStatus(
+        reservationId, 
+        'cancelled'
+      );
+
+      if (!updatedReservation) {
+        return res.status(404).json({ error: "Reservation not found" });
+      }
+
+      res.json({ 
+        message: "Reservation cancelled successfully", 
+        reservation: updatedReservation 
+      });
+    } catch (error) {
+      console.error("Error cancelling reservation:", error);
+      res.status(500).json({ error: "Failed to cancel reservation" });
+    }
+  });
+
+  // Delete reservation completely
+  app.delete("/api/admin/reservations/:id", requireAdminAuth, async (req, res) => {
+    try {
+      const reservationId = parseInt(req.params.id);
+      
+      const reservation = await storage.getReservation(reservationId);
+      if (!reservation) {
+        return res.status(404).json({ error: "Reservation not found" });
+      }
+
+      const deleted = await storage.deleteReservation(reservationId);
+      if (!deleted) {
+        return res.status(500).json({ error: "Failed to delete reservation" });
+      }
+
+      res.json({ message: "Reservation deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting reservation:", error);
+      res.status(500).json({ error: "Failed to delete reservation" });
+    }
+  });
+
   // ========== GALLERY MANAGEMENT ROUTES ==========
 
   // Get all gallery images

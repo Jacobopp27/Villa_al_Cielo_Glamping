@@ -45,6 +45,7 @@ export interface IStorage {
   updateReservationStatus(id: number, status: "pending" | "confirmed" | "cancelled" | "expired", calendarEventId?: string): Promise<Reservation | undefined>;
   getExpiredReservations(): Promise<Reservation[]>;
   getReservationByConfirmationCode(confirmationCode: string): Promise<Reservation | undefined>;
+  deleteReservation(id: number): Promise<boolean>;
 
   // Admin methods
   getAdminByUsername(username: string): Promise<AdminUser | undefined>;
@@ -349,6 +350,11 @@ export class MemStorage implements IStorage {
   async deleteReview(id: number): Promise<boolean> {
     return true; // Simulate successful deletion
   }
+
+  async deleteReservation(id: number): Promise<boolean> {
+    const deleted = this.reservations.delete(id);
+    return deleted;
+  }
 }
 
 
@@ -601,7 +607,14 @@ export class DatabaseStorage implements IStorage {
     const result = await db
       .delete(reviews)
       .where(eq(reviews.id, id));
-    return result.rowCount > 0;
+    return (result.rowCount || 0) > 0;
+  }
+
+  async deleteReservation(id: number): Promise<boolean> {
+    const result = await db
+      .delete(reservations)
+      .where(eq(reservations.id, id));
+    return (result.rowCount || 0) > 0;
   }
 }
 
