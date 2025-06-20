@@ -9,8 +9,8 @@ if (process.env.SENDGRID_API_KEY) {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 }
 
-// Email del propietario
-const OWNER_EMAIL = process.env.SENDGRID_VERIFIED_SENDER || 'admin@villaalcielo.com';
+// Email del propietario - usar un email válido por defecto
+const OWNER_EMAIL = 'admin@villaalcielo.com';
 
 // Configuración de Gmail API (temporalmente deshabilitada)
 let gmail: any = null;
@@ -330,7 +330,7 @@ export async function sendReservationConfirmationToGuest(
 
   return await sendEmail({
     to: reservation.guestEmail,
-    from: process.env.SENDGRID_VERIFIED_SENDER || 'admin@villaalcielo.com',
+    from: OWNER_EMAIL,
     subject: `Reserva Recibida - ${reservation.confirmationCode} - Villa al Cielo`,
     html
   });
@@ -394,7 +394,7 @@ export async function sendReservationNotificationToOwner(
 
   return await sendEmail({
     to: OWNER_EMAIL,
-    from: process.env.SENDGRID_VERIFIED_SENDER || 'admin@villaalcielo.com',
+    from: OWNER_EMAIL,
     subject: `Nueva Reserva Pendiente - ${reservation.confirmationCode}`,
     html
   });
@@ -469,7 +469,7 @@ export async function sendReservationConfirmedToGuest(
 
   return await sendEmail({
     to: reservation.guestEmail,
-    from: process.env.SENDGRID_VERIFIED_SENDER || 'admin@villaalcielo.com',
+    from: OWNER_EMAIL,
     subject: `¡Reserva Confirmada! - ${reservation.confirmationCode} - Villa al Cielo`,
     html
   });
@@ -501,7 +501,7 @@ export async function sendReservationExpiredToGuest(
 
   return await sendEmail({
     to: reservation.guestEmail,
-    from: process.env.SENDGRID_VERIFIED_SENDER || 'admin@villaalcielo.com',
+    from: OWNER_EMAIL,
     subject: `Reserva Expirada - ${reservation.confirmationCode} - Villa al Cielo`,
     html
   });
