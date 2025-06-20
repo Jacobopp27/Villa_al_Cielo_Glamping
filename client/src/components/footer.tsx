@@ -9,7 +9,7 @@ export default function Footer() {
   return (
     <footer className="bg-navy text-white py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <div className="font-montserrat font-bold text-xl mb-4">
               <svg className="inline w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -58,16 +58,14 @@ export default function Footer() {
                   Reseñas
                 </button>
               </li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="font-montserrat font-semibold text-lg mb-4">Políticas</h3>
-            <ul className="space-y-2 text-white/80">
-              <li><a href="#" className="hover:text-white transition-colors">Política de Cancelación</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Política de Mascotas</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Política de Privacidad</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Términos de Servicio</a></li>
+              <li>
+                <button 
+                  onClick={() => scrollToSection('policies')}
+                  className="hover:text-white transition-colors text-left"
+                >
+                  Políticas
+                </button>
+              </li>
             </ul>
           </div>
           
