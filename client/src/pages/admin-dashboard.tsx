@@ -358,7 +358,7 @@ export default function AdminDashboard() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="dashboard" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
               Dashboard
@@ -374,6 +374,10 @@ export default function AdminDashboard() {
             <TabsTrigger value="reviews" className="flex items-center gap-2">
               <Star className="h-4 w-4" />
               Reseñas
+            </TabsTrigger>
+            <TabsTrigger value="emails" className="flex items-center gap-2">
+              <Mail className="h-4 w-4" />
+              Correos
             </TabsTrigger>
             <TabsTrigger value="calendar" className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
@@ -997,6 +1001,111 @@ export default function AdminDashboard() {
                         </div>
                       </div>
                     ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Email Test Tab */}
+          <TabsContent value="emails" className="mt-6">
+            <div className="grid gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Mail className="h-5 w-5" />
+                    Prueba de Sistema de Correos
+                  </CardTitle>
+                  <p className="text-sm text-charcoal/70">
+                    Prueba el sistema de doble ruta de correos (SendGrid/Gmail API) para verificar la entregabilidad.
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <Form {...emailTestForm}>
+                    <form onSubmit={emailTestForm.handleSubmit((data) => testEmailMutation.mutate(data))} className="space-y-4">
+                      <FormField
+                        control={emailTestForm.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Email de Destino</FormLabel>
+                            <FormControl>
+                              <Input 
+                                {...field} 
+                                type="email" 
+                                placeholder="ejemplo@hotmail.com, test@gmail.com"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={emailTestForm.control}
+                        name="subject"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Asunto</FormLabel>
+                            <FormControl>
+                              <Input {...field} placeholder="Asunto del correo de prueba" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={emailTestForm.control}
+                        name="message"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Mensaje</FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                {...field} 
+                                placeholder="Contenido del mensaje de prueba"
+                                rows={4}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <Button type="submit" disabled={testEmailMutation.isPending}>
+                        <Mail className="h-4 w-4 mr-2" />
+                        {testEmailMutation.isPending ? "Enviando..." : "Enviar Correo de Prueba"}
+                      </Button>
+                    </form>
+                  </Form>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Información del Sistema</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="p-4 bg-blue-50 rounded-lg">
+                        <h3 className="font-semibold text-blue-900 mb-2">SendGrid</h3>
+                        <p className="text-sm text-blue-700">
+                          Usado por defecto para todos los dominios excepto Microsoft (Hotmail/Outlook)
+                        </p>
+                      </div>
+                      <div className="p-4 bg-green-50 rounded-lg">
+                        <h3 className="font-semibold text-green-900 mb-2">Gmail API</h3>
+                        <p className="text-sm text-green-700">
+                          Usado para hotmail.com, outlook.com, live.com, msn.com para mejor entregabilidad
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-sm text-charcoal/70">
+                      <p><strong>Fallback automático:</strong> Si el servicio principal falla, se intenta con el alternativo.</p>
+                      <p><strong>Logs:</strong> Revisa la consola del servidor para ver qué servicio se utilizó para cada envío.</p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
