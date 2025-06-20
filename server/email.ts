@@ -7,8 +7,8 @@ const sgMail = new MailService();
 // Configurar SendGrid con la nueva API key
 sgMail.setApiKey('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');
 
-// Email del propietario - debes verificar este email en SendGrid
-const OWNER_EMAIL = 'jacobopp.27@outlook.com';
+// Email del propietario - remitente verificado en SendGrid
+const OWNER_EMAIL = 'admin@villaalcielo.com';
 
 // Configuración de Gmail API (temporalmente deshabilitada)
 let gmail: any = null;
