@@ -45,7 +45,16 @@ interface EmailParams {
 
 // Función para obtener el dominio del correo
 function getDomain(email: string): string {
-  return email.split('@')[1].toLowerCase();
+  if (!email || typeof email !== 'string') {
+    console.error('Invalid email provided to getDomain:', email);
+    return '';
+  }
+  const parts = email.split('@');
+  if (parts.length < 2) {
+    console.error('Invalid email format:', email);
+    return '';
+  }
+  return parts[1].toLowerCase();
 }
 
 // Función para enviar con Gmail API
@@ -321,7 +330,7 @@ export async function sendReservationConfirmationToGuest(
 
   return await sendEmail({
     to: reservation.guestEmail,
-    from: OWNER_EMAIL,
+    from: process.env.SENDGRID_VERIFIED_SENDER || 'admin@villaalcielo.com',
     subject: `Reserva Recibida - ${reservation.confirmationCode} - Villa al Cielo`,
     html
   });
@@ -385,7 +394,7 @@ export async function sendReservationNotificationToOwner(
 
   return await sendEmail({
     to: OWNER_EMAIL,
-    from: OWNER_EMAIL,
+    from: process.env.SENDGRID_VERIFIED_SENDER || 'admin@villaalcielo.com',
     subject: `Nueva Reserva Pendiente - ${reservation.confirmationCode}`,
     html
   });
@@ -460,7 +469,7 @@ export async function sendReservationConfirmedToGuest(
 
   return await sendEmail({
     to: reservation.guestEmail,
-    from: OWNER_EMAIL,
+    from: process.env.SENDGRID_VERIFIED_SENDER || 'admin@villaalcielo.com',
     subject: `¡Reserva Confirmada! - ${reservation.confirmationCode} - Villa al Cielo`,
     html
   });
@@ -492,7 +501,7 @@ export async function sendReservationExpiredToGuest(
 
   return await sendEmail({
     to: reservation.guestEmail,
-    from: OWNER_EMAIL,
+    from: process.env.SENDGRID_VERIFIED_SENDER || 'admin@villaalcielo.com',
     subject: `Reserva Expirada - ${reservation.confirmationCode} - Villa al Cielo`,
     html
   });
