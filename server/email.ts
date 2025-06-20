@@ -232,16 +232,18 @@ export async function sendReservationConfirmedToGuest(
       <div style="background-color: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0;">
         <h3 style="color: #1e40af; margin-top: 0;">Información del Lugar</h3>
         <p><strong>Dirección:</strong> Villa al Cielo, Barbosa, Antioquia</p>
+        <p><strong>Ubicación:</strong> <a href="https://maps.google.com/?q=6.478320,-75.258720" style="color: #1e40af; text-decoration: none;">Ver en Google Maps</a></p>
         <p><strong>Check-in:</strong> 3:00 PM</p>
         <p><strong>Check-out:</strong> 12:00 PM</p>
-        <p><strong>Contacto:</strong> ${OWNER_EMAIL}</p>
+        <p><strong>Contacto:</strong> +57 310 502 3711</p>
+        <p><strong>Email:</strong> ${OWNER_EMAIL}</p>
         
         <p style="margin-top: 15px;"><strong>Qué incluye tu reserva:</strong></p>
         <ul>
           <li>Alojamiento en cabaña ${cabin.name}</li>
           <li>Desayuno</li>
           ${reservation.includesAsado ? '<li>Kit de Asado (2 bisteces, 2 chorizos, 2 arepas)</li>' : ''}
-          <li>Acceso a áreas comunes</li>
+          <li>Acceso a todas las amenidades (jacuzzi, malla catamarán, etc.)</li>
           <li>WiFi gratuito</li>
         </ul>
       </div>
