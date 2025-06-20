@@ -1,11 +1,6 @@
-import { Wifi, Waves, UtensilsCrossed, ShowerHead, Activity, Car } from "lucide-react";
+import { Waves, UtensilsCrossed, ShowerHead, Activity, Car, TableProperties } from "lucide-react";
 
 const amenities = [
-  {
-    icon: Wifi,
-    title: "Wi-Fi Gratuito",
-    description: "Mantente conectado con acceso a internet de alta velocidad durante tu estadía."
-  },
   {
     icon: Waves,
     title: "Jacuzzi",
@@ -13,8 +8,13 @@ const amenities = [
   },
   {
     icon: UtensilsCrossed,
-    title: "Cocina Exterior",
-    description: "Cocina exterior completamente equipada con parrilla y área de comedor."
+    title: "Cocina Interior",
+    description: "Cocina interior completamente equipada con todos los utensilios necesarios para tu comodidad."
+  },
+  {
+    icon: TableProperties,
+    title: "Comedor Exterior",
+    description: "Disfruta de tus comidas al aire libre en nuestro acogedor comedor exterior rodeado de naturaleza."
   },
   {
     icon: ShowerHead,

@@ -244,7 +244,8 @@ export async function sendReservationConfirmedToGuest(
           <li>Desayuno</li>
           ${reservation.includesAsado ? '<li>Kit de Asado (2 bisteces, 2 chorizos, 2 arepas)</li>' : ''}
           <li>Acceso a todas las amenidades (jacuzzi, malla catamarán, etc.)</li>
-          <li>WiFi gratuito</li>
+          <li>Cocina interior completamente equipada</li>
+          <li>Comedor exterior</li>
         </ul>
       </div>
       
