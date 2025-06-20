@@ -615,10 +615,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         const cabin = await storage.getCabin(reservation.cabinId);
         if (cabin) {
-          await sendReservationConfirmedToGuest(confirmedReservation, cabin);
+          const emailSent = await sendReservationConfirmedToGuest(confirmedReservation, cabin);
+          console.log(`Confirmation email sent to guest: ${emailSent ? 'SUCCESS' : 'FAILED'}`);
         }
       } catch (error) {
         console.error("Error sending confirmation email:", error);
+        console.error("Full error details:", error);
       }
 
       res.json({
@@ -1150,6 +1152,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error deleting review:", error);
       res.status(500).json({ error: "Failed to delete review" });
+    }
+  });
+
+  // Test confirmation email endpoint (admin only)
+  app.post("/api/admin/test-confirmation", requireAdminAuth, async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ error: "Email is required" });
+      }
+
+      // Create test reservation data
+      const testReservation = {
+        id: 999,
+        guestName: 'Usuario de Prueba Confirmación',
+        guestEmail: email,
+        checkIn: '2025-06-25',
+        checkOut: '2025-06-27',
+        totalPrice: 780000,
+        confirmationCode: 'TEST-CONF-' + Date.now(),
+        includesAsado: true,
+        cabinId: 1,
+        guests: 2,
+        status: 'confirmed' as const,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        frozenUntil: new Date(Date.now() + 86400000),
+        calendarEventId: null,
+        googleCalendarEventId: null,
+        paymentInstructions: null
+      };
+
+      const testCabin = {
+        id: 1,
+        name: 'Cielo',
+        weekdayPrice: 200000,
+        weekendPrice: 390000,
+        isActive: true
+      };
+
+      console.log(`Testing confirmation email to: ${email}`);
+      const emailSent = await sendReservationConfirmedToGuest(testReservation, testCabin);
+      console.log(`Confirmation email result: ${emailSent ? 'SUCCESS' : 'FAILED'}`);
+
+      res.json({ 
+        success: emailSent,
+        message: emailSent ? "Confirmation email sent successfully" : "Confirmation email failed to send",
+        reservationCode: testReservation.confirmationCode
+      });
+    } catch (error) {
+      console.error("Test confirmation email error:", error);
+      res.status(500).json({ 
+        error: "Confirmation email test failed",
+        details: error.message
+      });
     }
   });
 

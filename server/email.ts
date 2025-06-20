@@ -266,6 +266,17 @@ export async function sendReservationNotificationToOwner(
       </div>
       
       <p style="color: #dc2626;"><strong>Esperando comprobante de pago del cliente.</strong></p>
+      
+      <div style="text-align: center; margin: 30px 0; padding: 20px; background-color: #1e40af; border-radius: 8px;">
+        <h3 style="color: white; margin: 0 0 15px 0;">Gestiona esta reserva</h3>
+        <a href="${process.env.REPLIT_DOMAINS ? `https://${process.env.REPLIT_DOMAINS.split(',')[0]}/admin` : 'https://villaalcielo.replit.app/admin'}" 
+           style="background-color: white; color: #1e40af; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
+          Ir al Panel de Administración
+        </a>
+        <p style="color: #e0e7ff; margin: 10px 0 0 0; font-size: 14px;">
+          Confirma o cancela reservas, gestiona la galería y revisa estadísticas
+        </p>
+      </div>
     </div>
   `;
 
