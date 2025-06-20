@@ -71,20 +71,30 @@ export class MemStorage implements IStorage {
   private users: Map<number, User>;
   private reservations: Map<number, Reservation>;
   private cabins: Map<number, Cabin>;
+  private galleryImages: Map<number, GalleryImage>;
+  private reviews: Map<number, Review>;
   private currentUserId: number;
   private currentReservationId: number;
   private currentCabinId: number;
+  private currentGalleryId: number;
+  private currentReviewId: number;
 
   constructor() {
     this.users = new Map();
     this.reservations = new Map();
     this.cabins = new Map();
+    this.galleryImages = new Map();
+    this.reviews = new Map();
     this.currentUserId = 1;
     this.currentReservationId = 1;
     this.currentCabinId = 1;
+    this.currentGalleryId = 1;
+    this.currentReviewId = 1;
     
-    // Initialize cabins with the three mentioned
+    // Initialize cabins and gallery with the mentioned items
     this.initializeCabins();
+    this.initializeGallery();
+    this.initializeReviews();
   }
 
   private async initializeCabins() {
@@ -101,6 +111,132 @@ export class MemStorage implements IStorage {
         isActive: true,
       };
       this.cabins.set(cabin.id, cabin);
+    });
+  }
+
+  private initializeGallery() {
+    const galleryData = [
+      {
+        title: "Vista exterior Villa al Cielo",
+        description: "Vista panorámica de las cabañas de glamping",
+        imageUrl: "/attached_assets/IMG_3297.jpeg",
+        displayOrder: 1
+      },
+      {
+        title: "Cabaña Cielo - Interior",
+        description: "Interior acogedor con vista a las montañas",
+        imageUrl: "/attached_assets/IMG_3298.jpeg",
+        displayOrder: 2
+      },
+      {
+        title: "Cabaña Eclipse - Terraza",
+        description: "Terraza privada perfecta para relajarse",
+        imageUrl: "/attached_assets/IMG_3299.jpeg",
+        displayOrder: 3
+      },
+      {
+        title: "Cabaña Aurora - Vista nocturna",
+        description: "Ambiente mágico bajo las estrellas",
+        imageUrl: "/attached_assets/IMG_3300.jpeg",
+        displayOrder: 4
+      },
+      {
+        title: "Zona de asado y fogata",
+        description: "Área común para disfrutar del kit de asado",
+        imageUrl: "/attached_assets/IMG_3301.jpeg",
+        displayOrder: 5
+      },
+      {
+        title: "Senderos naturales",
+        description: "Caminos para explorar la naturaleza circundante",
+        imageUrl: "/attached_assets/IMG_3302.jpeg",
+        displayOrder: 6
+      },
+      {
+        title: "Vista panorámica del valle",
+        description: "Paisaje espectacular desde Villa al Cielo",
+        imageUrl: "/attached_assets/IMG_3303.jpeg",
+        displayOrder: 7
+      },
+      {
+        title: "Amanecer en las montañas",
+        description: "Despertar con vistas increíbles cada mañana",
+        imageUrl: "/attached_assets/IMG_3304.jpeg",
+        displayOrder: 8
+      },
+      {
+        title: "Espacios de relajación",
+        description: "Áreas diseñadas para el descanso y la contemplación",
+        imageUrl: "/attached_assets/IMG_3306.jpeg",
+        displayOrder: 9
+      },
+      {
+        title: "Entorno natural",
+        description: "La belleza del paisaje que rodea Villa al Cielo",
+        imageUrl: "/attached_assets/IMG_3307.jpeg",
+        displayOrder: 10
+      },
+      {
+        title: "Detalles arquitectónicos",
+        description: "Elementos únicos que hacen especial cada cabaña",
+        imageUrl: "/attached_assets/IMG_3308.jpeg",
+        displayOrder: 11
+      },
+      {
+        title: "Experiencia completa",
+        description: "La magia de Villa al Cielo en todo su esplendor",
+        imageUrl: "/attached_assets/IMG_3309.jpeg",
+        displayOrder: 12
+      }
+    ];
+
+    galleryData.forEach(data => {
+      const image: GalleryImage = {
+        id: this.currentGalleryId++,
+        title: data.title,
+        description: data.description,
+        imageUrl: data.imageUrl,
+        displayOrder: data.displayOrder,
+        isActive: true,
+        createdAt: new Date()
+      };
+      this.galleryImages.set(image.id, image);
+    });
+  }
+
+  private initializeReviews() {
+    const reviewsData = [
+      {
+        guestName: "Sarah Johnson",
+        rating: 5,
+        comment: "Una experiencia increíble en Villa al Cielo. Las cabañas son hermosas y la vista es espectacular. El desayuno estuvo delicioso y la atención fue excelente. Definitivamente regresaremos.",
+        displayOrder: 1
+      },
+      {
+        guestName: "Carlos Mendoza",
+        rating: 5,
+        comment: "Perfecto para desconectarse de la ciudad. El entorno natural es único y las instalaciones están muy bien cuidadas. El kit de asado fue una excelente adición a nuestra estadía.",
+        displayOrder: 2
+      },
+      {
+        guestName: "Ana García",
+        rating: 4,
+        comment: "Muy tranquilo y relajante. Las cabañas son cómodas y la ubicación es perfecta para los amantes de la naturaleza. Recomendado para parejas que buscan un escape romántico.",
+        displayOrder: 3
+      }
+    ];
+
+    reviewsData.forEach(data => {
+      const review: Review = {
+        id: this.currentReviewId++,
+        guestName: data.guestName,
+        rating: data.rating,
+        comment: data.comment,
+        isApproved: true,
+        displayOrder: data.displayOrder,
+        createdAt: new Date()
+      };
+      this.reviews.set(review.id, review);
     });
   }
 
@@ -266,186 +402,70 @@ export class MemStorage implements IStorage {
 
   // Gallery methods
   async getAllGalleryImages(): Promise<GalleryImage[]> {
-    return [
-      {
-        id: 1,
-        title: "Vista exterior Villa al Cielo",
-        description: "Vista panorámica de las cabañas de glamping",
-        imageUrl: "/attached_assets/IMG_3297.jpeg",
-        displayOrder: 1,
-        isActive: true,
-        createdAt: new Date()
-      },
-      {
-        id: 2,
-        title: "Cabaña Cielo - Interior",
-        description: "Interior acogedor con vista a las montañas",
-        imageUrl: "/attached_assets/IMG_3298.jpeg",
-        displayOrder: 2,
-        isActive: true,
-        createdAt: new Date()
-      },
-      {
-        id: 3,
-        title: "Cabaña Eclipse - Terraza",
-        description: "Terraza privada perfecta para relajarse",
-        imageUrl: "/attached_assets/IMG_3299.jpeg",
-        displayOrder: 3,
-        isActive: true,
-        createdAt: new Date()
-      },
-      {
-        id: 4,
-        title: "Cabaña Aurora - Vista nocturna",
-        description: "Ambiente mágico bajo las estrellas",
-        imageUrl: "/attached_assets/IMG_3300.jpeg",
-        displayOrder: 4,
-        isActive: true,
-        createdAt: new Date()
-      },
-      {
-        id: 5,
-        title: "Zona de asado y fogata",
-        description: "Área común para disfrutar del kit de asado",
-        imageUrl: "/attached_assets/IMG_3301.jpeg",
-        displayOrder: 5,
-        isActive: true,
-        createdAt: new Date()
-      },
-      {
-        id: 6,
-        title: "Senderos naturales",
-        description: "Caminos para explorar la naturaleza circundante",
-        imageUrl: "/attached_assets/IMG_3302.jpeg",
-        displayOrder: 6,
-        isActive: true,
-        createdAt: new Date()
-      },
-      {
-        id: 7,
-        title: "Vista panorámica del valle",
-        description: "Paisaje espectacular desde Villa al Cielo",
-        imageUrl: "/attached_assets/IMG_3303.jpeg",
-        displayOrder: 7,
-        isActive: true,
-        createdAt: new Date()
-      },
-      {
-        id: 8,
-        title: "Amanecer en las montañas",
-        description: "Despertar con vistas increíbles cada mañana",
-        imageUrl: "/attached_assets/IMG_3304.jpeg",
-        displayOrder: 8,
-        isActive: true,
-        createdAt: new Date()
-      },
-      {
-        id: 9,
-        title: "Espacios de relajación",
-        description: "Áreas diseñadas para el descanso y la contemplación",
-        imageUrl: "/attached_assets/IMG_3306.jpeg",
-        displayOrder: 9,
-        isActive: true,
-        createdAt: new Date()
-      },
-      {
-        id: 10,
-        title: "Entorno natural",
-        description: "La belleza del paisaje que rodea Villa al Cielo",
-        imageUrl: "/attached_assets/IMG_3307.jpeg",
-        displayOrder: 10,
-        isActive: true,
-        createdAt: new Date()
-      },
-      {
-        id: 11,
-        title: "Detalles arquitectónicos",
-        description: "Elementos únicos que hacen especial cada cabaña",
-        imageUrl: "/attached_assets/IMG_3308.jpeg",
-        displayOrder: 11,
-        isActive: true,
-        createdAt: new Date()
-      },
-      {
-        id: 12,
-        title: "Experiencia completa",
-        description: "La magia de Villa al Cielo en todo su esplendor",
-        imageUrl: "/attached_assets/IMG_3309.jpeg",
-        displayOrder: 12,
-        isActive: true,
-        createdAt: new Date()
-      }
-    ];
+    return Array.from(this.galleryImages.values()).sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
   }
 
   async getActiveGalleryImages(): Promise<GalleryImage[]> {
-    return this.getAllGalleryImages().then(images => 
-      images.filter(img => img.isActive)
-    );
+    const allImages = await this.getAllGalleryImages();
+    return allImages.filter(img => img.isActive);
   }
 
   async createGalleryImage(image: InsertGalleryImage): Promise<GalleryImage> {
-    return {
-      id: Date.now(),
+    const newImage: GalleryImage = {
+      id: this.currentGalleryId++,
       ...image,
       createdAt: new Date()
     };
+    this.galleryImages.set(newImage.id, newImage);
+    return newImage;
   }
 
   async updateGalleryImage(id: number, updates: Partial<GalleryImage>): Promise<GalleryImage | undefined> {
-    const images = await this.getAllGalleryImages();
-    const image = images.find(img => img.id === id);
+    const image = this.galleryImages.get(id);
     if (image) {
-      return { ...image, ...updates };
+      const updatedImage = { ...image, ...updates };
+      this.galleryImages.set(id, updatedImage);
+      return updatedImage;
     }
     return undefined;
   }
 
   async deleteGalleryImage(id: number): Promise<boolean> {
-    return true; // Simulate successful deletion
+    return this.galleryImages.delete(id);
   }
 
   // Review methods
   async getAllReviews(): Promise<Review[]> {
-    return [
-      {
-        id: 1,
-        guestName: "Sarah Johnson",
-        rating: 5,
-        comment: "Una experiencia increíble en Villa al Cielo. Las cabañas son hermosas y el entorno natural es perfecto para desconectarse. ¡Definitivamente volveré!",
-        isApproved: true,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }
-    ];
+    return Array.from(this.reviews.values()).sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
   }
 
   async getApprovedReviews(): Promise<Review[]> {
-    return this.getAllReviews().then(reviews => 
-      reviews.filter(review => review.isApproved)
-    );
+    const allReviews = await this.getAllReviews();
+    return allReviews.filter(review => review.isApproved);
   }
 
   async createReview(review: InsertReview): Promise<Review> {
-    return {
-      id: Date.now(),
+    const newReview: Review = {
+      id: this.currentReviewId++,
       ...review,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      createdAt: new Date()
     };
+    this.reviews.set(newReview.id, newReview);
+    return newReview;
   }
 
   async updateReview(id: number, updates: Partial<Review>): Promise<Review | undefined> {
-    const reviews = await this.getAllReviews();
-    const review = reviews.find(r => r.id === id);
+    const review = this.reviews.get(id);
     if (review) {
-      return { ...review, ...updates, updatedAt: new Date() };
+      const updatedReview = { ...review, ...updates };
+      this.reviews.set(id, updatedReview);
+      return updatedReview;
     }
     return undefined;
   }
 
   async deleteReview(id: number): Promise<boolean> {
-    return true; // Simulate successful deletion
+    return this.reviews.delete(id);
   }
 
   async deleteReservation(id: number): Promise<boolean> {
