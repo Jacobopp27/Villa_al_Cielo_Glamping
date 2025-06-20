@@ -44,9 +44,10 @@ export default function HeroSection() {
         <div className="flex justify-center">
           <button 
             onClick={scrollToBooking}
-            className="bg-navy hover:bg-navy/90 text-white px-8 py-4 rounded-lg font-montserrat font-semibold text-lg transition-all transform hover:scale-105"
+            className="bg-[hsl(var(--nature-button))] hover:bg-[hsl(var(--nature-button-hover))] text-white px-8 py-4 rounded-lg font-montserrat font-semibold text-lg transition-all transform hover:scale-105"
           >
-            Reservar desde $200.000 COP
+            <span className="hidden sm:inline">Reservar desde $200.000 COP</span>
+            <span className="sm:hidden">RESERVAR</span>
           </button>
         </div>
       </div>
