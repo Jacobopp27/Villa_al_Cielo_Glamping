@@ -1,0 +1,29 @@
+{
+  "name": "Villa al Cielo - Glamping de Lujo",
+  "short_name": "Villa al Cielo",
+  "description": "Reserva tu escape de glamping en la naturaleza",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#e8f2f7",
+  "theme_color": "#6b705c",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/villa-favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["travel", "lifestyle", "tourism"]
+}
